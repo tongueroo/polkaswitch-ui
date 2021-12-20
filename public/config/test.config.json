@@ -80,7 +80,7 @@
   {
     "enabled": true,
     "name": "Polygon",
-    "aggregatorAddress": "0xB9E1505be481FC3fb8E87E92554E45FE6FbcFB7e",
+    "aggregatorAddress": "0xad44915C24a74d97489810274C368c0DD311236E",
     "crossChainAggregatorAddress": "0xA6d27b5B051F2C24E768C7859b2468CbE356ABCd",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
     "bridgeURI": "https://wallet.matic.network/",
@@ -89,7 +89,7 @@
     "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
     "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://gasstation-mainnet.matic.network",
-    "desiredParts": 3,
+    "desiredParts": 20,
     "color": "#725BDF",
     "chain": {
       "chainId": "0x89",
@@ -136,7 +136,7 @@
     "nodeProvider": "https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/",
     "explorerBaseUrl": "https://bscscan.com/tx/",
     "gasApi": false,
-    "desiredParts": 3,
+    "desiredParts": 9,
     "color": "#FCC413",
     "chain": {
       "chainId": "0x38",
@@ -183,7 +183,7 @@
     "nodeProvider2": "https://avalanche--mainnet--rpc.datahub.figment.io/apikey/b56dcd7987f05a43637a94ad98d546be/ext/bc/C/rpc",
     "explorerBaseUrl": "https://cchain.explorer.avax.network/tx/",
     "gasApi": false,
-    "desiredParts": 3,
+    "desiredParts": 6,
     "color": "#CF4D47",
     "chain": {
       "chainId": "0xA86A",
@@ -229,7 +229,7 @@
     "nodeProvider": "https://api-xdai.swing.xyz/6e25f5fc6a6efc79fa8c97b2c699abe2d59f6817/",
     "explorerBaseUrl": "https://blockscout.com/xdai/mainnet/tx/",
     "gasApi": false,
-    "desiredParts": 18,
+    "desiredParts": 16,
     "color": "#67C19D",
     "chain": {
       "chainId": "0x64",
@@ -275,7 +275,7 @@
     "nodeProvider": "https://api-fantom.swing.xyz/efefa0dd29e1885643893565b6de2d551e77e09c/",
     "explorerBaseUrl": "https://ftmscan.com/tx/",
     "gasApi": false,
-    "desiredParts": 18,
+    "desiredParts": 12,
     "color": "#3164EE",
     "chain": {
       "chainId": "0xFA",
