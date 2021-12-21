@@ -309,5 +309,48 @@
       "USDC",
       "DAI"
     ]
+  },
+  {
+    "enabled": false,
+    "name": "Moonriver",
+    "aggregatorAddress": "0x45886377b9930b1fDf0A16EE966F70A0240eD029",
+    "logoURI": "https://assets.coingecko.com/coins/images/17984/small/9285.png",
+    "bridgeURI": "https://app.solarbeam.io/bridge",
+    "tokenList": "/tokens/1285.list.json",
+    "chainId": "1285",
+    "nodeProvider": "",
+    "explorerBaseUrl": "https://moonriver.moonscan.io/tx/",
+    "gasApi": false,
+    "desiredParts": 18,
+    "color": "#3164EE",
+    "chain": {
+      "chainId": "0x505",
+      "rpcUrls": ["https://rpc.moonriver.moonbeam.network"],
+      "chainName": "Moonriver",
+      "nativeCurrency": {
+        "name": "Moonriver",
+        "symbol": "MOVR",
+        "decimals": 18
+      }
+    },
+    "defaultPair": {
+      "to": "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
+      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+    },
+    "topTokens": [
+      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
+      "0x04068da6c83afcfa0e13ba15a6696662335d5b75",
+      "0x321162cd933e2be498cd2267a90534a804051b11",
+      "0x74b23882a30290451a17c44f4f05243b6b58c76d",
+      "0xae75a438b2e0cb8bb01ec1e1e376de11d44477cc"
+    ],
+    "coingecko": {
+      "platform": "moonriver"
+    },
+    "singleChainSupported": true,
+    "crossChainSupported": false,
+    "supportedCrossChainTokens": [
+    ]
   }
 ]
