@@ -55,9 +55,9 @@ export default class SwapTransactionDetails extends Component {
         this.props.from,
         this.props.to,
         Utils.parseUnits(fromAmount, this.props.from.decimals)
-      ).then(function(r) {
+      ).then(function({ minReturn }) {
         _.defer(function(){
-          this.setState({ minReturn: r });
+          this.setState({ minReturn: minReturn });
         }.bind(this));
       }.bind(this)).catch(function(r) {
         _.defer(function(){

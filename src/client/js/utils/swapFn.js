@@ -1,4 +1,3 @@
-
 import _ from "underscore";
 import EventManager from './events';
 import TxQueue from './txQueue';
@@ -7,7 +6,7 @@ import TokenListManager from './tokenList';
 import Wallet from './wallet';
 import Storage from './storage';
 import BN from 'bignumber.js';
-import { ApprovalState } from "../constants/Status";
+import {ApprovalState} from "../constants/Status";
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e+9 });
@@ -82,12 +81,12 @@ window.SwapFn = {
     return this.getExpectedReturn(
       fromToken, toToken, amount
     ).then(function(actualReturn) {
-      var y = 1.0 - (Storage.swapSettings.slippage / 100.0);
-      var r = BN(actualReturn.returnAmount.toString()).times(y);
-
-      var minReturn = Utils.formatUnits(r.toFixed(0), toToken.decimals);
-
-      return minReturn;
+      const y = 1.0 - (Storage.swapSettings.slippage / 100.0);
+      const r = BN(actualReturn.returnAmount.toString()).times(y);
+      const minReturn = Utils.formatUnits(r.toFixed(0), toToken.decimals);
+      const distribution = actualReturn.distribution;
+      const expectedAmount = Utils.formatUnits(actualReturn.returnAmount.toString(), toToken.decimals);
+      return { minReturn, distribution, expectedAmount }
     }.bind(this));
   },
 
@@ -103,6 +102,7 @@ window.SwapFn = {
       fromToken.address,
       toToken.address,
       amountBN, // uint256 in wei
+      BigNumber.from(0),
       BigNumber.from(0),
       distribution,
       0,  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
@@ -327,7 +327,7 @@ window.SwapFn = {
     ) public payable returns(uint256 returnAmount)
   */
 
-  _swap: function(fromToken, toToken, amountBN, distribution) {
+  _swap: function(fromToken, toToken, amountBN) {
     console.log(`Calling SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
     const signer = Wallet.getProvider().getSigner();
     const contract = new Contract(
@@ -338,7 +338,7 @@ window.SwapFn = {
 
     return this.calculateMinReturn(
       fromToken, toToken, amountBN
-    ).then(function(minReturn) {
+    ).then(function({ minReturn, distribution, expectedAmount }) {
       /*
         returns(
           uint256 returnAmount
@@ -348,7 +348,8 @@ window.SwapFn = {
         fromToken.address,
         toToken.address,
         amountBN, // uint256 in wei
-        Utils.parseUnits(minReturn, toToken.decimals),
+        Utils.parseUnits(expectedAmount, toToken.decimals), // expected return
+        Utils.parseUnits(minReturn, toToken.decimals), // min return
         distribution,
         0,  // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
         {
