@@ -12,6 +12,7 @@
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "color": "#5C69B5",
     "desiredParts": 3,
+    "abi": "oneSplitAbi",
     "chain": {
       "chainId": "0x1",
       "chainName": "Ethereum Mainnet"
@@ -50,6 +51,7 @@
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "desiredParts": 3,
     "color": "#4E99E3",
+    "abi": "oneSplitAbi",
     "chain": {
       "chainId": "0x507",
       "rpcUrls": ["https://rpc.testnet.moonbeam.network"],
@@ -91,6 +93,7 @@
     "gasApi": "https://gasstation-mainnet.matic.network",
     "desiredParts": 20,
     "color": "#725BDF",
+    "abi": "polygonAbi",
     "chain": {
       "chainId": "0x89",
       "rpcUrls": ["https://rpc-mainnet.maticvigil.com"],
@@ -138,6 +141,7 @@
     "gasApi": false,
     "desiredParts": 9,
     "color": "#FCC413",
+    "abi": "oneSplitAbi",
     "chain": {
       "chainId": "0x38",
       "rpcUrls": ["https://bsc-dataseed.binance.org/"],
@@ -185,6 +189,7 @@
     "gasApi": false,
     "desiredParts": 6,
     "color": "#CF4D47",
+    "abi": "oneSplitAbi",
     "chain": {
       "chainId": "0xA86A",
       "rpcUrls": ["https://api.avax.network/ext/bc/C/rpc"],
@@ -231,6 +236,7 @@
     "gasApi": false,
     "desiredParts": 16,
     "color": "#67C19D",
+    "abi": "oneSplitAbi",
     "chain": {
       "chainId": "0x64",
       "rpcUrls": ["https://rpc.xdaichain.com/"],
@@ -277,6 +283,7 @@
     "gasApi": false,
     "desiredParts": 12,
     "color": "#3164EE",
+    "abi": "oneSplitAbi",
     "chain": {
       "chainId": "0xFA",
       "rpcUrls": ["https://rpcapi.fantom.network"],
