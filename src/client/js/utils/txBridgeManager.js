@@ -6,6 +6,7 @@ import { BigNumber, constants, providers, Signer, utils } from "ethers";
 import Wallet from "./wallet";
 import swapFn from "./swapFn";
 import HopUtils from "./hop";
+import CBridgeUtils from "./cbridge";
 import Nxtp from "./nxtp";
 import Storage from "./storage";
 
@@ -22,6 +23,10 @@ const HOP_SUPPORTED_BRIDGE_TOKENS = [
 // hard-code for now, the HopSDK has "supportedChains", but let's integrate later.
 const HOP_SUPPORTED_CHAINS = [
   1, 137, 100, 10, 42161
+];
+
+const CBRIDGE_SUPPORTED_CHAINS = [
+    1, 10, 56, 137, 250, 42161, 43114
 ];
 
 const CONNEXT_SUPPORTED_BRIDGE_TOKENS = [
@@ -51,6 +56,8 @@ export default {
 
     if ("hop" === bridgeOption) {
       return HopUtils;
+    } else if ("cbridge" === bridgeOption) {
+      return CBridgeUtils;
     } else {
       return Nxtp;
     }
@@ -66,6 +73,15 @@ export default {
         return [false, `${toChain.name} is not supported by Hop Bridge`];
       } else if (!HOP_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
         return [false, `${fromChain.name} is not supported by Hop Bridge`];
+      } else {
+        return [true, false];
+      }
+    }
+    if ("cbridge" === bridgeOption) {
+      if (!CBRIDGE_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
+        return [false, `${toChain.name} is not supported by Celer Bridge`];
+      } else if (!CBRIDGE_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
+        return [false, `${fromChain.name} is not supported by Celer Bridge`];
       } else {
         return [true, false];
       }
