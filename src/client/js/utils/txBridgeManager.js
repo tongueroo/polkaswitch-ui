@@ -106,7 +106,7 @@ export default {
     }
   },
 
-  getEstimate: function(
+  getEstimate: async function(
     sendingChainId,
     sendingAssetId,
     receivingChainId,
@@ -116,9 +116,34 @@ export default {
   ) {
     const transactionId = getRandomBytes32();
     const bridgeInterface = this.getBridgeInterface();
+    const bridgeOption = Storage.swapSettings.bridgeOption;
+
+    if ("cbridge" === bridgeOption) {
+      const estimate = await this.getBridgeInterface().getEstimate(
+          transactionId,
+          sendingChainId,
+          sendingAssetId,
+          receivingChainId,
+          receivingAssetId,
+          amountBN,
+          receivingAddress
+      )
+      const maxSlippage = estimate.maxSlippage;
+      this._queue[transactionId] = {
+        bridge: bridgeOption,
+        sendingChainId,
+        sendingAssetId,
+        receivingChainId,
+        receivingAssetId,
+        amountBN,
+        receivingAddress,
+        maxSlippage
+      };
+      return estimate;
+    }
 
     this._queue[transactionId] = {
-      bridge: Storage.swapSettings.bridgeOption,
+      bridge: bridgeOption,
       sendingChainId,
       sendingAssetId,
       receivingChainId,
@@ -150,7 +175,8 @@ export default {
       tx.receivingChainId,
       tx.receivingAssetId,
       tx.amountBN,
-      tx.receivingAddress
+      tx.receivingAddress,
+      tx.maxSlippage
     );
   },
 
