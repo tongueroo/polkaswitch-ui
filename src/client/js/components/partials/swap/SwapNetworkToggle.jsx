@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
-import * as Sentry from "@sentry/react";
+import * as Sentry from '@sentry/react';
 import Wallet from '../../../utils/wallet';
 import EventManager from '../../../utils/events';
 import TokenListManager from '../../../utils/tokenList';
@@ -24,19 +24,24 @@ export default class SwapNetworkToggle extends Component {
   }
 
   componentDidMount() {
-    this.subscribers.push(EventManager.listenFor('networkHoverableUpdated', this.handleNetworkHoverable));
+    this.subscribers.push(
+      EventManager.listenFor(
+        'networkHoverableUpdated',
+        this.handleNetworkHoverable,
+      ),
+    );
   }
 
   componentWillUnmount() {
-    this.subscribers.forEach(function(v) {
+    this.subscribers.forEach(function (v) {
       EventManager.unsubscribe(v);
     });
   }
 
   handleNetworkHoverable(event) {
-    if (event && (event.hoverable !== this.state.hoverable)) {
+    if (event && event.hoverable !== this.state.hoverable) {
       this.setState({
-        hoverable: event.hoverable
+        hoverable: event.hoverable,
       });
     }
   }
@@ -44,13 +49,13 @@ export default class SwapNetworkToggle extends Component {
   handleDropdownClick(network) {
     if (network.enabled) {
       Sentry.addBreadcrumb({
-        message: "Action: Network Changed: " + network.name
+        message: 'Action: Network Changed: ' + network.name,
       });
       this.setState({
-        selected: network
+        selected: network,
       });
-      let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
-        Wallet.getConnectionStrategy();
+      let connectStrategy =
+        Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
       TokenListManager.updateNetwork(network, connectStrategy);
     }
   }
@@ -62,8 +67,8 @@ export default class SwapNetworkToggle extends Component {
           <div className="level-right">
             <div className="level-item">
               <NetworkDropdown
-                className={classnames("is-right", {
-                "is-hoverable": this.state.hoverable
+                className={classnames('is-right', {
+                  'is-hoverable': this.state.hoverable,
                 })}
                 selected={this.state.selected}
                 handleDropdownClick={this.handleDropdownClick}
@@ -71,9 +76,7 @@ export default class SwapNetworkToggle extends Component {
             </div>
           </div>
         </div>
-
       </div>
     );
   }
 }
-

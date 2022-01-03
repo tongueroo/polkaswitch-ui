@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 import TokenIconImg from './../TokenIconImg';
 import Wallet from '../../../utils/wallet';
@@ -15,7 +15,8 @@ export default class TokenSwapDistribution extends Component {
       <div
         key={key}
         className="token-dist-pool-wrapper"
-        style={{ width: `${poolWidth * 100.0}%` }}>
+        style={{ width: `${poolWidth * 100.0}%` }}
+      >
         <div className="token-dist-pool">
           <TokenIconImg token={icon} size={25} />
           <span>{Math.round(poolWidth * 100.0)}%</span>
@@ -29,7 +30,7 @@ export default class TokenSwapDistribution extends Component {
     var network = TokenListManager.getCurrentNetworkConfig();
     var sumOne, sumTwo, sumThree, sumFour, sumFive, parts, totalParts;
 
-    if (network.name === "Ethereum") {
+    if (network.name === 'Ethereum') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0];
 
       /*
@@ -48,20 +49,24 @@ export default class TokenSwapDistribution extends Component {
       sumThree = parts[4] + parts[5] + parts[6];
       totalParts = sumOne + sumTwo + sumThree
 
-      var pools = [{
-        name: "Uniswap",
-        icon: TokenListManager.findTokenById("UNI"),
-        size: sumOne / totalParts
-      }, {
-        name: "Sushiswap",
-        icon: TokenListManager.findTokenById("SUSHI"),
-        size: sumTwo / totalParts
-      }, {
-        name: "Balancer",
-        icon: TokenListManager.findTokenById("BAL"),
-        size: sumThree / totalParts
-      }];
-    } else if (network.name === "Polygon") {
+      var pools = [
+        {
+          name: 'Uniswap',
+          icon: TokenListManager.findTokenById('UNI'),
+          size: sumOne / totalParts,
+        },
+        {
+          name: 'Sushiswap',
+          icon: TokenListManager.findTokenById('SUSHI'),
+          size: sumTwo / totalParts,
+        },
+        {
+          name: 'Balancer',
+          icon: TokenListManager.findTokenById('BAL'),
+          size: sumThree / totalParts,
+        },
+      ];
+    } else if (network.name === 'Polygon') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       /*
@@ -80,27 +85,27 @@ export default class TokenSwapDistribution extends Component {
       totalParts = sumOne + sumTwo + sumThree + sumFour + sumFive;
 
       pools = [{
-        name: "Quickswap",
-        icon: TokenListManager.findTokenById("QUICK"),
+        name: 'Quickswap',
+        icon: TokenListManager.findTokenById('QUICK'),
         size: sumOne / totalParts
       }, {
-        name: "Sushiswap",
-        icon: TokenListManager.findTokenById("SUSHI"),
+        name: 'Sushiswap',
+        icon: TokenListManager.findTokenById('SUSHI'),
         size: sumTwo / totalParts
       }, {
-        name: "Dfyn",
-        icon: TokenListManager.findTokenById("Dfyn"),
+        name: 'Dfyn',
+        icon: TokenListManager.findTokenById('Dfyn'),
         size: sumThree / totalParts
       }, {
-        name: "Dinoswap",
+        name: 'Dinoswap',
         icon: { logoURI: 'https://dinoswap.exchange/images/dino.png' },
         size: sumFour / totalParts
       }, {
-        name: "Apeswap",
+        name: 'Apeswap',
         icon: { logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/8497.png' },
         size: sumFive / totalParts
       }];
-    } else if (network.name === "Smart Chain") {
+    } else if (network.name === 'Smart Chain') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0];
       /*
         This returns the destToken output amount and the optimized
@@ -119,20 +124,24 @@ export default class TokenSwapDistribution extends Component {
       sumThree = parts[6] + parts[7] + parts[8];
       totalParts = sumOne + sumTwo + sumThree;
 
-      pools = [{
-        name: "Pancakeswap",
-        icon: TokenListManager.findTokenById("CAKE"),
-        size: sumOne / totalParts
-      }, {
-        name: "Sushiswap",
-        icon: TokenListManager.findTokenById("SUSHI"),
-        size: sumTwo / totalParts
-      }, {
-        name: "Mdex",
-        icon: TokenListManager.findTokenById("MDX"),
-        size: sumThree / totalParts
-      }];
-    } else if (network.name === "Avalanche") {
+      pools = [
+        {
+          name: 'Pancakeswap',
+          icon: TokenListManager.findTokenById('CAKE'),
+          size: sumOne / totalParts,
+        },
+        {
+          name: 'Sushiswap',
+          icon: TokenListManager.findTokenById('SUSHI'),
+          size: sumTwo / totalParts,
+        },
+        {
+          name: 'Mdex',
+          icon: TokenListManager.findTokenById('MDX'),
+          size: sumThree / totalParts,
+        },
+      ];
+    } else if (network.name === 'Avalanche') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0];
 
       /*
@@ -151,23 +160,25 @@ export default class TokenSwapDistribution extends Component {
       sumTwo = parts[2] + parts[3];
       sumThree = parts[4] + parts[5];
       totalParts = sumOne + sumTwo + sumThree;
-      console.log('parts', parts)
-      console.log('totalParts', totalParts)
 
-      pools = [{
-        name: "Pangolin",
-        icon: TokenListManager.findTokenById("PNG"),
-        size: sumOne / totalParts
-      }, {
-        name: "Sushiswap",
-        icon: TokenListManager.findTokenById("SUSHI"),
-        size: sumTwo / totalParts
-      }, {
-        name: "TraderJoe",
-        icon: TokenListManager.findTokenById("JOE"),
-        size: sumThree / totalParts
-      }];
-    } else if (network.name === "xDai") {
+      pools = [
+        {
+          name: 'Pangolin',
+          icon: TokenListManager.findTokenById('PNG'),
+          size: sumOne / totalParts,
+        },
+        {
+          name: 'Sushiswap',
+          icon: TokenListManager.findTokenById('SUSHI'),
+          size: sumTwo / totalParts,
+        },
+        {
+          name: 'TraderJoe',
+          icon: TokenListManager.findTokenById('JOE'),
+          size: sumThree / totalParts,
+        },
+      ];
+    } else if (network.name === 'xDai') {
       parts = this.props.parts || [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
       /*
@@ -179,16 +190,22 @@ export default class TokenSwapDistribution extends Component {
       sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5] + parts[6] + parts[7];
       sumTwo = parts[8] + parts[9] + parts[10] + parts[11] + parts[12] + parts[13] + parts[14] + parts[15];
       totalParts = sumOne + sumTwo;
-      pools = [{
-        name: "Honeyswap",
-        icon: { logoURI: 'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1190.png' },
-        size: sumOne / totalParts
-      }, {
-        name: "Sushiswap",
-        icon: TokenListManager.findTokenById("SUSHI"),
-        size: sumTwo / totalParts
-      }];
-    } else if (network.name === "Fantom") {
+      pools = [
+        {
+          name: 'Honeyswap',
+          icon: {
+            logoURI:
+              'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1190.png',
+          },
+          size: sumOne / totalParts,
+        },
+        {
+          name: 'Sushiswap',
+          icon: TokenListManager.findTokenById('SUSHI'),
+          size: sumTwo / totalParts,
+        },
+      ];
+    } else if (network.name === 'Fantom') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       /*
@@ -202,20 +219,30 @@ export default class TokenSwapDistribution extends Component {
       sumTwo = parts[4] + parts[5] + parts[6] + parts[7];
       sumThree = parts[8] + parts[9] + parts[10] + parts[11];
       totalParts = sumOne + sumTwo + sumThree;
-      pools = [{
-        name: "Spookyswap",
-        icon: {logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/9608.png'},
-        size: sumOne / totalParts
-      }, {
-        name: "Sushiswap",
-        icon: TokenListManager.findTokenById("SUSHI"),
-        size: sumTwo / totalParts
-      }, {
-        name: "Spiritswap",
-        icon: {logoURI: 'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1359.png'},
-        size: sumThree / totalParts
-      }];
-    } else if (network.name === "Moonriver") {
+      pools = [
+        {
+          name: 'Spookyswap',
+          icon: {
+            logoURI:
+                'https://s2.coinmarketcap.com/static/img/coins/64x64/9608.png',
+          },
+          size: sumOne / totalParts,
+        },
+        {
+          name: 'Sushiswap',
+          icon: TokenListManager.findTokenById('SUSHI'),
+          size: sumTwo / totalParts,
+        },
+        {
+          name: 'Spiritswap',
+          icon: {
+            logoURI:
+                'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1359.png',
+          },
+          size: sumThree / totalParts,
+        },
+      ];
+    } else if (network.name === 'Moonriver') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
@@ -228,19 +255,23 @@ export default class TokenSwapDistribution extends Component {
       sumTwo = parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
       sumThree = parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
       totalParts = sumOne + sumTwo + sumThree;
-      pools = [{
-        name: "Solarbeam",
-        icon: TokenListManager.findTokenById("SOLAR"),
-        size: sumOne / totalParts
-      }, {
-        name: "Sushiswap",
-        icon: {logoURI: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688'},
-        size: sumTwo / totalParts
-      }, {
-        name: "Moonswap",
-        icon: {logoURI: 'https://d2kfoba0ei9gzz.cloudfront.net/img/51fee159c3456c1168ccfa3f67bd0cad.png'},
-        size: sumThree / totalParts
-      }];
+      pools = [
+        {
+          name: 'Solarbeam',
+          icon: TokenListManager.findTokenById('SOLAR'),
+          size: sumOne / totalParts
+        },
+        {
+          name: 'Sushiswap',
+          icon: { logoURI: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688' },
+          size: sumTwo / totalParts
+        },
+        {
+          name: 'Moonswap',
+          icon: { logoURI: 'https://d2kfoba0ei9gzz.cloudfront.net/img/51fee159c3456c1168ccfa3f67bd0cad.png' },
+          size: sumThree / totalParts
+        }
+      ];
     }
 
     return (
@@ -248,11 +279,13 @@ export default class TokenSwapDistribution extends Component {
         className="token-dist-wrapper"
         aria-label="Routing distribution for the swap"
       >
-        {_.map(pools, function(v, i) {
-          return this.renderPool(i, v.name, v.icon, v.size);
-        }.bind(this))}
+        {_.map(
+          pools,
+          function (v, i) {
+            return this.renderPool(i, v.name, v.icon, v.size);
+          }.bind(this),
+        )}
       </div>
     );
   }
 }
-

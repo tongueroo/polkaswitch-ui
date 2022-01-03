@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 
 import Wallet from '../../../utils/wallet';
@@ -18,7 +18,8 @@ export default class AlphaOnboardingCard extends Component {
 
   componentDidMount() {
     this.subNetworkChange = EventManager.listenFor(
-      'networkUpdated', this.handleNetworkChange
+      'networkUpdated',
+      this.handleNetworkChange,
     );
   }
 
@@ -28,7 +29,7 @@ export default class AlphaOnboardingCard extends Component {
 
   handleNetworkChange() {
     this.setState({
-      refresh: Date.now()
+      refresh: Date.now(),
     });
   }
 
@@ -36,22 +37,26 @@ export default class AlphaOnboardingCard extends Component {
     if (!Wallet.isConnected()) {
       EventManager.emitEvent('promptWalletConnect', 1);
     } else {
-
-      this.setState({
-        minting: true
-      }, function() {
-        Promise.all(_.map([
-          "METH", "MUNI", "MSUSHI", "MBAL"
-        ], function(sym) {
-          return SwapFn._mint(sym, window.ethers.utils.parseEther("100"));
-        })).then(function(values) {
-          this.setState({
-            minting: false,
-            success: true
-          });
-          console.log("done");
-        }.bind(this));
-      }.bind(this));
+      this.setState(
+        {
+          minting: true,
+        },
+        function () {
+          Promise.all(
+            _.map(['METH', 'MUNI', 'MSUSHI', 'MBAL'], function (sym) {
+              return SwapFn._mint(sym, window.ethers.utils.parseEther('100'));
+            }),
+          ).then(
+            function (values) {
+              this.setState({
+                minting: false,
+                success: true,
+              });
+              console.log('done');
+            }.bind(this),
+          );
+        }.bind(this),
+      );
     }
   }
 
@@ -65,12 +70,23 @@ export default class AlphaOnboardingCard extends Component {
             <p className="is-size-6">
               <b>Welcome to the Polkaswitch Alpha launch!</b>
             </p>
-            <p>As we work closely with our technology partners for the Mainnet launch, you may experience intermittent issues.</p>
-            <p>To be able to perform swaps on the Polkaswitch Alpha, we have built the following tool to conveniently mint test tokens into your connected wallet.</p>
-            <p className="is-italic">100 Tokens will be added under METH, MUNI, MSUSHI and MBAL</p>
+            <p>
+              As we work closely with our technology partners for the Mainnet
+              launch, you may experience intermittent issues.
+            </p>
+            <p>
+              To be able to perform swaps on the Polkaswitch Alpha, we have
+              built the following tool to conveniently mint test tokens into
+              your connected wallet.
+            </p>
+            <p className="is-italic">
+              100 Tokens will be added under METH, MUNI, MSUSHI and MBAL
+            </p>
             <div className="buttons">
-              <button disabled className={classnames("button is-success", {
-                  "is-hidden": !this.state.success
+              <button
+                disabled
+                className={classnames('button is-success', {
+                  'is-hidden': !this.state.success,
                 })}
               >
                 Tokens Added!
@@ -78,18 +94,19 @@ export default class AlphaOnboardingCard extends Component {
               <button
                 onClick={this.handleMint}
                 disabled={this.state.minting}
-                className={classnames("button is-warning", {
-                  "is-loading": this.state.minting,
-                  "is-hidden": this.state.success
+                className={classnames('button is-warning', {
+                  'is-loading': this.state.minting,
+                  'is-hidden': this.state.success,
                 })}
-              >Mint Test Tokens</button>
+              >
+                Mint Test Tokens
+              </button>
             </div>
           </div>
         </div>
       );
     } else {
-      return (<div />);
+      return <div />;
     }
   }
 }
-

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 
 import Wallet from '../../utils/wallet';
@@ -20,10 +20,12 @@ export default class ConnectWalletModal extends Component {
 
   componentDidMount() {
     this.subWalletChange = EventManager.listenFor(
-      'walletUpdated', this.handleWalletChange
+      'walletUpdated',
+      this.handleWalletChange,
     );
     this.subConnectPrompt = EventManager.listenFor(
-      'promptWalletConnect', this.handleOpen
+      'promptWalletConnect',
+      this.handleOpen,
     );
   }
 
@@ -33,12 +35,12 @@ export default class ConnectWalletModal extends Component {
   }
 
   handleConnection(target) {
-    return function(e) {
+    return function (e) {
       if (Wallet.isConnected()) {
         return false;
       }
 
-      Metrics.track("connect-wallet", { type: target });
+      Metrics.track('connect-wallet', { type: target });
       EventManager.emitEvent('initiateWalletConnect', target);
     }.bind(this);
   }
@@ -55,48 +57,47 @@ export default class ConnectWalletModal extends Component {
       if (this.state.open) {
         this.handleClose();
       }
-    };
+    }
   }
 
   handleOpen(e) {
     this.setState({
-      open: true
+      open: true,
     });
   }
 
   handleClose(e) {
     this.setState({
-      open: false
+      open: false,
     });
   }
 
   render() {
-    var currentNetworkName = TokenListManager.getCurrentNetworkConfig().chain.chainName;
+    var currentNetworkName =
+      TokenListManager.getCurrentNetworkConfig().chain.chainName;
 
     return (
       <BasicModal
-        modalClasses={"modal-dropdown-options"}
+        modalClasses={'modal-dropdown-options'}
         open={this.state.open}
-        title={"Connect Your Wallet"}
+        title={'Connect Your Wallet'}
         handleClose={this.handleClose}
       >
         <div
-          className={classnames("option", {
-            "connected": Wallet.isConnected("metamask")
+          className={classnames('option', {
+            connected: Wallet.isConnected('metamask'),
           })}
-          onClick={this.handleConnection("metamask")}
+          onClick={this.handleConnection('metamask')}
         >
           <div className="level is-mobile is-narrow">
             <div className="level-left">
               <div className="level-item">
                 <div>
                   <div>MetaMask</div>
-                  {Wallet.isConnected("metamask") && (
+                  {Wallet.isConnected('metamask') && (
                     <>
                       <div className="connected">Connected</div>
-                      <div className="connected">
-                        {Wallet.currentAddress()}
-                      </div>
+                      <div className="connected">{Wallet.currentAddress()}</div>
                     </>
                   )}
                   {!Wallet.isMetamaskSupported() && (
@@ -107,24 +108,23 @@ export default class ConnectWalletModal extends Component {
                     </>
                   )}
                   {Wallet.isConnectedToAnyNetwork() &&
-                      !Wallet.isMatchingConnectedNetwork() &&
-                  (
-                    <>
-                    <div className="error">
-                      You are connected to the wrong network!<br/>
-                      Click here to switch to the {currentNetworkName}
-                    </div>
-                    </>
-                  )}
+                    !Wallet.isMatchingConnectedNetwork() && (
+                      <>
+                        <div className="error">
+                          You are connected to the wrong network!
+                          <br />
+                          Click here to switch to the {currentNetworkName}
+                        </div>
+                      </>
+                    )}
                   {Wallet.isMetamaskSupported() &&
-                      !Wallet.isConnectedToAnyNetwork() &&
-                  (
-                    <>
-                    <div className="has-text-info">
-                      Click here to connect to {currentNetworkName}
-                    </div>
-                    </>
-                  )}
+                    !Wallet.isConnectedToAnyNetwork() && (
+                      <>
+                        <div className="has-text-info">
+                          Click here to connect to {currentNetworkName}
+                        </div>
+                      </>
+                    )}
                 </div>
               </div>
             </div>
@@ -136,22 +136,20 @@ export default class ConnectWalletModal extends Component {
           </div>
         </div>
         <div
-          className={classnames("option", {
-            "connected": Wallet.isConnected("walletConnect")
+          className={classnames('option', {
+            connected: Wallet.isConnected('walletConnect'),
           })}
-          onClick={this.handleConnection("walletConnect")}
+          onClick={this.handleConnection('walletConnect')}
         >
           <div className="level is-mobile is-narrow">
             <div className="level-left">
               <div className="level-item">
                 <div>
                   <div>WalletConnect</div>
-                  {Wallet.isConnected("walletConnect") && (
+                  {Wallet.isConnected('walletConnect') && (
                     <>
-                    <div className="connected">Connected</div>
-                    <div className="connected">
-                      {Wallet.currentAddress()}
-                    </div>
+                      <div className="connected">Connected</div>
+                      <div className="connected">{Wallet.currentAddress()}</div>
                     </>
                   )}
                 </div>
@@ -167,9 +165,7 @@ export default class ConnectWalletModal extends Component {
         <div className="option coming-soon">
           <div className="level is-mobile is-narrow">
             <div className="level-left">
-              <div className="level-item">
-                Coinbase Wallet (Coming Soon)
-              </div>
+              <div className="level-item">Coinbase Wallet (Coming Soon)</div>
             </div>
             <div className="level-right">
               <div className="level-item">
@@ -179,22 +175,40 @@ export default class ConnectWalletModal extends Component {
           </div>
         </div>
 
-        <div className={classnames("option bare", {
-            "is-hidden": !Wallet.isConnected()
-          })}>
+        <div
+          className={classnames('option bare', {
+            'is-hidden': !Wallet.isConnected(),
+          })}
+        >
           <button
             className="button is-danger is-outlined"
-            onClick={this.handleDisconnect}>Disconnect
+            onClick={this.handleDisconnect}
+          >
+            Disconnect
           </button>
         </div>
 
         <div className="footnote">
           <div>
-            New to <a target="_blank" href="https://ethereum.org/wallets/">Ethereum</a>, <a target="_blank" href="https://polygon.technology/technology/">Polygon</a>, or <a target="_blank" href="https://wiki.polkadot.network/docs/en/getting-started">Polkadot</a>?
+            New to{' '}
+            <a target="_blank" href="https://ethereum.org/wallets/">
+              Ethereum
+            </a>
+            ,{' '}
+            <a target="_blank" href="https://polygon.technology/technology/">
+              Polygon
+            </a>
+            , or{' '}
+            <a
+              target="_blank"
+              href="https://wiki.polkadot.network/docs/en/getting-started"
+            >
+              Polkadot
+            </a>
+            ?
           </div>
         </div>
       </BasicModal>
     );
   }
 }
-

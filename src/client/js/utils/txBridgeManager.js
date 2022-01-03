@@ -1,47 +1,47 @@
-import _ from "underscore";
-import store from "store";
+import _ from 'underscore';
+import store from 'store';
 import BN from 'bignumber.js';
-import { BigNumber, constants, providers, Signer, utils } from "ethers";
+import { BigNumber, constants, providers, Signer, utils } from 'ethers';
 
-import Wallet from "./wallet";
-import swapFn from "./swapFn";
-import HopUtils from "./hop";
-import Nxtp from "./nxtp";
-import Storage from "./storage";
+import Wallet from './wallet';
+import swapFn from './swapFn';
+import HopUtils from './hop';
+import Nxtp from './nxtp';
+import Storage from './storage';
 
-import { getRandomBytes32 } from "@connext/nxtp-utils";
+import { getRandomBytes32 } from '@connext/nxtp-utils';
 
 // hard-code for now. I could not find this easily as a function in HopSDK
 const HOP_SUPPORTED_BRIDGE_TOKENS = [
-  "USDC", "USDT", "DAI"
+  'USDC',
+  'USDT',
+  'DAI',
   // TODO This is list is longer and is dynamically available per network pair.
   // Let's keep it simple for now
   // ... "MATIC", "ETH", "WBTC"
 ];
 
 // hard-code for now, the HopSDK has "supportedChains", but let's integrate later.
-const HOP_SUPPORTED_CHAINS = [
-  1, 137, 100, 10, 42161
-];
+const HOP_SUPPORTED_CHAINS = [1, 137, 100, 10, 42161];
 
 const CONNEXT_SUPPORTED_BRIDGE_TOKENS = [
-  "USDC", "USDT", "DAI"
+  'USDC',
+  'USDT',
+  'DAI',
   // TODO This is list is longer and is dynamically available per network pair.
   // Let's keep it simple for now
   // ... "MATIC", "ETH", "WBTC", "BNB"
 ];
 
-const CONNEXT_SUPPORTED_CHAINS = [
-  1, 56, 137, 100, 250, 42161, 43114
-];
+const CONNEXT_SUPPORTED_CHAINS = [1, 56, 137, 100, 250, 42161, 43114];
 
 export default {
   _signerAddress: '',
   _queue: {},
 
-  initialize: async function() {},
+  initialize: async function () {},
 
-  getBridgeInterface: function(nonce) {
+  getBridgeInterface: function (nonce) {
     var tx = this.getTx(nonce);
     var bridgeOption = Storage.swapSettings.bridgeOption;
 
@@ -49,19 +49,19 @@ export default {
       bridgeOption = tx.bridge;
     }
 
-    if ("hop" === bridgeOption) {
+    if ('hop' === bridgeOption) {
       return HopUtils;
     } else {
       return Nxtp;
     }
   },
 
-  isSupported: function(to, toChain, from, fromChain) {
+  isSupported: function (to, toChain, from, fromChain) {
     var bridgeOption = Storage.swapSettings.bridgeOption;
 
     var targetChainIds = [+toChain.chainId, +fromChain.chainId];
 
-    if ("hop" === bridgeOption) {
+    if ('hop' === bridgeOption) {
       if (!HOP_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
         return [false, `${toChain.name} is not supported by Hop Bridge`];
       } else if (!HOP_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
@@ -69,9 +69,7 @@ export default {
       } else {
         return [true, false];
       }
-    }
-
-    else {
+    } else {
       if (!CONNEXT_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
         return [false, `${toChain.name} is not supported by Connext Bridge`];
       } else if (!CONNEXT_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
@@ -82,7 +80,7 @@ export default {
     }
   },
 
-  supportedBridges: function(to, toChain, from, fromChain) {
+  supportedBridges: function (to, toChain, from, fromChain) {
     var bridges = [];
     var targetChainIds = [+toChain.chainId, +fromChain.chainId];
 
@@ -90,13 +88,13 @@ export default {
     }
   },
 
-  getEstimate: function(
+  getEstimate: function (
     sendingChainId,
     sendingAssetId,
     receivingChainId,
     receivingAssetId,
     amountBN,
-    receivingAddress
+    receivingAddress,
   ) {
     const transactionId = getRandomBytes32();
     const bridgeInterface = this.getBridgeInterface();
@@ -108,7 +106,7 @@ export default {
       receivingChainId,
       receivingAssetId,
       amountBN,
-      receivingAddress
+      receivingAddress,
     };
 
     return this.getBridgeInterface().getEstimate(
@@ -118,13 +116,11 @@ export default {
       receivingChainId,
       receivingAssetId,
       amountBN,
-      receivingAddress
+      receivingAddress,
     );
   },
 
-  transferStepOne: function(
-    transactionId
-  ) {
+  transferStepOne: function (transactionId) {
     const bridgeInterface = this.getBridgeInterface(transactionId);
     var tx = this.getTx(transactionId);
     return bridgeInterface.transferStepOne(
@@ -134,13 +130,11 @@ export default {
       tx.receivingChainId,
       tx.receivingAssetId,
       tx.amountBN,
-      tx.receivingAddress
+      tx.receivingAddress,
     );
   },
 
-  transferStepTwo: function(
-    transactionId
-  ) {
+  transferStepTwo: function (transactionId) {
     const bridgeInterface = this.getBridgeInterface(transactionId);
     var tx = this.getTx(transactionId);
     return bridgeInterface.transferStepTwo(
@@ -150,21 +144,20 @@ export default {
       tx.receivingChainId,
       tx.receivingAssetId,
       tx.amountBN,
-      tx.receivingAddress
+      tx.receivingAddress,
     );
   },
 
-  twoStepTransferRequired: function(nonce) {
+  twoStepTransferRequired: function (nonce) {
     var tx = this.getTx(nonce);
     if (!tx) {
       return false;
     }
 
-    return "connext" === tx.bridge
+    return 'connext' === tx.bridge;
   },
 
-  getTx: function(nonce) {
+  getTx: function (nonce) {
     return this._queue[nonce];
   },
 };
-

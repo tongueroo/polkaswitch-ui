@@ -11,6 +11,9 @@ const outputDirectory = 'dist';
 
 module.exports = (env) => {
   console.log(env);
+  console.log(`ENV: IS_MAIN_NETWORK: ${process.env.IS_MAIN_NETWORK}`);
+  console.log(`ENV: ${process.env.HEROKU_APP_NAME}-${process.env.HEROKU_RELEASE_VERSION}`);
+
   const isProduction = !!env.production;
   const isMainNetwork = !!process.env.IS_MAIN_NETWORK;
 

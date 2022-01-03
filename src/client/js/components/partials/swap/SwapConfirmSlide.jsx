@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 import BN from 'bignumber.js';
 import TokenIconBalanceGroupView from '../TokenIconBalanceGroupView';
@@ -8,19 +8,22 @@ import SwapTransactionDetails from './SwapTransactionDetails';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
-import { ApprovalState } from "../../../constants/Status";
+import { ApprovalState } from '../../../constants/Status';
 
 export default class SwapConfirmSlide extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: false }
+    this.state = { loading: false };
 
     this.handleConfirm = this.handleConfirm.bind(this);
     this.handleBack = this.handleBack.bind(this);
   }
 
   componentDidMount() {
-    this.subWalletUpdated = EventManager.listenFor('walletUpdated', this.handleWalletChange);
+    this.subWalletUpdated = EventManager.listenFor(
+      'walletUpdated',
+      this.handleWalletChange,
+    );
   }
 
   componentWillUnmount() {
@@ -34,70 +37,84 @@ export default class SwapConfirmSlide extends Component {
   }
 
   handleConfirm() {
-    this.setState({
-      loading: true,
-    }, function() {
-      console.log("Debug Crash: ", this.props.fromAmount, this.props.from);
+    this.setState(
+      {
+        loading: true,
+      },
+      function () {
+        console.log('Debug Crash: ', this.props.fromAmount, this.props.from);
 
-      const fromAmountBN = window.ethers.utils.parseUnits(this.props.fromAmount, this.props.from.decimals);
+        const fromAmountBN = window.ethers.utils.parseUnits(
+          this.props.fromAmount,
+          this.props.from.decimals,
+        );
 
-      if (this.props.approveStatus === ApprovalState.APPROVED) {
-        var distBN = _.map(this.props.swapDistribution, function (e) {
-          return window.ethers.utils.parseUnits("" + e, "wei");
-        });
+        if (this.props.approveStatus === ApprovalState.APPROVED) {
+          var distBN = _.map(this.props.swapDistribution, function (e) {
+            return window.ethers.utils.parseUnits('' + e, 'wei');
+          });
 
-        SwapFn.performSwap(
+          SwapFn.performSwap(
             this.props.from,
             this.props.to,
             fromAmountBN,
-            distBN
-        ).then(function (nonce) {
-          console.log(nonce);
+            distBN,
+          )
+            .then(
+              function (nonce) {
+                console.log(nonce);
 
-          this.props.handleTransactionComplete(true, nonce);
+                this.props.handleTransactionComplete(true, nonce);
 
-          Metrics.track("swap-complete", {
-            from: this.props.from,
-            to: this.props.to,
-            fromAmont: this.props.fromAmount
-          });
+                Metrics.track('swap-complete', {
+                  from: this.props.from,
+                  to: this.props.to,
+                  fromAmont: this.props.fromAmount,
+                });
 
-          this.setState({
-            loading: false
-          });
-        }.bind(this)).catch(function (e) {
-          console.error('#### swap failed from catch ####', e);
+                this.setState({
+                  loading: false,
+                });
+              }.bind(this),
+            )
+            .catch(
+              function (e) {
+                console.error('#### swap failed from catch ####', e);
 
-          this.props.handleTransactionComplete(false, undefined);
+                this.props.handleTransactionComplete(false, undefined);
 
-          this.setState({
-            loading: false
-          });
-        }.bind(this));
-      } else {
-        SwapFn.performApprove(
-            this.props.from,
-            fromAmountBN,
-        ).then(function (confirmedTransaction) {
-          Metrics.track("approve-complete", {
-            from: this.props.from,
-            fromAmount: this.props.fromAmount
-          });
+                this.setState({
+                  loading: false,
+                });
+              }.bind(this),
+            );
+        } else {
+          SwapFn.performApprove(this.props.from, fromAmountBN)
+            .then(
+              function (confirmedTransaction) {
+                Metrics.track('approve-complete', {
+                  from: this.props.from,
+                  fromAmount: this.props.fromAmount,
+                });
 
-          this.setState({
-            loading: false
-          });
-          this.props.onApproveComplete(ApprovalState.APPROVED);
-        }.bind(this)).catch(function (e) {
-          console.error('#### approve failed from catch ####', e);
-          console.error(e);
-          this.setState({
-            loading: false
-          });
-        }.bind(this));
-      }
-    }.bind(this));
-
+                this.setState({
+                  loading: false,
+                });
+                this.props.onApproveComplete(ApprovalState.APPROVED);
+              }.bind(this),
+            )
+            .catch(
+              function (e) {
+                console.error('#### approve failed from catch ####', e);
+                console.error(e);
+                this.setState({
+                  loading: false,
+                });
+              }.bind(this),
+            );
+        }
+      }.bind(this),
+    );
   }
 
   displayValue(token, amount) {
@@ -115,13 +132,12 @@ export default class SwapConfirmSlide extends Component {
   }
 
   allowSwap() {
-    return !this.state.loading &&
-      this.hasSufficientBalance();
+    return !this.state.loading && this.hasSufficientBalance();
   }
 
   render() {
     if (!this.props.toAmount || !this.props.fromAmount) {
-      return (<div />)
+      return <div />;
     }
 
     return (
@@ -165,9 +181,14 @@ export default class SwapConfirmSlide extends Component {
                   <div className="currency-text">
                     {this.displayValue(this.props.from, this.props.fromAmount)}
                   </div>
-                  <div className={classnames("fund-warning has-text-danger has-text-right", {
-                    "is-hidden": this.hasSufficientBalance()
-                  })}>
+                  <div
+                    className={classnames(
+                      'fund-warning has-text-danger has-text-right',
+                      {
+                        'is-hidden': this.hasSufficientBalance(),
+                      },
+                    )}
+                  >
                     <span className="icon">
                       <ion-icon name="warning-outline"></ion-icon>
                     </span>
@@ -212,9 +233,9 @@ export default class SwapConfirmSlide extends Component {
           />
 
           <div
-            className={classnames("hint--large", "token-dist-expand-wrapper", {
-              "hint--top": this.props.swapDistribution,
-              "expand": this.props.swapDistribution
+            className={classnames('hint--large', 'token-dist-expand-wrapper', {
+              'hint--top': this.props.swapDistribution,
+              expand: this.props.swapDistribution,
             })}
             aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap."
           >
@@ -222,17 +243,22 @@ export default class SwapConfirmSlide extends Component {
               <span>Routing Distribution</span>
               <span className="hint-icon">?</span>
             </div>
-            <TokenSwapDistribution
-              parts={this.props.swapDistribution}/>
+            <TokenSwapDistribution parts={this.props.swapDistribution} />
           </div>
           <div>
             <button
-              className={classnames("button is-primary is-fullwidth is-medium", {
-                "is-loading": this.state.loading,
-              })}
+              className={classnames(
+                'button is-primary is-fullwidth is-medium',
+                {
+                  'is-loading': this.state.loading,
+                },
+              )}
               disabled={!this.allowSwap()}
-              onClick={this.handleConfirm}>
-              {this.props.approveStatus === ApprovalState.APPROVED ? "Swap" : "Approve"}
+              onClick={this.handleConfirm}
+            >
+              {this.props.approveStatus === ApprovalState.APPROVED
+                ? 'Swap'
+                : 'Approve'}
             </button>
           </div>
         </div>
@@ -240,4 +266,3 @@ export default class SwapConfirmSlide extends Component {
     );
   }
 }
-

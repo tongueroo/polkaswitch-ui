@@ -1,4 +1,4 @@
-import _ from "underscore";
+import _ from 'underscore';
 import EventManager from './events';
 import TxQueue from './txQueue';
 import * as ethers from 'ethers';
@@ -6,89 +6,90 @@ import TokenListManager from './tokenList';
 import Wallet from './wallet';
 import Storage from './storage';
 import BN from 'bignumber.js';
-import {ApprovalState} from "../constants/Status";
+import { ApprovalState } from '../constants/Status';
 
 // never exponent
-BN.config({ EXPONENTIAL_AT: 1e+9 });
+BN.config({ EXPONENTIAL_AT: 1e9 });
 
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
 const Contract = ethers.Contract;
 
 window.SwapFn = {
-  initialize: function() {
-  },
+  initialize: function () {},
 
-  validateEthValue: function(token, value) {
+  validateEthValue: function (token, value) {
     var targetAmount = +value;
 
-    if(!isNaN(targetAmount)) {
+    if (!isNaN(targetAmount)) {
       if (targetAmount === 0) {
         return value;
       }
 
       // floor to the minimum possible value
-      targetAmount = Math.max(10 ** (-token.decimals), targetAmount);
+      targetAmount = Math.max(10 ** -token.decimals, targetAmount);
 
-      targetAmount = BN(
-        BN(targetAmount).toFixed(token.decimals)
-      ).toString();
+      targetAmount = BN(BN(targetAmount).toFixed(token.decimals)).toString();
       return targetAmount;
     } else {
       return undefined;
     }
   },
 
-  isValidParseValue: function(token, rawValue) {
+  isValidParseValue: function (token, rawValue) {
     try {
       var parsed = ethers.utils.parseUnits(rawValue, token.decimals);
       return true;
-    } catch(e) {
-      console.log("Failed to parse: ", token.symbol, token.decimals, rawValue);
+    } catch (e) {
+      console.log('Failed to parse: ', token.symbol, token.decimals, rawValue);
       return false;
     }
   },
 
-  updateSettings: function(settings) {
+  updateSettings: function (settings) {
     Storage.updateSettings(settings);
   },
 
-  getSetting: function(){
+  getSetting: function () {
     return Storage.swapSettings;
   },
 
-  _getContract: function(){
+  _getContract: function () {
     const signer = Wallet.getProvider().getSigner();
     const currentNetworkConfig = TokenListManager.getCurrentNetworkConfig();
     const currentNetworkName = currentNetworkConfig.name;
     const abiName = currentNetworkConfig.abi;
     const recipient = Wallet.currentAddress();
     const contract = new Contract(
-        currentNetworkConfig.aggregatorAddress,
-        window[abiName],
-        signer
+      currentNetworkConfig.aggregatorAddress,
+      window[abiName],
+      signer
     );
 
     return { currentNetworkName, contract, recipient }
   },
 
-  isNetworkGasDynamic: function() {
+  isNetworkGasDynamic: function () {
     var network = TokenListManager.getCurrentNetworkConfig();
     // if no gasAPI supplied, always default to auto;
     return !network.gasApi;
   },
 
-  isGasAutomatic: function() {
-    return this.isNetworkGasDynamic() ||
+  isGasAutomatic: function () {
+    return (
+      this.isNetworkGasDynamic() ||
       (!Storage.swapSettings.isCustomGasPrice &&
-        (Storage.swapSettings.gasSpeedSetting === "safeLow"));
+        Storage.swapSettings.gasSpeedSetting === 'safeLow')
+    );
   },
 
-  getGasPrice: function() {
+  getGasPrice: function () {
     if (Storage.swapSettings.isCustomGasPrice) {
       return Math.floor(+Storage.swapSettings.customGasPrice);
     } else {
-      return Math.floor(+window.GAS_STATS[Storage.swapSettings.gasSpeedSetting]);
+      return Math.floor(
+        +window.GAS_STATS[Storage.swapSettings.gasSpeedSetting],
+      );
     }
   },
 
@@ -105,9 +106,14 @@ window.SwapFn = {
     }.bind(this));
   },
 
-  calculateEstimatedTransactionCost: function(fromToken, toToken, amountBN, distribution) {
+  calculateEstimatedTransactionCost: function (
+    fromToken,
+    toToken,
+    amountBN,
+    distribution
+  ) {
     const { currentNetworkName, contract, recipient } = this._getContract();
-    switch(currentNetworkName) {
+    switch (currentNetworkName) {
       case 'Polygon':
         return this._estimateGasWithPolygonAbi(contract, fromToken, toToken, amountBN, distribution);
       case 'Moonriver':
@@ -119,51 +125,54 @@ window.SwapFn = {
     }
   },
 
-  calculatePriceImpact: function(fromToken, toToken, amount) {
-    return this._findSmallResult(
-      fromToken, toToken, 1
-    ).then(function(small) {
-      const [smallResult, smallAmount] = small;
+  calculatePriceImpact: function (fromToken, toToken, amount) {
+    return this._findSmallResult(fromToken, toToken, 1).then(
+      function (small) {
+        const [smallResult, smallAmount] = small;
 
-      return this.getExpectedReturn(
-        fromToken, toToken, amount
-      ).then(function(actualReturn) {
-        var x = BN(smallResult.returnAmount.toString())
-          .div(BN(smallAmount.toString()));
-        var y = BN(actualReturn.returnAmount.toString())
-          .div(BN(amount.toString()));
+        return this.getExpectedReturn(fromToken, toToken, amount).then(
+          function (actualReturn) {
+            var x = BN(smallResult.returnAmount.toString()).div(
+              BN(smallAmount.toString()),
+            );
+            var y = BN(actualReturn.returnAmount.toString()).div(
+              BN(amount.toString()),
+            );
 
-        return x.minus(y).abs().div(x).toFixed(6);
-      }.bind(this));
-    }.bind(this));
+            return x.minus(y).abs().div(x).toFixed(6);
+          }.bind(this),
+        );
+      }.bind(this),
+    );
   },
 
   _smallResultCache: {},
 
-  _findSmallResult: function(fromToken, toToken, factor) {
-
+  _findSmallResult: function (fromToken, toToken, factor) {
     if (this._smallResultCache[`${fromToken.symbol}-${toToken.symbol}`]) {
-      return Promise.resolve(this._smallResultCache[`${fromToken.symbol}-${toToken.symbol}`]);
+      return Promise.resolve(
+        this._smallResultCache[`${fromToken.symbol}-${toToken.symbol}`],
+      );
     }
 
-    let smallAmount = Utils.parseUnits(
-      "" + Math.ceil(10 ** (factor * 3)), 0
-    );
+    let smallAmount = Utils.parseUnits('' + Math.ceil(10 ** (factor * 3)), 0);
 
-    return this.getExpectedReturn(
-      fromToken, toToken, smallAmount
-    ).then(function(smallResult) {
-      if (smallResult.returnAmount.gt(100)) {
-        this._smallResultCache[`${fromToken.symbol}-${toToken.symbol}`] = [smallResult, smallAmount];
-        return [smallResult, smallAmount];
-      }
-      else {
-        return this._findSmallResult(fromToken, toToken, factor + 1);
-      }
-    }.bind(this));
+    return this.getExpectedReturn(fromToken, toToken, smallAmount).then(
+      function (smallResult) {
+        if (smallResult.returnAmount.gt(100)) {
+          this._smallResultCache[`${fromToken.symbol}-${toToken.symbol}`] = [
+            smallResult,
+            smallAmount,
+          ];
+          return [smallResult, smallAmount];
+        } else {
+          return this._findSmallResult(fromToken, toToken, factor + 1);
+        }
+      }.bind(this),
+    );
   },
 
-  _mint: async function(symbol, value) {
+  _mint: async function (symbol, value) {
     var abi = await fetch(`/abi/test/${symbol.toUpperCase()}.json`);
     window.abiMeth = await abi.json();
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -173,11 +182,14 @@ window.SwapFn = {
     const incrementer = new Contract(token.address, abiMeth, signer);
     const contractFn = async () => {
       console.log(
-        `Calling the mint function for: ${token.symbol} ${token.address}`
+        `Calling the mint function for: ${token.symbol} ${token.address}`,
       );
 
       // Sign-Send Tx and Wait for Receipt
-      const createReceipt = await incrementer.mint(window.ethereum.selectedAddress, value);
+      const createReceipt = await incrementer.mint(
+        window.ethereum.selectedAddress,
+        value,
+      );
       await createReceipt.wait();
 
       console.log(`Tx successful with hash: ${createReceipt.hash}`);
@@ -187,51 +199,59 @@ window.SwapFn = {
     await contractFn();
   },
 
-  performSwap: function(fromToken, toToken, amountBN, distribution) {
+  performSwap: function (fromToken, toToken, amountBN, distribution) {
     return this._swap(fromToken, toToken, amountBN, distribution);
   },
 
-  performApprove: function(fromToken, amountBN) {
+  performApprove: function (fromToken, amountBN) {
     return this._approve(
       fromToken.address,
       // approve arbitrarily large number
-      amountBN.add(BigNumber.from(Utils.parseUnits("100000000")))
+      amountBN.add(BigNumber.from(Utils.parseUnits('100000000'))),
     );
   },
 
-  getApproveStatus: function(token, amountBN) {
-    return this._getAllowance(token).then(function(allowanceBN) {
-      console.log('allowanceBN', allowanceBN);
-      if (token.native || (allowanceBN && allowanceBN.gte(amountBN))) {
-        return Promise.resolve(ApprovalState.APPROVED);
-      } else {
-        return Promise.resolve(ApprovalState.NOT_APPROVED);
-      }
-    }.bind(this));
+  getApproveStatus: function (token, amountBN) {
+    return this._getAllowance(token).then(
+      function (allowanceBN) {
+        console.log('allowanceBN', allowanceBN);
+        if (token.native || (allowanceBN && allowanceBN.gte(amountBN))) {
+          return Promise.resolve(ApprovalState.APPROVED);
+        } else {
+          return Promise.resolve(ApprovalState.NOT_APPROVED);
+        }
+      }.bind(this),
+    );
   },
 
-  _approve: function(tokenContractAddress, amountBN) {
-    console.log(`Calling APPROVE() with ${tokenContractAddress} ${amountBN.toString()}`);
+  _approve: function (tokenContractAddress, amountBN) {
+    console.log(
+      `Calling APPROVE() with ${tokenContractAddress} ${amountBN.toString()}`,
+    );
     const signer = Wallet.getProvider().getSigner();
     const contract = new Contract(
       tokenContractAddress,
       window.erc20Abi,
-      signer
+      signer,
     );
-    return contract.approve(
-      TokenListManager.getCurrentNetworkConfig().aggregatorAddress,
-      amountBN,
-      {
-        // gasPrice: // the price to pay per gas
-        // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice
-      }
-    ).then(function(transaction) {
-      console.log(`Waiting on APPROVE() with ${tokenContractAddress} ${amountBN.toString()}`);
-      return transaction.wait();
-    });
+    return contract
+      .approve(
+        TokenListManager.getCurrentNetworkConfig().aggregatorAddress,
+        amountBN,
+        {
+          // gasPrice: // the price to pay per gas
+          // gasLimit: // the limit on the amount of gas to allow the transaction to consume; any unused gas is returned at the gasPrice
+        },
+      )
+      .then(function (transaction) {
+        console.log(
+          `Waiting on APPROVE() with ${tokenContractAddress} ${amountBN.toString()}`,
+        );
+        return transaction.wait();
+      });
   },
 
-  _getAllowance: function(token) {
+  _getAllowance: function (token) {
     if (!Wallet.isConnected()) {
       return Promise.resolve(false);
     }
@@ -243,11 +263,11 @@ window.SwapFn = {
     const contract = new Contract(
       token.address,
       window.erc20Abi,
-      Wallet.getProvider()
+      Wallet.getProvider(),
     );
     return contract.allowance(
       Wallet.currentAddress(),
-      TokenListManager.getCurrentNetworkConfig().aggregatorAddress
+      TokenListManager.getCurrentNetworkConfig().aggregatorAddress,
     );
   },
 
@@ -267,16 +287,22 @@ window.SwapFn = {
 
   _getExpectedReturnCache: {},
 
-  getExpectedReturn: async function(fromToken, toToken, amount, chainId) {
-    var network = chainId ?
-      TokenListManager.getNetworkById(chainId) :
-      TokenListManager.getCurrentNetworkConfig();
+  getExpectedReturn: async function (fromToken, toToken, amount, chainId) {
+    var network = chainId
+      ? TokenListManager.getNetworkById(chainId)
+      : TokenListManager.getCurrentNetworkConfig();
     var chainId = network.chainId;
 
-    var key = [fromToken.address, toToken.address, amount.toString(), chainId].join('');
+    var key = [
+      fromToken.address,
+      toToken.address,
+      amount.toString(),
+      chainId,
+    ].join('');
     if (key in this._getExpectedReturnCache) {
       var cacheValue = this._getExpectedReturnCache[key];
-      if ((Date.now()) - cacheValue._cacheTimestamp < 5000) { // 5 seconds cache
+      if (Date.now() - cacheValue._cacheTimestamp < 5000) {
+        // 5 seconds cache
         console.log('Using expectedReturn cache: ', key);
         return this._getExpectedReturnCache[key];
       }
@@ -297,7 +323,7 @@ window.SwapFn = {
     );
 
     var result = _.extend({}, result);
-    result._cacheTimestamp = new Date()
+    result._cacheTimestamp = new Date();
     this._getExpectedReturnCache[key] = result;
     return result;
   },
@@ -537,4 +563,3 @@ window.SwapFn = {
 };
 
 export default window.SwapFn;
-

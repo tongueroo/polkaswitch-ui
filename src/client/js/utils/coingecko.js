@@ -3,7 +3,7 @@ import Storage from './storage';
 export default {
   _baseURL: 'https://api.coingecko.com/api/v3',
 
-  fetchData: async function(url) {
+  fetchData: async function (url) {
     let result = null;
 
     try {
@@ -16,34 +16,37 @@ export default {
       }
       return result;
     } catch (err) {
-      console.log('Failed to get coin with contract address from coingecko service.', err);
+      console.log(
+        'Failed to get coin with contract address from coingecko service.',
+        err,
+      );
     }
   },
 
-  getCoinsFromContract: async function(network, address) {
-    const url = `coins/${network}/contract/${address.toLowerCase()}`
+  getCoinsFromContract: async function (network, address) {
+    const url = `coins/${network}/contract/${address.toLowerCase()}`;
     return await this.fetchData(url);
   },
 
-  fetchLinePrices: async function(url) {
+  fetchLinePrices: async function (url) {
     const data = await this.fetchData(`coins/${url}`);
     if (data && data.prices) {
-      return data.prices
+      return data.prices;
     } else {
       return [];
     }
   },
 
-  fetchCandleStickPrices: async function(url) {
+  fetchCandleStickPrices: async function (url) {
     const data = await this.fetchData(`coins/${url}`);
     if (data) {
-      return data
+      return data;
     } else {
       return [];
     }
   },
 
-  getLogoURL: async function(network, address) {
+  getLogoURL: async function (network, address) {
     // check cached token logo urls at the first time.
     const imageUrl = Storage.getCachedTokenLogoUrl(address);
     if (imageUrl) {
@@ -53,11 +56,10 @@ export default {
     // fetch info from coingecko service.
     const data = await this.getCoinsFromContract(network, address);
     if (data && data.image && data.image.small) {
-      Storage.updateCachedTokenLogoUrl(address, data.image.small)
+      Storage.updateCachedTokenLogoUrl(address, data.image.small);
       return data.image.small;
     } else {
       return null;
     }
-  }
+  },
 };
-

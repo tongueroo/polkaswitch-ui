@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
-import CoingeckoManager from "../../utils/coingecko";
+import CoingeckoManager from '../../utils/coingecko';
 
 export default function TokenIconImg(props) {
   let imgURL = props.imgSrc || (props.token && props.token.logoURI);
@@ -24,45 +24,49 @@ export default function TokenIconImg(props) {
     } else {
       setImgSrc(imgURL);
     }
-  }, [imgURL]);
+  }, [imgURL, props.token?.symbol, props.token?.address]);
 
   const onError = (e) => {
     setErrored(true);
-  }
+  };
 
   const onLoad = (e) => {
     setErrored(false);
-  }
+  };
 
-  const getLogoURL = async() => {
+  const getLogoURL = async () => {
     var network = props.network || TokenListManager.getCurrentNetworkConfig();
-    const assetPlatform = network.coingecko && network.coingecko.platform || '';
-    return await CoingeckoManager.getLogoURL(assetPlatform, props.token.address);
-  }
+    const assetPlatform =
+      (network.coingecko && network.coingecko.platform) || '';
+    return await CoingeckoManager.getLogoURL(
+      assetPlatform,
+      props.token.address,
+    );
+  };
 
   return (
-      <span
-          className={classnames("token-icon-img-wrapper", { "errored": errored })}
-          style={{
-            height: `${props.size || 40}px`,
-            width: `${props.size || 40}px`,
-            marginRight: `${props.mr || 0}px`,
-            zIndex: `${props.z_index || 0}`
-          }}>
+    <span
+      className={classnames('token-icon-img-wrapper', { errored: errored })}
+      style={{
+        height: `${props.size || 40}px`,
+        width: `${props.size || 40}px`,
+        marginRight: `${props.mr || 0}px`,
+        zIndex: `${props.z_index || 0}`,
+      }}
+    >
       <img
-          { ... _.omit(props, 'imgSrc', 'token', 'size') }
-          onLoad={onLoad}
-          onError={onError}
-          style={{
-            height: `${props.size || 40}px`,
-            width: `${props.size || 40}px`
-          }}
-          src={imgSrc} />
+        {..._.omit(props, 'imgSrc', 'token', 'size')}
+        onLoad={onLoad}
+        onError={onError}
+        style={{
+          height: `${props.size || 40}px`,
+          width: `${props.size || 40}px`,
+        }}
+        src={imgSrc}
+      />
       <span className="icon">
-        <ion-icon name="cube-outline"/>
+        <ion-icon name="cube-outline" />
       </span>
     </span>
   );
 }
-
-

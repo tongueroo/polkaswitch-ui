@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
-import * as Sentry from "@sentry/react";
+import * as Sentry from '@sentry/react';
 import SwapOrderSlide from './SwapOrderSlide';
 import TokenSearchSlide from '../TokenSearchSlide';
 import SwapConfirmSlide from './SwapConfirmSlide';
@@ -11,7 +11,7 @@ import SwapFinalResultSlide from './SwapFinalResultSlide';
 import TokenListManager from '../../../utils/tokenList';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
-import { ApprovalState } from "../../../constants/Status";
+import { ApprovalState } from '../../../constants/Status';
 
 export default class SwapOrderWidget extends Component {
   constructor(props) {
@@ -34,14 +34,14 @@ export default class SwapOrderWidget extends Component {
       availableBalance: undefined,
       swapDistribution: undefined,
       approveStatus: ApprovalState.UNKNOWN,
-      searchTarget: "",
+      searchTarget: '',
       showSettings: false,
       showConfirm: false,
       showSearch: false,
       showResults: false,
       loading: false,
-      transactionHash: "",
-      refresh: Date.now()
+      transactionHash: '',
+      refresh: Date.now(),
     });
 
     this.subscribers = [];
@@ -63,24 +63,35 @@ export default class SwapOrderWidget extends Component {
   }
 
   componentDidMount() {
-    this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
-    this.subscribers.push(EventManager.listenFor('networkUpdated', this.handleNetworkChange));
-    this.subscribers.push(EventManager.listenFor('networkPendingUpdate', this.handleNetworkPreUpdate));
-    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleWalletChange));
+    this.subscribers.push(
+      EventManager.listenFor('walletUpdated', this.handleWalletChange),
+    );
+    this.subscribers.push(
+      EventManager.listenFor('networkUpdated', this.handleNetworkChange),
+    );
+    this.subscribers.push(
+      EventManager.listenFor(
+        'networkPendingUpdate',
+        this.handleNetworkPreUpdate,
+      ),
+    );
+    this.subscribers.push(
+      EventManager.listenFor('txQueueUpdated', this.handleWalletChange),
+    );
     window.addEventListener('resize', this.updateBoxHeight);
     this.updateBoxHeight();
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateBoxHeight);
-    this.subscribers.forEach(function(v) {
+    this.subscribers.forEach(function (v) {
       EventManager.unsubscribe(v);
     });
   }
 
   handleNetworkPreUpdate(e) {
     this.setState({
-      loading: true
+      loading: true,
     });
   }
 
@@ -97,7 +108,7 @@ export default class SwapOrderWidget extends Component {
       showConfirm: false,
       showSearch: false,
       showResults: false,
-      availableBalance: undefined
+      availableBalance: undefined,
     });
   }
 
@@ -108,11 +119,16 @@ export default class SwapOrderWidget extends Component {
   }
 
   updateBoxHeight() {
-    this.box.current.style.height = "";
-    _.defer(function() {
-      console.log('## current offsetHeight ###', this.box.current.offsetHeight);
-      this.box.current.style.height = `${this.box.current.offsetHeight}px`;
-    }.bind(this))
+    this.box.current.style.height = '';
+    _.defer(
+      function () {
+        console.log(
+          '## current offsetHeight ###',
+          this.box.current.offsetHeight,
+        );
+        this.box.current.style.height = `${this.box.current.offsetHeight}px`;
+      }.bind(this),
+    );
   }
 
   triggerHeightResize(node, isAppearing) {
@@ -120,26 +136,40 @@ export default class SwapOrderWidget extends Component {
     this.box.current.style.height = `${node.offsetHeight}px`;
   }
 
-  onSwapEstimateComplete(fromAmount, toAmount, dist, availBalBN, approveStatus) {
-    if (this.state.fromAmount === fromAmount &&
+  onSwapEstimateComplete(
+    fromAmount,
+    toAmount,
+    dist,
+    availBalBN,
+    approveStatus,
+  ) {
+    if (
+      this.state.fromAmount === fromAmount &&
       this.state.availableBalance === availBalBN &&
-      this.state.toAmount === toAmount) {
+      this.state.toAmount === toAmount
+    ) {
       return;
     }
 
-    this.box.current.style.height = "";
-    this.setState({
-      fromAmount: fromAmount,
-      toAmount: toAmount,
-      swapDistribution: dist,
-      availableBalance: availBalBN,
-      approveStatus: approveStatus
-    }, function() {
-      _.delay(function() {
-        // put back height after dist expand anim
-        this.updateBoxHeight();
-      }.bind(this), 301)
-    }.bind(this));
+    this.box.current.style.height = '';
+    this.setState(
+      {
+        fromAmount: fromAmount,
+        toAmount: toAmount,
+        swapDistribution: dist,
+        availableBalance: availBalBN,
+        approveStatus: approveStatus,
+      },
+      function () {
+        _.delay(
+          function () {
+            // put back height after dist expand anim
+            this.updateBoxHeight();
+          }.bind(this),
+          301,
+        );
+      }.bind(this),
+    );
   }
 
   onApproveComplete(approveStatus) {
@@ -147,103 +177,110 @@ export default class SwapOrderWidget extends Component {
       return;
     }
     this.setState({
-      approveStatus: approveStatus
-    })
+      approveStatus: approveStatus,
+    });
   }
 
   onSwapTokens() {
     Sentry.addBreadcrumb({
-      message: "Action: Swap Tokens"
+      message: 'Action: Swap Tokens',
     });
-    Metrics.track("swap-flipped-tokens");
-    TokenListManager.updateSwapConfig({to: this.state.from, from: this.state.to});
-    this.setState({
+    Metrics.track('swap-flipped-tokens');
+    TokenListManager.updateSwapConfig({
       to: this.state.from,
-      fromAmount: this.state.toAmount ? SwapFn.validateEthValue(this.state.to, this.state.toAmount) : undefined,
       from: this.state.to,
-      toChain: this.state.fromChain,
-      fromChain: this.state.toChain,
-      availableBalance: undefined,
-      toAmount: undefined,
-      refresh: Date.now(),
-      // make it easy coming from token-selection
-      showSearch: false
-    }, () => {
     });
+    this.setState(
+      {
+        to: this.state.from,
+        fromAmount: this.state.toAmount
+          ? SwapFn.validateEthValue(this.state.to, this.state.toAmount)
+          : undefined,
+        from: this.state.to,
+        toChain: this.state.fromChain,
+        fromChain: this.state.toChain,
+        availableBalance: undefined,
+        toAmount: undefined,
+        refresh: Date.now(),
+        // make it easy coming from token-selection
+        showSearch: false,
+      },
+      () => {},
+    );
   }
 
   handleSearchToggle(target) {
-    return function(e) {
+    return function (e) {
       Sentry.addBreadcrumb({
-        message: "Page: Search Token: " + target,
+        message: 'Page: Search Token: ' + target,
       });
 
-      Metrics.track("swap-search-view", { closing: this.state.showSearch });
+      Metrics.track('swap-search-view', { closing: this.state.showSearch });
       this.setState({
         searchTarget: target,
-        showSearch: !this.state.showSearch
+        showSearch: !this.state.showSearch,
       });
     }.bind(this);
   }
 
   handleSettingsToggle(e) {
     Sentry.addBreadcrumb({
-      message: "Page: Settings",
+      message: 'Page: Settings',
     });
 
-    Metrics.track("swap-settings-view", { closing: this.state.showSettings });
+    Metrics.track('swap-settings-view', { closing: this.state.showSettings });
     this.setState({
-      showSettings: !this.state.showSettings
+      showSettings: !this.state.showSettings,
     });
   }
 
   handleConfirm(e) {
     Sentry.addBreadcrumb({
-      message: "Page: Review",
+      message: 'Page: Review',
       data: {
         to: this.state.to,
         from: this.state.from,
         fromAmount: this.state.fromAmount,
-        toAmount: this.state.toAmount
-      }
+        toAmount: this.state.toAmount,
+      },
     });
 
-    Metrics.track("swap-review-step", { closing: this.state.showConfirm });
+    Metrics.track('swap-review-step', { closing: this.state.showConfirm });
     this.setState({
-      showConfirm: true
+      showConfirm: true,
     });
   }
 
   handleResults(success, hash) {
-    EventManager.emitEvent('networkHoverableUpdated', {hoverable: true});
+    EventManager.emitEvent('networkHoverableUpdated', { hoverable: true });
     this.setState({
       transactionHash: hash,
       showConfirm: false,
       showResults: true,
       transactionSuccess: success,
-      refresh: Date.now() // refresh Balances
+      refresh: Date.now(), // refresh Balances
     });
   }
 
   handleBackOnConfirm(e) {
-    EventManager.emitEvent('networkHoverableUpdated', {hoverable: true});
+    EventManager.emitEvent('networkHoverableUpdated', { hoverable: true });
     this.setState({ showConfirm: false });
   }
 
   handleBackOnResults(e) {
-    EventManager.emitEvent('networkHoverableUpdated', {hoverable: true});
+    EventManager.emitEvent('networkHoverableUpdated', { hoverable: true });
     this.setState({
       showConfirm: false,
       showResults: false,
       toAmount: '',
       fromAmount: '',
       swapDistribution: undefined,
-      refresh: Date.now() // refresh Balances
+      refresh: Date.now(), // refresh Balances
     });
   }
 
   handleTokenChange(token) {
-    var alt = this.state.searchTarget === "from" ? "to" : "from";
+    var alt = this.state.searchTarget === 'from' ? 'to' : 'from';
 
     // if you select the same token pair, do a swap instead
     if (this.state[alt].address === token.address) {
@@ -253,23 +290,26 @@ export default class SwapOrderWidget extends Component {
     var _s = {
       showSearch: false,
       availableBalance: undefined,
-      refresh: Date.now()
+      refresh: Date.now(),
     };
 
     _s[this.state.searchTarget] = token;
 
-    if (this.state.searchTarget === "from") {
-      _s["fromAmount"] = SwapFn.validateEthValue(token, this.state.fromAmount);
+    if (this.state.searchTarget === 'from') {
+      _s['fromAmount'] = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
-    TokenListManager.updateSwapConfig({[this.state.searchTarget]: token});
-    this.setState(_s, function() {
-      Metrics.track("swap-token-changed", {
-        changed: this.state.searchTarget,
-        from: this.state.from,
-        to: this.state.to
-      });
-    }.bind(this));
+    TokenListManager.updateSwapConfig({ [this.state.searchTarget]: token });
+    this.setState(
+      _s,
+      function () {
+        Metrics.track('swap-token-changed', {
+          changed: this.state.searchTarget,
+          from: this.state.from,
+          to: this.state.to,
+        });
+      }.bind(this),
+    );
   }
 
   render() {
@@ -283,14 +323,19 @@ export default class SwapOrderWidget extends Component {
 
     return (
       <div ref={this.box} className="box swap-widget">
-        <div className={classnames("loader-wrapper", { "is-active": this.state.loading })}>
+        <div
+          className={classnames('loader-wrapper', {
+            'is-active': this.state.loading,
+          })}
+        >
           <div className="loader is-loading"></div>
         </div>
         <CSSTransition
           in={isStack}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
-          classNames="fade">
+          classNames="fade"
+        >
           <SwapOrderSlide
             ref={this.orderPage}
             toChain={this.state.toChain}
@@ -314,11 +359,16 @@ export default class SwapOrderWidget extends Component {
           in={this.state.showSearch}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
-          classNames="slidein">
+          classNames="slidein"
+        >
           <TokenSearchSlide
             isCrossChain={false}
-            isFrom={this.state.searchTarget === "from"}
-            network={this.state.searchTarget === "to" ? this.state.toChain : this.state.fromChain}
+            isFrom={this.state.searchTarget === 'from'}
+            network={
+              this.state.searchTarget === 'to'
+                ? this.state.toChain
+                : this.state.fromChain
+            }
             showSearch={this.state.showSearch}
             handleSearchToggle={this.handleSearchToggle}
             handleTokenChange={this.handleTokenChange}
@@ -328,7 +378,8 @@ export default class SwapOrderWidget extends Component {
           in={this.state.showSettings}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
-          classNames="slidein">
+          classNames="slidein"
+        >
           <AdvancedSettingsSlide
             handleBackOnSettings={this.handleSettingsToggle}
           />
@@ -337,11 +388,13 @@ export default class SwapOrderWidget extends Component {
           in={this.state.showConfirm || this.state.showResults}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
-          classNames="slidein">
+          classNames="slidein"
+        >
           <CSSTransition
             in={!this.state.showResults}
             timeout={animTiming}
-            classNames="fade">
+            classNames="fade"
+          >
             <SwapConfirmSlide
               to={this.state.to}
               from={this.state.from}
@@ -361,7 +414,8 @@ export default class SwapOrderWidget extends Component {
           in={this.state.showResults}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
-          classNames="slidein">
+          classNames="slidein"
+        >
           <SwapFinalResultSlide
             to={this.state.to}
             from={this.state.from}
@@ -378,4 +432,3 @@ export default class SwapOrderWidget extends Component {
     );
   }
 }
-

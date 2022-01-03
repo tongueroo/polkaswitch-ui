@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 import TxExplorerLink from './../TxExplorerLink';
 
@@ -15,15 +15,21 @@ export default class SwapFinalResultSlide extends Component {
           <div className="level is-mobile">
             <div className="level-left">
               <div className="level-item">
-                <span className="icon ion-icon clickable"
-                  onClick={this.props.handleDismiss}>
+                <span
+                  className="icon ion-icon clickable"
+                  onClick={this.props.handleDismiss}
+                >
                   <ion-icon name="arrow-back-outline"></ion-icon>
                 </span>
               </div>
             </div>
           </div>
 
-          <div className={classnames("centered-view", { "failed": !this.props.transactionSuccess })}>
+          <div
+            className={classnames('centered-view', {
+              failed: !this.props.transactionSuccess,
+            })}
+          >
             <div className="icon">
               {this.props.transactionSuccess ? (
                 <ion-icon name="rocket-outline"></ion-icon>
@@ -32,23 +38,30 @@ export default class SwapFinalResultSlide extends Component {
               )}
             </div>
             <div className="title">
-              {this.props.transactionSuccess ? "Transaction Submitted" : "Transaction Failed" }
+              {this.props.transactionSuccess
+                ? 'Transaction Submitted'
+                : 'Transaction Failed'}
             </div>
             <div className="details">
               <div>
-                { this.props.transactionSuccess && (
+                {this.props.transactionSuccess && (
                   <div>
-                    <div>Sent to the blockchain and pending confirmation.<br/>Check notifications drawer for more updates.</div>
+                    <div>
+                      Sent to the blockchain and pending confirmation.
+                      <br />
+                      Check notifications drawer for more updates.
+                    </div>
 
-                    <br/>
-                    <TxExplorerLink network={this.props.toChain} hash={this.props.transactionHash}>
+                    <br />
+                    <TxExplorerLink
+                      network={this.props.toChain}
+                      hash={this.props.transactionHash}
+                    >
                       View on Explorer <ion-icon name="open-outline"></ion-icon>
                     </TxExplorerLink>
                   </div>
                 )}
-                { !this.props.transactionSuccess && (
-                  <div>Please try again</div>
-                )}
+                {!this.props.transactionSuccess && <div>Please try again</div>}
               </div>
             </div>
           </div>
@@ -61,11 +74,8 @@ export default class SwapFinalResultSlide extends Component {
               Dismiss
             </button>
           </div>
-
         </div>
       </div>
     );
   }
-
 }
-

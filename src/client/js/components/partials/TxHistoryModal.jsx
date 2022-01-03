@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 
 import Wallet from '../../utils/wallet';
@@ -10,9 +10,9 @@ import TxQueue from '../../utils/txQueue';
 import Nxtp from '../../utils/nxtp';
 
 import TxExplorerLink from './TxExplorerLink';
-import TxStatusView from './TxStatusView'
-import TxCrossChainHistoricalStatusView from './TxCrossChainHistoricalStatusView'
-import TxCrossChainActiveStatusView from './TxCrossChainActiveStatusView'
+import TxStatusView from './TxStatusView';
+import TxCrossChainHistoricalStatusView from './TxCrossChainHistoricalStatusView';
+import TxCrossChainActiveStatusView from './TxCrossChainActiveStatusView';
 import CrossChainToggle from './swap/CrossChainToggle';
 
 export default class TxHistoryModal extends Component {
@@ -22,7 +22,7 @@ export default class TxHistoryModal extends Component {
       refresh: Date.now(),
       open: false,
       loading: false,
-      showSingleChain: false
+      showSingleChain: false,
     };
 
     this.fetchCrossChainHistory = this.fetchCrossChainHistory.bind(this);
@@ -35,14 +35,14 @@ export default class TxHistoryModal extends Component {
 
   componentDidMount() {
     this.subUpdate = EventManager.listenFor(
-      'txQueueUpdated', this.handleUpdate
+      'txQueueUpdated',
+      this.handleUpdate,
     );
     this.subNxtp = EventManager.listenFor(
-      'nxtpEventUpdated', this.handleUpdate
+      'nxtpEventUpdated',
+      this.handleUpdate,
     );
-    this.subPrompt = EventManager.listenFor(
-      'promptTxHistory', this.handleOpen
-    );
+    this.subPrompt = EventManager.listenFor('promptTxHistory', this.handleOpen);
   }
 
   componentWillUnmount() {
@@ -55,7 +55,7 @@ export default class TxHistoryModal extends Component {
 
   handleOpen(e) {
     this.setState({
-      open: true
+      open: true,
     });
 
     if (!this.state.showSingleChain) {
@@ -65,13 +65,13 @@ export default class TxHistoryModal extends Component {
 
   handleClose(e) {
     this.setState({
-      open: false
+      open: false,
     });
   }
 
   handleCrossChainChange(checked) {
     this.setState({
-      showSingleChain: checked
+      showSingleChain: checked,
     });
 
     if (!checked) {
@@ -81,7 +81,7 @@ export default class TxHistoryModal extends Component {
 
   handleFinishAction(transactionId) {
     if (!Wallet.isConnected()) {
-      console.error("TxHistoryModal: Wallet not connected");
+      console.error('TxHistoryModal: Wallet not connected');
       return;
     }
 
@@ -93,22 +93,27 @@ export default class TxHistoryModal extends Component {
       return;
     }
 
-    this.setState({
-      loading: true
-    }, async () => {
-      if (Nxtp.isSdkInitalized()) {
-        await Nxtp.initalizeSdk();
-      }
+    this.setState(
+      {
+        loading: true,
+      },
+      async () => {
+        if (Nxtp.isSdkInitalized()) {
+          await Nxtp.initalizeSdk();
+        }
 
-      Nxtp.fetchActiveTxs().then(() => {
-        return Nxtp.fetchHistoricalTxs();
-      }).then(() => {
-        this.setState({
-          loading: false,
-          refresh: Date.now()
-        });
-      });
-    });
+        Nxtp.fetchActiveTxs()
+          .then(() => {
+            return Nxtp.fetchHistoricalTxs();
+          })
+          .then(() => {
+            this.setState({
+              loading: false,
+              refresh: Date.now(),
+            });
+          });
+      },
+    );
   }
 
   render() {
@@ -119,11 +124,14 @@ export default class TxHistoryModal extends Component {
     });
     var xHistQueue = _.first(xAllHistQueue, 5);
 
-    var emptyQueue = (this.state.showSingleChain && _.keys(singleChainQueue).length < 1) ||
-      (!this.state.showSingleChain && xActiveQueue.length < 1 && xHistQueue.length < 1);
+    var emptyQueue =
+      (this.state.showSingleChain && _.keys(singleChainQueue).length < 1) ||
+      (!this.state.showSingleChain &&
+        xActiveQueue.length < 1 &&
+        xHistQueue.length < 1);
 
     return (
-      <div className={classnames("modal", { "is-active": this.state.open })}>
+      <div className={classnames('modal', { 'is-active': this.state.open })}>
         <div onClick={this.handleClose} className="modal-background"></div>
         <div className="modal-content">
           <div className="tx-history-modal box">
@@ -145,64 +153,78 @@ export default class TxHistoryModal extends Component {
                 <div className="level-item">
                   <CrossChainToggle
                     checked={this.state.showSingleChain}
-                    handleChange={this.handleCrossChainChange} />
+                    handleChange={this.handleCrossChainChange}
+                  />
                 </div>
               </div>
             </div>
 
-            <div style={{ position: "relative" }}>
-              <div className={classnames("loader-wrapper", { "is-active": this.state.loading })}>
+            <div style={{ position: 'relative' }}>
+              <div
+                className={classnames('loader-wrapper', {
+                  'is-active': this.state.loading,
+                })}
+              >
                 <div className="loader is-loading"></div>
               </div>
 
-            {emptyQueue && (
-              <div className="empty-state">
-                <div>
-                  <div className="empty-text has-text-info">
-                    No recent transactions
+              {emptyQueue && (
+                <div className="empty-state">
+                  <div>
+                    <div className="empty-text has-text-info">
+                      No recent transactions
+                    </div>
+                    <div className="icon has-text-info-light">
+                      <ion-icon name="file-tray-outline"></ion-icon>
+                    </div>
                   </div>
-                  <div className="icon has-text-info-light">
-                    <ion-icon name="file-tray-outline"></ion-icon>
-                  </div>
-                </div>
                 </div>
               )}
 
-              {this.state.showSingleChain && _.map(singleChainQueue, function(item, i) {
-                return (
-                  <TxStatusView key={i} data={item} />
-                );
-              })}
-              {this.state.showSingleChain && _.keys(singleChainQueue).length > 0 && (
-                <div className="footer-note">Only showing transactions in the last 72 hours.</div>
-              )}
+              {this.state.showSingleChain &&
+                _.map(singleChainQueue, function (item, i) {
+                  return <TxStatusView key={i} data={item} />;
+                })}
+              {this.state.showSingleChain &&
+                _.keys(singleChainQueue).length > 0 && (
+                  <div className="footer-note">
+                    Only showing transactions in the last 72 hours.
+                  </div>
+                )}
 
               {!this.state.showSingleChain && (
                 <div className="footer-note mb-2">
-                  {xActiveQueue.length > 0 ? "Current active transactions" : "No active transactions"} ({xActiveQueue.length})
+                  {xActiveQueue.length > 0
+                    ? 'Current active transactions'
+                    : 'No active transactions'}{' '}
+                  ({xActiveQueue.length})
                 </div>
               )}
 
-              {!this.state.showSingleChain && xActiveQueue.map((item, i) => {
-                return (
-                  <TxCrossChainActiveStatusView
-                    key={i} data={item}
-                    handleFinishAction={this.handleFinishAction}
-                  />
-                );
-              })}
+              {!this.state.showSingleChain &&
+                xActiveQueue.map((item, i) => {
+                  return (
+                    <TxCrossChainActiveStatusView
+                      key={i}
+                      data={item}
+                      handleFinishAction={this.handleFinishAction}
+                    />
+                  );
+                })}
 
               {!this.state.showSingleChain && xHistQueue.length > 0 && (
                 <div className="footer-note mb-2">
-                  Last five historical transactions ({xHistQueue.length}/{xAllHistQueue.length})
+                  Last five historical transactions ({xHistQueue.length}/
+                  {xAllHistQueue.length})
                 </div>
               )}
 
-              {!this.state.showSingleChain && xHistQueue.map(function(item, i) {
-                return (
-                  <TxCrossChainHistoricalStatusView key={i} data={item} />
-                );
-              })}
+              {!this.state.showSingleChain &&
+                xHistQueue.map(function (item, i) {
+                  return (
+                    <TxCrossChainHistoricalStatusView key={i} data={item} />
+                  );
+                })}
             </div>
           </div>
         </div>
@@ -210,4 +232,3 @@ export default class TxHistoryModal extends Component {
     );
   }
 }
-

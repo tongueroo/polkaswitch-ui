@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 
 import Wallet from '../../utils/wallet';
@@ -14,7 +14,8 @@ export default class BridgeButton extends Component {
 
   componentDidMount() {
     this.subUpdates = EventManager.listenFor(
-      'walletUpdated', this.handleUpdate
+      'walletUpdated',
+      this.handleUpdate,
     );
   }
 
@@ -35,17 +36,16 @@ export default class BridgeButton extends Component {
     const isConnected = Wallet.isConnectedToAnyNetwork();
 
     return (
-      <div className={classnames("bridge-button", {
-        "is-hidden": isConnected
-      })}>
+      <div
+        className={classnames('bridge-button', {
+          'is-hidden': isConnected,
+        })}
+      >
         <img src="/images/bridge-white.png" />
-        <a
-          href={network.bridgeURI}
-          className="is-white is-medium connected">
+        <a href={network.bridgeURI} className="is-white is-medium connected">
           <span>Bridge Assets</span>
         </a>
       </div>
     );
   }
 }
-

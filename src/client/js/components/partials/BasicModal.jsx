@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 
 export default class BasicModal extends Component {
@@ -9,10 +9,18 @@ export default class BasicModal extends Component {
 
   render() {
     return (
-      <div className={classnames("modal", { "is-active": this.props.open })}>
-        <div onClick={this.props.handleClose} className="modal-background"></div>
+      <div className={classnames('modal', { 'is-active': this.props.open })}>
+        <div
+          onClick={this.props.handleClose}
+          className="modal-background"
+        ></div>
         <div className="modal-content">
-          <div className={classnames("box modal-basic-style", this.props.modalClasses)}>
+          <div
+            className={classnames(
+              'box modal-basic-style',
+              this.props.modalClasses,
+            )}
+          >
             <div className="modal-title-wrapper level is-mobile">
               <div className="level-left">
                 <div className="level-item">
@@ -30,13 +38,10 @@ export default class BasicModal extends Component {
                 </div>
               </div>
             </div>
-            <div className="modal-body">
-              {this.props.children}
-            </div>
+            <div className="modal-body">{this.props.children}</div>
           </div>
         </div>
       </div>
     );
   }
 }
-

@@ -1,19 +1,15 @@
 import React from 'react';
-import TokenIconImg from "../TokenIconImg";
+import TokenIconImg from '../TokenIconImg';
 
 export default function TokenNetworkRouteBox(props) {
   const info = props.info;
 
   return (
     <div className="token-network-route-box">
-      {
-        info &&
+      {info && (
         <div>
           <div className="token-wrapper">
-            <TokenIconImg
-              size={16}
-              mr={4}
-              imgSrc={info.token.logoURI}/>
+            <TokenIconImg size={16} mr={4} imgSrc={info.token.logoURI} />
             <div>
               <div className="symbol">{info.token.name}</div>
               <div className="amount">{info.token.amount}</div>
@@ -23,7 +19,7 @@ export default function TokenNetworkRouteBox(props) {
             <div className="text">{info.network.name}</div>
           </div>
         </div>
-      }
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
-import _ from "underscore";
+import _ from 'underscore';
 import EventManager from './events';
-import Wallet from "./wallet";
+import Wallet from './wallet';
 
 let store = require('store');
 
@@ -9,25 +9,28 @@ export default {
   _queue: {},
   compareTime: 3 * 60 * 60 * 24 * 1000,
 
-  initialize: async function() {
+  initialize: async function () {
     this._queue = this.getQueue();
     const keys = _.keys(this._queue);
     const length = keys.length;
     const now = Date.now();
     let delCount = 0;
 
-    if (this._signerAddress && (this._signerAddress.length > 0)) {
+    if (this._signerAddress && this._signerAddress.length > 0) {
       if (length > 0) {
         for (let i = 0; i < length; i++) {
           const item = this._queue[keys[i]];
 
-          if (item["completed"] === false) {
+          if (item['completed'] === false) {
             const provider = Wallet.getReadOnlyProvider();
             const hash = item.tx.hash;
             await this.getTransactionReceipt(provider, hash);
-          } else if (item["completed"] === true && ((now - item.lastUpdated) > this.compareTime)) {
+          } else if (
+            item['completed'] === true &&
+            now - item.lastUpdated > this.compareTime
+          ) {
             delete this._queue[keys[i]];
-            delCount ++;
+            delCount++;
           }
         }
         if (delCount > 0) {
@@ -37,19 +40,22 @@ export default {
     }
   },
 
-  removeOldTx: function() {
+  removeOldTx: function () {
     this._queue = this.getQueue();
     const keys = _.keys(this._queue);
     const length = keys.length;
     const now = Date.now();
     let delCount = 0;
-    if (this._signerAddress && (this._signerAddress.length > 0)) {
+    if (this._signerAddress && this._signerAddress.length > 0) {
       if (length > 0) {
         for (let i = 0; i < length; i++) {
           const item = this._queue[keys[i]];
-          if (item["completed"] === true && ((now - item.lastUpdated) > this.compareTime)) {
+          if (
+            item['completed'] === true &&
+            now - item.lastUpdated > this.compareTime
+          ) {
             delete this._queue[keys[i]];
-            delCount ++;
+            delCount++;
           }
         }
         if (delCount > 0) {
@@ -59,7 +65,7 @@ export default {
     }
   },
 
-  getTransactionReceipt: async function(provider, hash) {
+  getTransactionReceipt: async function (provider, hash) {
     if (provider) {
       try {
         let receipt = await provider.getTransactionReceipt(hash);
@@ -70,15 +76,15 @@ export default {
         } else {
           setTimeout(async () => {
             await this.getTransactionReceipt(provider, hash);
-          }, 10 * 1000)
+          }, 10 * 1000);
         }
       } catch (e) {
-        this.failedTx(hash, null,  e);
+        this.failedTx(hash, null, e);
       }
     }
   },
 
-  queuePendingTx: function(data, confirms) {
+  queuePendingTx: function (data, confirms) {
     this._queue = this.getQueue();
     let hash = data.tx.hash;
     data.lastUpdated = Date.now();
@@ -86,19 +92,26 @@ export default {
     data.success = false;
 
     this._queue[hash] = data;
-    if (this._signerAddress && (this._signerAddress.length > 0)) {
+    if (this._signerAddress && this._signerAddress.length > 0) {
       store.set(this._signerAddress, this._queue);
       EventManager.emitEvent('txQueueUpdated', { hash, data });
     }
 
-    data.tx.wait(confirms || 1).then(function (txReceipt) {
-      this.successTx(hash, txReceipt, data);
-    }.bind(this)).catch(function (err) {
-      this.failedTx(hash, data, err);
-    }.bind(this));
+    data.tx
+      .wait(confirms || 1)
+      .then(
+        function (txReceipt) {
+          this.successTx(hash, txReceipt, data);
+        }.bind(this),
+      )
+      .catch(
+        function (err) {
+          this.failedTx(hash, data, err);
+        }.bind(this),
+      );
   },
 
-  successTx: function(hash, txReceipt, data) {
+  successTx: function (hash, txReceipt, data) {
     // Remove old Tx
     this.removeOldTx();
     console.log(txReceipt);
@@ -108,12 +121,12 @@ export default {
     this._queue[hash].success = true;
     this._queue[hash].completed = true;
     this._queue[hash].lastUpdated = Date.now();
-    store.set(this._signerAddress, this._queue)
+    store.set(this._signerAddress, this._queue);
     EventManager.emitEvent('txQueueUpdated', { hash, data });
     EventManager.emitEvent('txSuccess', hash);
   },
 
-  failedTx: function(hash, data, error) {
+  failedTx: function (hash, data, error) {
     // Remove old Tx
     this.removeOldTx();
 
@@ -124,23 +137,22 @@ export default {
     this._queue[hash].completed = true;
     this._queue[hash].success = false;
     this._queue[hash].lastUpdated = Date.now();
-    store.set(this._signerAddress, this._queue)
+    store.set(this._signerAddress, this._queue);
     EventManager.emitEvent('txQueueUpdated', { hash, data });
     EventManager.emitEvent('txFailed', hash);
   },
 
-  getQueue: function() {
+  getQueue: function () {
     this._signerAddress = Wallet.currentAddress();
     const queue = store.get(this._signerAddress) || {};
     return queue;
   },
 
-  numOfPending: function() {
+  numOfPending: function () {
     return _.keys(this.getQueue()).length;
   },
 
-  getTx: function(nonce) {
+  getTx: function (nonce) {
     return this.getQueue()[nonce];
   },
 };
-

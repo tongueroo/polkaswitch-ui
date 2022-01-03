@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export default function PortfolioNetwork({ logoURI, name, value, change }) {
   return (
@@ -7,7 +7,11 @@ export default function PortfolioNetwork({ logoURI, name, value, change }) {
       <div className="portfolio-makeup__asset_container">
         <span className="portfolio-makeup__asset_heading">{name}</span>
         <span className="portfolio-makeup__asset_price">
-          {value.toLocaleString("en-US", { style: "currency", currency: "USD" })} ({change}%)
+          {value.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD',
+          })}{' '}
+          ({change}%)
         </span>
       </div>
     </div>

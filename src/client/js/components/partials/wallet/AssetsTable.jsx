@@ -1,5 +1,5 @@
-import React from "react";
-import AssetTableRow from "./AssetTableRow";
+import React from 'react';
+import AssetTableRow from './AssetTableRow';
 import classnames from 'classnames';
 
 export default function AssetsTable({ tokenData, loading }) {
@@ -21,15 +21,12 @@ export default function AssetsTable({ tokenData, loading }) {
       </div>
 
       {tokenData.map((t, i) => {
-        return (
-          <AssetTableRow
-            key={i}
-            data={t}
-          ></AssetTableRow>
-        );
+        return <AssetTableRow key={i} data={t}></AssetTableRow>;
       })}
 
-      <div className={classnames("wallets-page-loader", { "is-hidden": !loading })} >
+      <div
+        className={classnames('wallets-page-loader', { 'is-hidden': !loading })}
+      >
         <div className="loader-text">Loading balances</div>
         <div className="loader is-loading"></div>
       </div>

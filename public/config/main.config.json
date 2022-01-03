@@ -7,7 +7,9 @@
     "bridgeURI": "https://wallet.matic.network/",
     "tokenList": "/tokens/eth.list.json",
     "chainId": "1",
-    "nodeProvider": "https://eth-mainnet.alchemyapi.io/v2/hrkUnlgn_VD_KbxEjpo7D2mVwTfAVUJW",
+    "nodeProviders": [
+      "https://eth-mainnet.alchemyapi.io/v2/hrkUnlgn_VD_KbxEjpo7D2mVwTfAVUJW"
+    ],
     "explorerBaseUrl": "https://etherscan.io/tx/",
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "color": "#5C69B5",
@@ -46,7 +48,9 @@
     "bridgeURI": "https://wallet.matic.network/",
     "tokenList": "/tokens/eth.list.json",
     "chainId": "1287",
-    "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
+    "nodeProviders": [
+      "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/"
+    ],
     "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
     "desiredParts": 3,
@@ -88,7 +92,10 @@
     "bridgeURI": "https://wallet.matic.network/",
     "tokenList": "/tokens/137.list.json",
     "chainId": "137",
-    "nodeProvider": "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/",
+    "nodeProviders": [
+      "https://polygon-mainnet.g.alchemy.com/v2/cDgPXY_DnB77q44_HMbfaoo-ApR8E0VP",
+      "https://api-matic.polkaswitch.com/3d041599a52783f163b2515d3ab10f900fc61c01/"
+    ],
     "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://gasstation-mainnet.matic.network",
     "desiredParts": 20,
@@ -136,7 +143,9 @@
     "bridgeURI": "https://app.nerve.fi/bridge",
     "tokenList": "/tokens/56.list.json",
     "chainId": "56",
-    "nodeProvider": "https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/",
+    "nodeProviders": [
+      "https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/"
+    ],
     "explorerBaseUrl": "https://bscscan.com/tx/",
     "gasApi": false,
     "desiredParts": 9,
@@ -183,7 +192,9 @@
     "bridgeURI": "https://bridge.avax.network/",
     "tokenList": "/tokens/43114.list.json",
     "chainId": "43114",
-    "nodeProvider": "https://api.avax.network/ext/bc/C/rpc",
+    "nodeProviders": [
+      "https://api.avax.network/ext/bc/C/rpc"
+    ],
     "nodeProvider2": "https://avalanche--mainnet--rpc.datahub.figment.io/apikey/b56dcd7987f05a43637a94ad98d546be/ext/bc/C/rpc",
     "explorerBaseUrl": "https://cchain.explorer.avax.network/tx/",
     "gasApi": false,
@@ -201,12 +212,12 @@
       }
     },
     "defaultPair": {
-      "to": "0xde3A24028580884448a5397872046a019649b084",
+      "to": "0xc7198437980c041c805a1edcba50c1ce5db95118",
       "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
     },
     "topTokens": [
       "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-      "0xde3A24028580884448a5397872046a019649b084",
+      "0xc7198437980c041c805a1edcba50c1ce5db95118",
       "0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15",
       "0x408D4cD0ADb7ceBd1F1A1C33A0Ba2098E1295bAB",
       "0x8cE2Dee54bB9921a2AE0A63dBb2DF8eD88B91dD9",
@@ -231,7 +242,9 @@
     "bridgeURI": "https://bridge.xdaichain.com/",
     "tokenList": "/tokens/100.list.json",
     "chainId": "100",
-    "nodeProvider": "https://rpc.xdaichain.com/",
+    "nodeProviders": [
+      "https://rpc.xdaichain.com/"
+    ],
     "explorerBaseUrl": "https://blockscout.com/xdai/mainnet/tx/",
     "gasApi": "https://blockscout.com/xdai/mainnet/api/v1/gas-price-oracle",
     "desiredParts": 16,
@@ -278,7 +291,9 @@
     "bridgeURI": "https://multichain.xyz/",
     "tokenList": "/tokens/250.list.json",
     "chainId": "250",
-    "nodeProvider": "https://rpc.ftm.tools/",
+    "nodeProviders": [
+      "https://rpc.ftm.tools/"
+    ],
     "explorerBaseUrl": "https://ftmscan.com/tx/",
     "gasApi": false,
     "desiredParts": 12,
@@ -318,7 +333,7 @@
     ]
   },
   {
-    "enabled": true,
+    "enabled": false,
     "name": "Moonriver",
     "aggregatorAddress": "0x45886377b9930b1fDf0A16EE966F70A0240eD029",
     "logoURI": "https://assets.coingecko.com/coins/images/17984/small/9285.png",

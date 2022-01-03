@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
-import * as Sentry from "@sentry/react";
+import * as Sentry from '@sentry/react';
 
 import BridgeOrderSlide from './BridgeOrderSlide';
 import TokenSearchSlide from '../TokenSearchSlide';
@@ -13,7 +13,7 @@ import TokenListManager from '../../../utils/tokenList';
 import Metrics from '../../../utils/metrics';
 import Wallet from '../../../utils/wallet';
 import EventManager from '../../../utils/events';
-import { ApprovalState } from "../../../constants/Status";
+import { ApprovalState } from '../../../constants/Status';
 
 export default class BridgeWidget extends Component {
   constructor(props) {
@@ -23,25 +23,27 @@ export default class BridgeWidget extends Component {
     this.orderPage = React.createRef();
     this.NETWORKS = window.NETWORK_CONFIGS;
     this.CROSS_CHAIN_NETWORKS = _.filter(this.NETWORKS, (v) => {
-      return v.crossChainSupported
+      return v.crossChainSupported;
     });
 
     var network = TokenListManager.getCurrentNetworkConfig();
     var mergeState = {};
     var toChain = this.CROSS_CHAIN_NETWORKS.find((v) => {
-      return v.chainId !== network.chainId
+      return v.chainId !== network.chainId;
     });
     var fromChain = network;
 
     mergeState = _.extend(mergeState, {
       toChain: toChain,
       fromChain: fromChain,
-      to: TokenListManager.findTokenById(
-        toChain.supportedCrossChainTokens[0],
-        toChain
-      ) || TokenListManager.findTokenById(network.defaultPair.to, toChain),
-      from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]) ||
-        TokenListManager.findTokenById(network.defaultPair.from)
+      to:
+        TokenListManager.findTokenById(
+          toChain.supportedCrossChainTokens[0],
+          toChain,
+        ) || TokenListManager.findTokenById(network.defaultPair.to, toChain),
+      from:
+        TokenListManager.findTokenById(network.supportedCrossChainTokens[0]) ||
+        TokenListManager.findTokenById(network.defaultPair.from),
     });
 
     this.state = _.extend(mergeState, {
@@ -50,15 +52,15 @@ export default class BridgeWidget extends Component {
       availableBalance: undefined,
       swapDistribution: undefined,
       approveStatus: ApprovalState.UNKNOWN,
-      searchTarget: "",
+      searchTarget: '',
       showSettings: false,
       showConfirm: false,
       showSearch: false,
       showResults: false,
       loading: false,
-      transactionHash: "",
+      transactionHash: '',
       crossChainTransactionId: false,
-      refresh: Date.now()
+      refresh: Date.now(),
     });
 
     this.subscribers = [];
@@ -75,7 +77,8 @@ export default class BridgeWidget extends Component {
     this.handleWalletChange = this.handleWalletChange.bind(this);
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.handleNetworkPreUpdate = this.handleNetworkPreUpdate.bind(this);
-    this.onCrossChainEstimateComplete = this.onCrossChainEstimateComplete.bind(this);
+    this.onCrossChainEstimateComplete =
+      this.onCrossChainEstimateComplete.bind(this);
     this.onSwapEstimateComplete = this.onSwapEstimateComplete.bind(this);
     this.onApproveComplete = this.onApproveComplete.bind(this);
 
@@ -83,31 +86,42 @@ export default class BridgeWidget extends Component {
   }
 
   componentDidMount() {
-    this.subscribers.push(EventManager.listenFor('walletUpdated', this.handleWalletChange));
-    this.subscribers.push(EventManager.listenFor('networkUpdated', this.handleNetworkChange));
-    this.subscribers.push(EventManager.listenFor('networkPendingUpdate', this.handleNetworkPreUpdate));
-    this.subscribers.push(EventManager.listenFor('txQueueUpdated', this.handleWalletChange));
+    this.subscribers.push(
+      EventManager.listenFor('walletUpdated', this.handleWalletChange),
+    );
+    this.subscribers.push(
+      EventManager.listenFor('networkUpdated', this.handleNetworkChange),
+    );
+    this.subscribers.push(
+      EventManager.listenFor(
+        'networkPendingUpdate',
+        this.handleNetworkPreUpdate,
+      ),
+    );
+    this.subscribers.push(
+      EventManager.listenFor('txQueueUpdated', this.handleWalletChange),
+    );
     window.addEventListener('resize', this.updateBoxHeight);
     this.updateBoxHeight();
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateBoxHeight);
-    this.subscribers.forEach(function(v) {
+    this.subscribers.forEach(function (v) {
       EventManager.unsubscribe(v);
     });
   }
 
   handleNetworkPreUpdate(e) {
     this.setState({
-      loading: true
+      loading: true,
     });
   }
 
   handleNetworkChange(e) {
     var network = TokenListManager.getCurrentNetworkConfig();
     var toChain = this.CROSS_CHAIN_NETWORKS.find((v) => {
-      return v.chainId != network.chainId
+      return v.chainId != network.chainId;
     });
     var fromChain = network;
 
@@ -116,12 +130,14 @@ export default class BridgeWidget extends Component {
       crossChainEnabled: true,
       to: TokenListManager.findTokenById(
         toChain.supportedCrossChainTokens[0],
-        toChain
+        toChain,
       ),
-      from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
+      from: TokenListManager.findTokenById(
+        network.supportedCrossChainTokens[0],
+      ),
       toChain: toChain,
       fromChain: fromChain,
-      availableBalance: undefined
+      availableBalance: undefined,
     });
   }
 
@@ -132,10 +148,12 @@ export default class BridgeWidget extends Component {
   }
 
   updateBoxHeight() {
-    this.box.current.style.height = "";
-    _.defer(function() {
-      this.box.current.style.height = `${this.box.current.offsetHeight}px`;
-    }.bind(this))
+    this.box.current.style.height = '';
+    _.defer(
+      function () {
+        this.box.current.style.height = `${this.box.current.offsetHeight}px`;
+      }.bind(this),
+    );
   }
 
   triggerHeightResize(node, isAppearing) {
@@ -144,30 +162,44 @@ export default class BridgeWidget extends Component {
 
   onCrossChainEstimateComplete(transactionId) {
     this.setState({
-      crossChainTransactionId: transactionId
+      crossChainTransactionId: transactionId,
     });
   }
 
-  onSwapEstimateComplete(fromAmount, toAmount, dist, availBalBN, approveStatus) {
-    if (this.state.fromAmount === fromAmount &&
+  onSwapEstimateComplete(
+    fromAmount,
+    toAmount,
+    dist,
+    availBalBN,
+    approveStatus,
+  ) {
+    if (
+      this.state.fromAmount === fromAmount &&
       this.state.availableBalance === availBalBN &&
-      this.state.toAmount === toAmount) {
+      this.state.toAmount === toAmount
+    ) {
       return;
     }
 
-    this.box.current.style.height = "";
-    this.setState({
-      fromAmount: fromAmount,
-      toAmount: toAmount,
-      swapDistribution: dist,
-      availableBalance: availBalBN,
-      approveStatus: approveStatus
-    }, function() {
-      _.delay(function() {
-        // put back height after dist expand anim
-        this.updateBoxHeight();
-      }.bind(this), 301)
-    }.bind(this));
+    this.box.current.style.height = '';
+    this.setState(
+      {
+        fromAmount: fromAmount,
+        toAmount: toAmount,
+        swapDistribution: dist,
+        availableBalance: availBalBN,
+        approveStatus: approveStatus,
+      },
+      function () {
+        _.delay(
+          function () {
+            // put back height after dist expand anim
+            this.updateBoxHeight();
+          }.bind(this),
+          301,
+        );
+      }.bind(this),
+    );
   }
 
   onApproveComplete(approveStatus) {
@@ -175,40 +207,48 @@ export default class BridgeWidget extends Component {
       return;
     }
     this.setState({
-      approveStatus: approveStatus
-    })
+      approveStatus: approveStatus,
+    });
   }
 
   onSwapTokens() {
     Sentry.addBreadcrumb({
-      message: "Action: Swap Tokens"
+      message: 'Action: Swap Tokens',
     });
-    Metrics.track("swap-flipped-tokens");
-    TokenListManager.updateSwapConfig({to: this.state.from, from: this.state.to});
-    this.setState({
+    Metrics.track('swap-flipped-tokens');
+    TokenListManager.updateSwapConfig({
       to: this.state.from,
-      fromAmount: this.state.toAmount ? SwapFn.validateEthValue(this.state.to, this.state.toAmount) : undefined,
       from: this.state.to,
-      toChain: this.state.fromChain,
-      fromChain: this.state.toChain,
-      availableBalance: undefined,
-      toAmount: undefined,
-      refresh: Date.now(),
-      // make it easy coming from token-selection
-      showSearch: false
-    }, () => {
-      let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
-        Wallet.getConnectionStrategy();
-      TokenListManager.updateNetwork(this.state.fromChain, connectStrategy);
     });
+    this.setState(
+      {
+        to: this.state.from,
+        fromAmount: this.state.toAmount
+          ? SwapFn.validateEthValue(this.state.to, this.state.toAmount)
+          : undefined,
+        from: this.state.to,
+        toChain: this.state.fromChain,
+        fromChain: this.state.toChain,
+        availableBalance: undefined,
+        toAmount: undefined,
+        refresh: Date.now(),
+        // make it easy coming from token-selection
+        showSearch: false,
+      },
+      () => {
+        let connectStrategy =
+          Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
+        TokenListManager.updateNetwork(this.state.fromChain, connectStrategy);
+      },
+    );
   }
 
   handleCrossChainChange(isFrom, network) {
-    var alt = isFrom ? "to" : "from";
-    var target = isFrom ? "from" : "to";
+    var alt = isFrom ? 'to' : 'from';
+    var target = isFrom ? 'from' : 'to';
 
     // if you select the same network as other, swap
-    if (this.state[alt + "Chain"].chainId === network.chainId) {
+    if (this.state[alt + 'Chain'].chainId === network.chainId) {
       this.onSwapTokens();
       // don't need to do anything else
       return;
@@ -216,12 +256,13 @@ export default class BridgeWidget extends Component {
 
     var _s = {
       availableBalance: undefined,
-      refresh: Date.now()
+      refresh: Date.now(),
     };
 
     // try to find the current token on the new network if available
     var parallelToken = TokenListManager.findTokenById(
-      this.state[target].symbol, network
+      this.state[target].symbol,
+      network,
     );
 
     if (parallelToken) {
@@ -230,17 +271,17 @@ export default class BridgeWidget extends Component {
       // default to any available token
       _s[target] = TokenListManager.findTokenById(
         network.supportedCrossChainTokens[0],
-        network
+        network,
       );
     }
 
-    _s[target + "Chain"] = network;
+    _s[target + 'Chain'] = network;
 
     this.setState(_s);
 
     if (isFrom) {
-      let connectStrategy = Wallet.isConnectedToAnyNetwork() &&
-        Wallet.getConnectionStrategy();
+      let connectStrategy =
+        Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
       TokenListManager.updateNetwork(network, connectStrategy);
     }
   }
@@ -248,77 +289,77 @@ export default class BridgeWidget extends Component {
   handleSearchToggle(target) {
     // TODO handle cross-chain swap
 
-    return function(e) {
+    return function (e) {
       Sentry.addBreadcrumb({
-        message: "Page: Search Token: " + target,
+        message: 'Page: Search Token: ' + target,
       });
 
-      Metrics.track("bridge-search-view", { closing: this.state.showSearch });
+      Metrics.track('bridge-search-view', { closing: this.state.showSearch });
       this.setState({
         searchTarget: target,
-        showSearch: !this.state.showSearch
+        showSearch: !this.state.showSearch,
       });
     }.bind(this);
   }
 
   handleSettingsToggle(e) {
     Sentry.addBreadcrumb({
-      message: "Page: Settings",
+      message: 'Page: Settings',
     });
 
-    Metrics.track("bridge-settings-view", { closing: this.state.showSettings });
+    Metrics.track('bridge-settings-view', { closing: this.state.showSettings });
     this.setState({
-      showSettings: !this.state.showSettings
+      showSettings: !this.state.showSettings,
     });
   }
 
   handleConfirm(e) {
     Sentry.addBreadcrumb({
-      message: "Page: Review",
+      message: 'Page: Review',
       data: {
         to: this.state.to,
         from: this.state.from,
         fromAmount: this.state.fromAmount,
-        toAmount: this.state.toAmount
-      }
+        toAmount: this.state.toAmount,
+      },
     });
 
-    Metrics.track("bridge-review-step", { closing: this.state.showConfirm });
+    Metrics.track('bridge-review-step', { closing: this.state.showConfirm });
     this.setState({
-      showConfirm: true
+      showConfirm: true,
     });
   }
 
   handleResults(success, hash) {
-    EventManager.emitEvent('networkHoverableUpdated', {hoverable: true});
+    EventManager.emitEvent('networkHoverableUpdated', { hoverable: true });
     this.setState({
       transactionHash: hash,
       showConfirm: false,
       showResults: true,
       transactionSuccess: success,
-      refresh: Date.now() // refresh Balances
+      refresh: Date.now(), // refresh Balances
     });
   }
 
   handleBackOnConfirm(e) {
-    EventManager.emitEvent('networkHoverableUpdated', {hoverable: true});
+    EventManager.emitEvent('networkHoverableUpdated', { hoverable: true });
     this.setState({ showConfirm: false });
   }
 
   handleBackOnResults(e) {
-    EventManager.emitEvent('networkHoverableUpdated', {hoverable: true});
+    EventManager.emitEvent('networkHoverableUpdated', { hoverable: true });
     this.setState({
       showConfirm: false,
       showResults: false,
       toAmount: '',
       fromAmount: '',
       swapDistribution: undefined,
-      refresh: Date.now() // refresh Balances
+      refresh: Date.now(), // refresh Balances
     });
   }
 
   handleTokenChange(token) {
-    var alt = this.state.searchTarget === "from" ? "to" : "from";
+    var alt = this.state.searchTarget === 'from' ? 'to' : 'from';
 
     // if you select the same token pair, do a swap instead
     if (this.state[alt].address === token.address) {
@@ -328,23 +369,26 @@ export default class BridgeWidget extends Component {
     var _s = {
       showSearch: false,
       availableBalance: undefined,
-      refresh: Date.now()
+      refresh: Date.now(),
     };
 
     _s[this.state.searchTarget] = token;
 
-    if (this.state.searchTarget === "from") {
-      _s["fromAmount"] = SwapFn.validateEthValue(token, this.state.fromAmount);
+    if (this.state.searchTarget === 'from') {
+      _s['fromAmount'] = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
-    TokenListManager.updateSwapConfig({[this.state.searchTarget]: token});
-    this.setState(_s, function() {
-      Metrics.track("swap-token-changed", {
-        changed: this.state.searchTarget,
-        from: this.state.from,
-        to: this.state.to
-      });
-    }.bind(this));
+    TokenListManager.updateSwapConfig({ [this.state.searchTarget]: token });
+    this.setState(
+      _s,
+      function () {
+        Metrics.track('swap-token-changed', {
+          changed: this.state.searchTarget,
+          from: this.state.from,
+          to: this.state.to,
+        });
+      }.bind(this),
+    );
   }
 
   render() {
@@ -358,14 +402,19 @@ export default class BridgeWidget extends Component {
 
     return (
       <div ref={this.box} className="box bridge-widget">
-        <div className={classnames("loader-wrapper", { "is-active": this.state.loading })}>
-          <div className="loader is-loading"/>
+        <div
+          className={classnames('loader-wrapper', {
+            'is-active': this.state.loading,
+          })}
+        >
+          <div className="loader is-loading" />
         </div>
         <CSSTransition
           in={isStack}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
-          classNames="fade">
+          classNames="fade"
+        >
           <BridgeOrderSlide
             ref={this.orderPage}
             toChain={this.state.toChain}
@@ -391,11 +440,16 @@ export default class BridgeWidget extends Component {
           in={this.state.showSearch}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
-          classNames="slidein">
+          classNames="slidein"
+        >
           <TokenSearchSlide
             isCrossChain={true}
-            isFrom={this.state.searchTarget === "from"}
-            network={this.state.searchTarget === "to" ? this.state.toChain : this.state.fromChain}
+            isFrom={this.state.searchTarget === 'from'}
+            network={
+              this.state.searchTarget === 'to'
+                ? this.state.toChain
+                : this.state.fromChain
+            }
             showSearch={this.state.showSearch}
             handleSearchToggle={this.handleSearchToggle}
             handleTokenChange={this.handleTokenChange}
@@ -405,7 +459,8 @@ export default class BridgeWidget extends Component {
           in={this.state.showSettings}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
-          classNames="slidein">
+          classNames="slidein"
+        >
           <AdvancedSettingsSlide
             handleBackOnSettings={this.handleSettingsToggle}
           />
@@ -414,11 +469,13 @@ export default class BridgeWidget extends Component {
           in={this.state.showConfirm || this.state.showResults}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
-          classNames="slidein">
+          classNames="slidein"
+        >
           <CSSTransition
             in={!this.state.showResults}
             timeout={animTiming}
-            classNames="fade">
+            classNames="fade"
+          >
             <CrossSwapProcessSlide
               to={this.state.to}
               from={this.state.from}
@@ -439,7 +496,8 @@ export default class BridgeWidget extends Component {
           in={this.state.showResults}
           timeout={animTiming}
           onEntering={this.triggerHeightResize}
-          classNames="slidein">
+          classNames="slidein"
+        >
           <BridgeFinalResultSlide
             to={this.state.to}
             from={this.state.from}
@@ -456,4 +514,3 @@ export default class BridgeWidget extends Component {
     );
   }
 }
-

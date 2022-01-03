@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 
 import Wallet from '../../utils/wallet';
@@ -19,7 +19,8 @@ export default class ConnectWalletButton extends Component {
     }
 
     this.subWalletChange = EventManager.listenFor(
-      'walletUpdated', this.handleWalletChange
+      'walletUpdated',
+      this.handleWalletChange,
     );
   }
 
@@ -52,16 +53,19 @@ export default class ConnectWalletButton extends Component {
       return (
         <>
           <span className="dot"></span>
-          <img className="image-icon" width={20} height={18} src="/images/metamask.png" />
-          <span className="wallet-address">
-            {this.getTruncWalletAddress()}
-          </span>
+          <img
+            className="image-icon"
+            width={20}
+            height={18}
+            src="/images/metamask.png"
+          />
+          <span className="wallet-address">{this.getTruncWalletAddress()}</span>
         </>
       );
     } else {
       return (
         <>
-        <span>Connect Wallet</span>
+          <span>Connect Wallet</span>
         </>
       );
     }
@@ -71,13 +75,14 @@ export default class ConnectWalletButton extends Component {
     var isConnected = Wallet.isConnectedToAnyNetwork();
 
     return (
-      <div className={classnames("wallet-status", {
-        "button is-primary": !isConnected
+      <div
+        className={classnames('wallet-status', {
+          'button is-primary': !isConnected,
         })}
-        onClick={this.handleConnection.bind(this)}>
+        onClick={this.handleConnection.bind(this)}
+      >
         {this.renderButtonContent()}
       </div>
     );
   }
 }
-

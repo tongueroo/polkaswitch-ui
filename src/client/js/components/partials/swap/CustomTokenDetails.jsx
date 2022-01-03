@@ -7,14 +7,15 @@ export default class CustomTokenDetails extends Component {
   }
 
   render() {
-    const { errored, symbol, name, decimals } = this.props
+    const { errored, symbol, name, decimals } = this.props;
     return (
-      <div style={{marginTop: 10}}  className={classnames("swap-trans-details", {
-        "is-hidden": errored
-      })}>
-        <div
-          className="level is-mobile detail"
-        >
+      <div
+        style={{ marginTop: 10 }}
+        className={classnames('swap-trans-details', {
+          'is-hidden': errored,
+        })}
+      >
+        <div className="level is-mobile detail">
           <div className="level-left">
             <div className="level-item">
               <div className="detail-title">
@@ -25,17 +26,11 @@ export default class CustomTokenDetails extends Component {
 
           <div className="level-right">
             <div className="level-item">
-              <div className="detail-value">
-                {name}
-              </div>
+              <div className="detail-value">{name}</div>
             </div>
           </div>
         </div>
-        <div
-          className={classnames(
-            "level is-mobile detail"
-          )}
-        >
+        <div className={classnames('level is-mobile detail')}>
           <div className="level-left">
             <div className="level-item">
               <div className="detail-title">
@@ -46,17 +41,11 @@ export default class CustomTokenDetails extends Component {
 
           <div className="level-right">
             <div className="level-item">
-              <div className="detail-value">
-                {symbol}
-              </div>
+              <div className="detail-value">{symbol}</div>
             </div>
           </div>
         </div>
-        <div
-          className={classnames(
-            "level is-mobile detail"
-          )}
-        >
+        <div className={classnames('level is-mobile detail')}>
           <div className="level-left">
             <div className="level-item">
               <div className="detail-title">
@@ -68,9 +57,7 @@ export default class CustomTokenDetails extends Component {
           <div className="level-right">
             <div className="level-item">
               <div>
-                <div className="detail-value">
-                  {decimals}
-                </div>
+                <div className="detail-value">{decimals}</div>
               </div>
             </div>
           </div>
@@ -79,4 +66,3 @@ export default class CustomTokenDetails extends Component {
     );
   }
 }
-
