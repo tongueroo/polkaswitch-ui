@@ -215,6 +215,32 @@ export default class TokenSwapDistribution extends Component {
         icon: {logoURI: 'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1359.png'},
         size: sumThree / totalParts
       }];
+    } else if (network.name === "Moonriver") {
+      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      /*
+        This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
+        There are 18 pools: pool 0 - 5 are Solarbeam pools, pool 6-11 are Sushiswap pools, pool 12-17 are Moonswap pools.
+        For example, the distribution ["6","0","6","0","0","0","6","0","0","0","0","0","0","0","0","0","0",0]
+        means 2/3 of the swap amount will route to Solarbeam and 1/3 will route to Sushiswap.
+        ["0","0","0","0","0","0","3","0","0","0","0","0","6","0","6","0","3",0] means 1/6 of amount will route to Sushiswap and 5/6 will route to Moonswap.
+      */
+      sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5];
+      sumTwo = parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
+      sumThree = parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
+      totalParts = sumOne + sumTwo + sumThree;
+      pools = [{
+        name: "Solarbeam",
+        icon: TokenListManager.findTokenById("SOLAR"),
+        size: sumOne / totalParts
+      }, {
+        name: "Sushiswap",
+        icon: {logoURI: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688'},
+        size: sumTwo / totalParts
+      }, {
+        name: "Moonswap",
+        icon: {logoURI: 'https://d2kfoba0ei9gzz.cloudfront.net/img/51fee159c3456c1168ccfa3f67bd0cad.png'},
+        size: sumThree / totalParts
+      }];
     }
 
     return (

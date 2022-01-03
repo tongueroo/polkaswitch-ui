@@ -41,7 +41,8 @@ window.WalletJS = {
     window.erc20Abi = await (await fetch('/abi/erc20_standard.json')).json();
     window.oneSplitAbi = await (await fetch('/abi/test/OneSplit.json')).json();
     window.polygonAbi = await (await fetch('/abi/test/Polygon.json')).json();
-    window.MoonriverAbi = await (await fetch('/abi/test/Moonriver.json')).json();
+    window.moonriverAbi = await (await fetch('/abi/test/Moonriver.json')).json();
+    window.xDaiAbi = await (await fetch('/abi/test/Xdai.json')).json();
     window.crossChainOneSplitAbi = await (await fetch('/abi/cross-chain/cross-chain-aggregator.json')).json();
 
     EventManager.listenFor(
