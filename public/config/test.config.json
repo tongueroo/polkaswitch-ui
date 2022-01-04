@@ -341,7 +341,7 @@
     "bridgeURI": "https://app.solarbeam.io/bridge",
     "tokenList": "/tokens/1285.list.json",
     "chainId": "1285",
-    "nodeProvider": "https://rpc.moonriver.moonbeam.network",
+    "nodeProviders": ["https://rpc.moonriver.moonbeam.network"],
     "explorerBaseUrl": "https://moonriver.moonscan.io/tx/",
     "gasApi": false,
     "desiredParts": 18,
