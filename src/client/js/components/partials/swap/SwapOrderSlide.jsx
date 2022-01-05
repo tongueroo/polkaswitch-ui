@@ -24,8 +24,7 @@ export default class SwapOrderSlide extends Component {
     this.handleTokenAmountChange = this.handleTokenAmountChange.bind(this);
     this.validateOrderForm = this.validateOrderForm.bind(this);
     this.fetchSwapEstimate = this.fetchSwapEstimate.bind(this);
-    this.fetchSingleChainSwapEstimate =
-      this.fetchSingleChainSwapEstimate.bind(this);
+    this.fetchSingleChainSwapEstimate = this.fetchSingleChainSwapEstimate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMax = this.handleMax.bind(this);
     this.handleTokenSwap = this.handleTokenSwap.bind(this);
