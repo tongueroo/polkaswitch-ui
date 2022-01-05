@@ -11,6 +11,7 @@ import classnames from 'classnames';
 import SwapHome from './pages/SwapHome';
 import TokenClaimHome from './pages/TokenClaimHome';
 import BridgeHome from './pages/BridgeHome';
+import StatusHome from './pages/StatusHome';
 import WalletHome from './pages/WalletHome';
 import StakeHome from './pages/StakeHome';
 import Footer from './partials/Footer';
@@ -69,6 +70,9 @@ const App = () => {
               </Route>
               <Route path="/wallet">
                 <WalletHome />
+              </Route>
+              <Route path="/status">
+                <StatusHome />
               </Route>
               <Route>
                 <Redirect to="/swap" />
