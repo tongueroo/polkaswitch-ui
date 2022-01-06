@@ -12,17 +12,15 @@ export default class CrossChainToggle extends Component {
 
   render() {
     return (
-      <span
-        className="cross-chain-toggle switcher"
-      >
+      <span className="cross-chain-toggle switcher">
         <input
           id="cross-chain-switcher"
           type="checkbox"
           checked={this.props.checked}
-          onChange={this.handleChange} />
+          onChange={this.handleChange}
+        />
         <label htmlFor="cross-chain-switcher"></label>
       </span>
     );
   }
 }
-

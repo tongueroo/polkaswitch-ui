@@ -6,17 +6,13 @@ export default class BridgeAdvancedSettingsSlide extends Component {
     this.state = { refresh: Date.now() };
   }
 
-  componentWillUnmount() {
-  }
+  componentWillUnmount() {}
 
   render() {
     return (
       <div className="page page-stack page-view-settings">
-        <div className="page-inner">
-        </div>
+        <div className="page-inner"></div>
       </div>
     );
   }
-
 }
-

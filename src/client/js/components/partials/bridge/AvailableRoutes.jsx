@@ -1,12 +1,10 @@
 import React from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import TokenListManager from '../../../utils/tokenList';
-import RouteItemWrapper from "./RouteItemWrapper";
+import RouteItemWrapper from './RouteItemWrapper';
 
 export default function AvailableRoutes(props) {
   const network = TokenListManager.getCurrentNetworkConfig();
-  //const routes = props.routes
-
   const GENERIC_SUPPORTED_BRIDGE_TOKENS = ["USDC", "USDT", "DAI"];
 
   const routes = _.map(props.routes, function(v, i) {
@@ -93,19 +91,12 @@ export default function AvailableRoutes(props) {
       className="token-dist-wrapper control"
       aria-label="Available routes for the swap"
     >
-      {
-        routes.length > 0 &&
+      {routes.length > 0 &&
         _.map(routes, function (item, i) {
           return (
-            <RouteItemWrapper
-              key={i}
-              data={item}
-              index={i}>
-            </RouteItemWrapper>
+            <RouteItemWrapper key={i} data={item} index={i}></RouteItemWrapper>
           );
-        })
-      }
+        })}
     </div>
   );
 }
-

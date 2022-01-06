@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 export default {
   _subjects: {},
 
-  _getSubject: function(event) {
+  _getSubject: function (event) {
     if (this._subjects[event]) {
       return this._subjects[event];
     } else {
@@ -12,18 +12,17 @@ export default {
     }
   },
 
-  listenFor: function(event, cb) {
+  listenFor: function (event, cb) {
     return this._getSubject(event).subscribe({
-      next: cb
+      next: cb,
     });
   },
 
-  emitEvent: function(event, data) {
+  emitEvent: function (event, data) {
     this._getSubject(event).next(data);
   },
 
-  unsubscribe: function(sub) {
+  unsubscribe: function (sub) {
     sub.unsubscribe();
-  }
+  },
 };
-

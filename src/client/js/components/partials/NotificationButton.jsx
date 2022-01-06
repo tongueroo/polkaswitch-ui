@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 
 import Wallet from '../../utils/wallet';
@@ -16,10 +16,12 @@ export default class NotificationButton extends Component {
 
   componentDidMount() {
     this.subUpdates = EventManager.listenFor(
-      'walletUpdated', this.handleUpdate
+      'walletUpdated',
+      this.handleUpdate,
     );
     this.subTxUpdates = EventManager.listenFor(
-      'txQueueUpdated', this.handleUpdate
+      'txQueueUpdated',
+      this.handleUpdate,
     );
   }
 
@@ -40,18 +42,21 @@ export default class NotificationButton extends Component {
     var isConnected = Wallet.isConnectedToAnyNetwork();
 
     return (
-      <div className={classnames("notification-button", {
-          "is-hidden": !isConnected
+      <div
+        className={classnames('notification-button', {
+          'is-hidden': !isConnected,
         })}
-        onClick={this.handleClick.bind(this)}>
+        onClick={this.handleClick.bind(this)}
+      >
         <img src="/images/tx_history.svg" />
-        <div className={classnames("bubble tag is-light", {
-          "is-hidden": (TxQueue.numOfPending() < 1)
-        })}>
-        {TxQueue.numOfPending()}
-      </div>
+        <div
+          className={classnames('bubble tag is-light', {
+            'is-hidden': TxQueue.numOfPending() < 1,
+          })}
+        >
+          {TxQueue.numOfPending()}
+        </div>
       </div>
     );
   }
 }
-

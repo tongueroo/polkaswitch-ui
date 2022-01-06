@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 
 export default class MarketLimitToggle extends Component {
@@ -23,10 +23,10 @@ export default class MarketLimitToggle extends Component {
           id="order-type-switcher"
           type="checkbox"
           checked={true || this.state.checked}
-          onChange={this.handleChange} />
+          onChange={this.handleChange}
+        />
         <label htmlFor="order-type-switcher"></label>
       </span>
     );
   }
 }
-

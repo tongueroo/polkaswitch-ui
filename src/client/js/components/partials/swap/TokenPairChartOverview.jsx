@@ -1,11 +1,10 @@
 import React from 'react';
-import TradingViewChart from "./TradingViewChart";
+import TradingViewChart from './TradingViewChart';
 
-export default function TokenPairChartOverview(){
+export default function TokenPairChartOverview() {
   return (
-     <div>
+    <div>
       <TradingViewChart />
-     </div>
-    );
+    </div>
+  );
 }
-

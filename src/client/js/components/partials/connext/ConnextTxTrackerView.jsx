@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from "underscore";
+import _ from 'underscore';
 import classnames from 'classnames';
 
 import Wallet from '../../utils/wallet';
@@ -22,7 +22,8 @@ export default class ConnextTxTrackerView extends Component {
 
   componentDidMount() {
     this.subUpdate = EventManager.listenFor(
-      'connextTxQueueUpdated', this.handleUpdate
+      'connextTxQueueUpdated',
+      this.handleUpdate,
     );
   }
 
@@ -52,13 +53,10 @@ export default class ConnextTxTrackerView extends Component {
           </div>
         )}
 
-        {_.map(queue, function(item, i) {
-          return (
-            <TxStatusView key={i} data={item} />
-          );
+        {_.map(queue, function (item, i) {
+          return <TxStatusView key={i} data={item} />;
         })}
       </div>
     );
   }
 }
-

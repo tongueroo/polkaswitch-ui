@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react'
-import classnames from "classnames";
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import classnames from 'classnames';
 
 // TODO WIP component, not used anywhere
 
@@ -27,11 +27,11 @@ export default function Search() {
 
   const filteredTokenList = useMemo(() => {
     return [];
-  }, [value])
+  }, [value]);
 
   const filteredPairList = useMemo(() => {
     return [];
-  }, [value])
+  }, [value]);
 
   useEffect(() => {
     if (Object.keys(filteredTokenList).length > 2) {
@@ -39,7 +39,7 @@ export default function Search() {
     } else {
       toggleShadow(false);
     }
-  }, [filteredTokenList])
+  }, [filteredTokenList]);
 
   useEffect(() => {
     if (Object.keys(filteredPairList).length > 2) {
@@ -47,24 +47,24 @@ export default function Search() {
     } else {
       toggleBottomShadow(false);
     }
-  }, [filteredPairList])
+  }, [filteredPairList]);
 
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (
       !(menuRef.current && menuRef.current.contains(e.target)) &&
       !(wrapperRef.current && wrapperRef.current.contains(e.target))
     ) {
-      setPairsShown(3)
-      setTokensShown(3)
-      toggleMenu(false)
+      setPairsShown(3);
+      setTokensShown(3);
+      toggleMenu(false);
     }
-  }
+  };
 
   useEffect(() => {
     document.addEventListener('click', handleClick);
     return () => {
       document.removeEventListener('click', handleClick);
-    }
+    };
   });
 
   function onDismiss() {
@@ -76,13 +76,15 @@ export default function Search() {
 
   return (
     <div className="search-container">
-      <div className="wrapper"
+      <div
+        className="wrapper"
         style={{
-          borderBottomLeftRadius: showMenu? 0: 24, borderBottomRightRadius: showMenu? 0: 24
+          borderBottomLeftRadius: showMenu ? 0 : 24,
+          borderBottomRightRadius: showMenu ? 0 : 24,
         }}
       >
         <span className="icon is-left">
-          <ion-icon name="search-outline" class="search-icon"/>
+          <ion-icon name="search-outline" class="search-icon" />
         </span>
         <input
           className="input-box"
@@ -90,29 +92,31 @@ export default function Search() {
           ref={wrapperRef}
           placeholder={'Search token or pair...'}
           value={value}
-          onChange={e => {
-            setValue(e.target.value)
+          onChange={(e) => {
+            setValue(e.target.value);
           }}
           onFocus={() => {
             if (!showMenu) {
-              toggleMenu(true)
+              toggleMenu(true);
             }
           }}
         />
-        { showMenu &&
+        {showMenu && (
           <span
             className="icon close-icon is-right"
-            style={{cursor:"pointer"}}
+            style={{ cursor: 'pointer' }}
             onClick={() => toggleMenu(false)}
           >
-            <ion-icon name="close-outline" class="close-icon"/>
+            <ion-icon name="close-outline" class="close-icon" />
           </span>
-        }
+        )}
       </div>
-      <div className={classnames("menu", {
-        "is-hidden": !showMenu
+      <div
+        className={classnames('menu', {
+          'is-hidden': !showMenu,
         })}
-        ref={menuRef}>
+        ref={menuRef}
+      >
         <div className="header">
           <div>Tokens</div>
         </div>
@@ -122,18 +126,21 @@ export default function Search() {
               <div>No results</div>
             </div>
           )}
-          {filteredTokenList.slice(0, tokensShown).map(token => {
-            return (
-              <div className="menu-item">
-              </div>
-            )
+          {filteredTokenList.slice(0, tokensShown).map((token) => {
+            return <div className="menu-item"></div>;
           })}
-          <div className={classnames("header", {
-            "is-hidden": !(Object.keys(filteredTokenList).length > 3 && Object.keys(filteredTokenList).length >= tokensShown)
-          })}>
-            <div className="more-link"
+          <div
+            className={classnames('header', {
+              'is-hidden': !(
+                Object.keys(filteredTokenList).length > 3 &&
+                Object.keys(filteredTokenList).length >= tokensShown
+              ),
+            })}
+          >
+            <div
+              className="more-link"
               onClick={() => {
-                setTokensShown(tokensShown + 5)
+                setTokensShown(tokensShown + 5);
               }}
             >
               See more...
@@ -150,18 +157,21 @@ export default function Search() {
             </div>
           )}
           {filteredPairList &&
-          filteredPairList.slice(0, pairsShown).map(pair => {
-            return (
-              <div className="menu-item">
-              </div>
-            )
-          })}
-          <div className={classnames("header", {
-            "is-hidden": !(Object.keys(filteredPairList).length > 3 && Object.keys(filteredPairList).length >= pairsShown)
-          })}>
-            <div className="more-link"
+            filteredPairList.slice(0, pairsShown).map((pair) => {
+              return <div className="menu-item"></div>;
+            })}
+          <div
+            className={classnames('header', {
+              'is-hidden': !(
+                Object.keys(filteredPairList).length > 3 &&
+                Object.keys(filteredPairList).length >= pairsShown
+              ),
+            })}
+          >
+            <div
+              className="more-link"
               onClick={() => {
-                setPairsShown(pairsShown + 5)
+                setPairsShown(pairsShown + 5);
               }}
             >
               See more...
@@ -170,5 +180,5 @@ export default function Search() {
         </div>
       </div>
     </div>
-  )
+  );
 }

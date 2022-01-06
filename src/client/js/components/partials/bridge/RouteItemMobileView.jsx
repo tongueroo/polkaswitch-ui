@@ -1,18 +1,17 @@
 import React from 'react';
 import AdditionalInfoItem from './AdditionalInfoItem';
-import TokenIconImg from "../TokenIconImg";
-import Divider from "./Divider";
+import TokenIconImg from '../TokenIconImg';
+import Divider from './Divider';
 
 export default function RouteItemMobileView(props) {
   const data = props.data;
 
   return (
     <div className="bridge-route-item-mobile">
-      {
-        data.length > 0 &&
-        _.map(data, function(item, index) {
+      {data.length > 0 &&
+        _.map(data, function (item, index) {
           switch (item.type) {
-            case 'token-network' :
+            case 'token-network':
               return (
                 <TokenIconImg
                   key={index}
@@ -21,25 +20,15 @@ export default function RouteItemMobileView(props) {
                 />
               );
             case 'swap':
-              return (
-                <Divider key={index}/>
-              )
+              return <Divider key={index} />;
             case 'bridge':
-              return (
-                <Divider key={index}/>
-              )
+              return <Divider key={index} />;
             case 'additional':
-              return (
-                <AdditionalInfoItem
-                  key={index}
-                  info={item}
-                />
-              )
+              return <AdditionalInfoItem key={index} info={item} />;
             default:
               return null;
           }
-        })
-      }
+        })}
     </div>
   );
 }
