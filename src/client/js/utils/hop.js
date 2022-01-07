@@ -162,6 +162,7 @@ window.HopUtils = {
     receivingAssetId,
     amountBN,
     receivingAddress,
+    maxSlippage
   ) {
     if (!Wallet.isConnected()) {
       console.error('Hop: Wallet not connected');

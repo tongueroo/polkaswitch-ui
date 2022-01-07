@@ -166,6 +166,7 @@ export default class AdvancedSettingsSlide extends Component {
                   >
                     <option value="hop">Hop</option>
                     <option value="connext">Connext</option>
+                    <option value="cbridge">Celer Bridge</option>
                   </select>
                 </div>
               </div>

@@ -3,11 +3,12 @@ import store from 'store';
 import BN from 'bignumber.js';
 import { BigNumber, constants, providers, Signer, utils } from 'ethers';
 
-import Wallet from './wallet';
-import swapFn from './swapFn';
-import HopUtils from './hop';
-import Nxtp from './nxtp';
-import Storage from './storage';
+import Wallet from "./wallet";
+import swapFn from "./swapFn";
+import HopUtils from "./hop";
+import CBridgeUtils from "./cbridge";
+import Nxtp from "./nxtp";
+import Storage from "./storage";
 
 import { getRandomBytes32 } from '@connext/nxtp-utils';
 
@@ -23,6 +24,10 @@ const HOP_SUPPORTED_BRIDGE_TOKENS = [
 
 // hard-code for now, the HopSDK has "supportedChains", but let's integrate later.
 const HOP_SUPPORTED_CHAINS = [1, 137, 100, 10, 42161];
+
+const CBRIDGE_SUPPORTED_CHAINS = [
+    1, 10, 56, 137, 250, 42161, 43114
+];
 
 const CONNEXT_SUPPORTED_BRIDGE_TOKENS = [
   'USDC',
@@ -51,6 +56,8 @@ export default {
 
     if ('hop' === bridgeOption) {
       return HopUtils;
+    } else if ("cbridge" === bridgeOption) {
+      return CBridgeUtils;
     } else {
       return Nxtp;
     }
@@ -69,7 +76,17 @@ export default {
       } else {
         return [true, false];
       }
-    } else {
+    }
+    if ("cbridge" === bridgeOption) {
+      if (!CBRIDGE_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
+        return [false, `${toChain.name} is not supported by Celer Bridge`];
+      } else if (!CBRIDGE_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
+        return [false, `${fromChain.name} is not supported by Celer Bridge`];
+      } else {
+        return [true, false];
+      }
+    }
+    else {
       if (!CONNEXT_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
         return [false, `${toChain.name} is not supported by Connext Bridge`];
       } else if (!CONNEXT_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
@@ -103,7 +120,7 @@ export default {
   isSwapRequiredForBridge: function(to, toChain, from, fromChain) {
   },
 
-  getEstimate: function (
+  getEstimate: async function(
     sendingChainId,
     sendingAssetId,
     receivingChainId,
@@ -113,9 +130,34 @@ export default {
   ) {
     const transactionId = getRandomBytes32();
     const bridgeInterface = this.getBridgeInterface();
+    const bridgeOption = Storage.swapSettings.bridgeOption;
+
+    if ("cbridge" === bridgeOption) {
+      const estimate = await this.getBridgeInterface().getEstimate(
+          transactionId,
+          sendingChainId,
+          sendingAssetId,
+          receivingChainId,
+          receivingAssetId,
+          amountBN,
+          receivingAddress
+      )
+      const maxSlippage = estimate.maxSlippage;
+      this._queue[transactionId] = {
+        bridge: bridgeOption,
+        sendingChainId,
+        sendingAssetId,
+        receivingChainId,
+        receivingAssetId,
+        amountBN,
+        receivingAddress,
+        maxSlippage
+      };
+      return estimate;
+    }
 
     this._queue[transactionId] = {
-      bridge: Storage.swapSettings.bridgeOption,
+      bridge: bridgeOption,
       sendingChainId,
       sendingAssetId,
       receivingChainId,
@@ -146,6 +188,7 @@ export default {
       tx.receivingAssetId,
       tx.amountBN,
       tx.receivingAddress,
+      tx.maxSlippage
     );
   },
 

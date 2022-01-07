@@ -237,7 +237,7 @@
   {
     "enabled": true,
     "name": "xDai",
-    "aggregatorAddress": "0xF09ecB66eF88973eBE7B0B5B5d700050F200c85D",
+    "aggregatorAddress": "0xD64FA6080D6C480d5B7146CeC239641B92Bf7cbd",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/xdai/info/logo.png",
     "bridgeURI": "https://bridge.xdaichain.com/",
     "tokenList": "/tokens/100.list.json",
