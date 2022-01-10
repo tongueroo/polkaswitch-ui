@@ -28,7 +28,6 @@ window.SwapFn = {
 
       // floor to the minimum possible value
       targetAmount = Math.max(10 ** -token.decimals, targetAmount);
-
       targetAmount = BN(BN(targetAmount).toFixed(token.decimals)).toString();
       return targetAmount;
     }
@@ -128,6 +127,8 @@ window.SwapFn = {
         );
       case 'xDai':
         return this.estimateGasWithXdaiAbi(contract, fromToken, toToken, amountBN, distribution);
+      case 'Harmony':
+        return this.estimateGasWithHarmonyAbi(contract, fromToken, toToken, amountBN, distribution);
       default:
         return this.estimateGasWithOneSplitAbi(
           contract,
@@ -379,6 +380,15 @@ window.SwapFn = {
             minReturn,
             distribution
           );
+        case 'Harmony':
+          return this.swapWithHarmonyAbi(
+            contract,
+            fromToken,
+            toToken,
+            amountBN,
+            minReturn,
+            distribution
+          );
         default:
           return this.swapWithOneSplitAbi(
             contract,
@@ -462,6 +472,18 @@ window.SwapFn = {
     ).then((transaction) => this.returnSwapResult(transaction, fromToken, toToken, amountBN));
   },
 
+  swapWithHarmonyAbi(contract, fromToken, toToken, amountBN, minReturn, distribution) {
+    return contract.swap(
+      fromToken.address,
+      toToken.address,
+      amountBN, // uint256 in wei
+      Utils.parseUnits(minReturn, toToken.decimals), // minReturn
+      distribution,
+      0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+      this.getGasParams(fromToken, amountBN)
+    ).then((transaction) => this.returnSwapResult(transaction, fromToken, toToken, amountBN));
+  },
+
   returnSwapResult(transaction, fromToken, toToken, amountBN) {
     console.log(`Waiting SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
     const network = TokenListManager.getCurrentNetworkConfig();
@@ -478,6 +500,18 @@ window.SwapFn = {
   },
 
   estimateGasWithXdaiAbi(contract, fromToken, toToken, amountBN, distribution) {
+    return contract.estimateGas.swap(
+      fromToken.address,
+      toToken.address,
+      amountBN, // uint256 in wei
+      BigNumber.from(0),
+      distribution,
+      0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+      this.getGasParams(fromToken, amountBN)
+    ).then((gasUnitsEstimated) => this.returnEstimatedGasResult(gasUnitsEstimated));
+  },
+
+  estimateGasWithHarmonyAbi(contract, fromToken, toToken, amountBN, distribution) {
     return contract.estimateGas.swap(
       fromToken.address,
       toToken.address,
