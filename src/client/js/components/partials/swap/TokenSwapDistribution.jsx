@@ -272,6 +272,35 @@ export default class TokenSwapDistribution extends Component {
           size: sumThree / totalParts
         }
       ];
+    } else if (network.name === 'Harmony') {
+      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      /*
+        This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
+        There are 12 pools: pool 0 - 3 are Mochiswap pools, pool 4-7 are Sushiswap pools, pool 8-11 are Viper Exchange pools.
+        For example, the distribution [3,0,3,0,0,0,0,0,3,0,3,0] means 2/3 of the swap amount will route to Mochiswap and 1/3 will route to Sushiswap.
+        [0,0,0,0,2,0,0,0,3,3,2,2] means 1/6 of amount will route to Sushiswap and 5/6 will route to Viper Exchange.
+      */
+      sumOne = parts[0] + parts[1] + parts[2] + parts[3];
+      sumTwo = parts[4] + parts[5] + parts[6] + parts[7];
+      sumThree = parts[8] + parts[9] + parts[10] + parts[11];
+      totalParts = sumOne + sumTwo + sumThree;
+      pools = [
+        {
+          name: 'Mochiswap',
+          icon: { logoURI: 'https://assets.coingecko.com/coins/images/14565/small/mochi.png?1617030087'},
+          size: sumOne / totalParts
+        },
+        {
+          name: 'Sushiswap',
+          icon: { logoURI: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688' },
+          size: sumTwo / totalParts
+        },
+        {
+          name: 'Viper Exchange',
+          icon: TokenListManager.findTokenById('VIPER'),
+          size: sumThree / totalParts
+        }
+      ];
     }
 
     return (
