@@ -377,8 +377,8 @@
     ]
   },
   {
-    "enabled": true,
-    "name": "Harmoney",
+    "enabled": false,
+    "name": "Harmony",
     "aggregatorAddress": "0x81921F5881b4917b40aA75eC33F0b1c52BFdbae2",
     "logoURI": "https://assets.coingecko.com/coins/images/4344/small/Y88JAze.png?1565065793",
     "bridgeURI": "https://bridge.harmony.one/",
