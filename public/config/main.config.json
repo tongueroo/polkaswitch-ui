@@ -335,7 +335,7 @@
   {
     "enabled": false,
     "name": "Moonriver",
-    "aggregatorAddress": "0x45886377b9930b1fDf0A16EE966F70A0240eD029",
+    "aggregatorAddress": "0xF554A77A1749cFDf5cBCe777B4b3A109692cF3F0",
     "logoURI": "https://assets.coingecko.com/coins/images/17984/small/9285.png",
     "bridgeURI": "https://app.solarbeam.io/bridge",
     "tokenList": "/tokens/1285.list.json",
