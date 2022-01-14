@@ -239,7 +239,7 @@ export default class CrossSwapProcessSlide extends Component {
         <hr />
 
         <div className="text-gray-stylized">
-          <span>You Recieve</span>
+          <span>You Receive</span>
         </div>
 
         <div className="level is-mobile">
