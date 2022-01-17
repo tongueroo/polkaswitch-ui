@@ -43,6 +43,7 @@ window.WalletJS = {
     window.moonriverAbi = await (await fetch('/abi/test/Moonriver.json')).json();
     window.xDaiAbi = await (await fetch('/abi/test/Xdai.json')).json();
     window.harmonyAbi = await (await fetch('/abi/test/Harmony.json')).json();
+    window.auroraAbi = await (await fetch('/abi/test/Aurora.json')).json();
 
     EventManager.listenFor(
       'initiateWalletConnect',
