@@ -301,6 +301,34 @@ export default class TokenSwapDistribution extends Component {
           size: sumThree / totalParts
         }
       ];
+    } else if (network.name === 'Aurora') {
+      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      /*
+        This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
+        There are 18 pools: pool 0 - 5 are Trisolaris pools, pool 6 - 11 are Wannaswap pools, pool 12 - 17 are auroraswap pools.
+        For example, the distribution [6,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0] means 2/3 of the swap amount will route to Trisolaris and 1/3 will route to Wannaswap.
+      */
+      sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5];
+      sumTwo = parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
+      sumThree = parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
+      totalParts = sumOne + sumTwo + sumThree;
+      pools = [
+        {
+          name: 'Trisolaris',
+          icon: { logoURI: 'https://assets.coingecko.com/coins/images/20607/small/logo_-_2021-11-19T104946.772.png?1637290197' },
+          size: sumOne / totalParts
+        },
+        {
+          name: 'Wannaswap',
+          icon: { logoURI: 'https://assets.coingecko.com/coins/images/21955/small/wannaswap.PNG?1640337839' },
+          size: sumTwo / totalParts
+        },
+        {
+          name: 'Auroraswap',
+          icon: { logoURI: 'https://assets.coingecko.com/markets/images/758/small/auroraswap.png?1640773986' },
+          size: sumThree / totalParts
+        }
+      ];
     }
 
     return (

@@ -420,5 +420,49 @@
     "crossChainSupported": false,
     "supportedCrossChainTokens": [
     ]
+  },
+  {
+    "enabled": true,
+    "name": "Aurora",
+    "aggregatorAddress": "0x43A402E15fa6A3670beD6820891eD6b68298f303",
+    "logoURI": "https://assets.coingecko.com/coins/images/20582/small/aurora.jpeg?1637250883",
+    "bridgeURI": "https://rainbowbridge.app/transfer",
+    "tokenList": "/tokens/1313161554.list.json",
+    "chainId": "1313161554",
+    "nodeProviders": ["https://mainnet.aurora.dev"],
+    "explorerBaseUrl": "https://explorer.mainnet.aurora.dev/tx/",
+    "gasApi": false,
+    "desiredParts": 18,
+    "color": "#3164EE",
+    "abi": "auroraAbi",
+    "chain": {
+      "chainId": "0x4E454152",
+      "rpcUrls": ["https://mainnet.aurora.dev"],
+      "chainName": "Aurora",
+      "nativeCurrency": {
+        "name": "ETH",
+        "symbol": "aETH",
+        "decimals": 18
+      }
+    },
+    "defaultPair": {
+      "to": "0xb12bfca5a55806aaf64e99521918a4bf0fc40802",
+      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+    },
+    "topTokens": [
+      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "0xb12bfca5a55806aaf64e99521918a4bf0fc40802",
+      "0x4988a896b1227218e4a686fde5eabdcabd91571f",
+      "0x8bec47865ade3b172a928df8f990bc7f2a3b9f79",
+      "0xC42C30aC6Cc15faC9bD938618BcaA1a1FaE8501d",
+      "0xe3520349f477a5f6eb06107066048508498a291b"
+    ],
+    "coingecko": {
+      "platform": "aurora"
+    },
+    "singleChainSupported": true,
+    "crossChainSupported": false,
+    "supportedCrossChainTokens": [
+    ]
   }
 ]
