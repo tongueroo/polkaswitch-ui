@@ -2,6 +2,7 @@ import _ from 'underscore';
 import EventManager from './events';
 import * as ethers from 'ethers';
 import Storage from './storage';
+import Coingecko from './coingecko';
 
 let store = require('store');
 const Utils = ethers.utils;
@@ -21,7 +22,7 @@ window.TokenListManager = {
     });
 
     for (var network of filteredNetworks) {
-      var tokenList = await (await fetch(network.tokenList)).json();
+      var tokenList = await Coingecko.fetchTokenList(+network.chainId);
 
       tokenList = _.map(
         _.filter(tokenList, function (v) {
@@ -83,10 +84,18 @@ window.TokenListManager = {
     if (network.gasApi) {
       gasStats = await (await fetch(network.gasApi)).json();
     } else {
-      const provider = new ethers.providers.JsonRpcProvider(network.nodeProviders[0]);
-      let defaultGasPrice = Math.ceil(Utils.formatUnits((await provider.getGasPrice()), "gwei"));
+      const provider = new ethers.providers.JsonRpcProvider(
+        network.nodeProviders[0],
+      );
+      let defaultGasPrice = Math.ceil(
+        Utils.formatUnits(await provider.getGasPrice(), 'gwei'),
+      );
 
-      gasStats = { safeLow: defaultGasPrice, fast: defaultGasPrice, fastest: defaultGasPrice };
+      gasStats = {
+        safeLow: defaultGasPrice,
+        fast: defaultGasPrice,
+        fastest: defaultGasPrice,
+      };
     }
 
     // xDai GasAPI has different fields
