@@ -3,14 +3,13 @@ import store from 'store';
 import BN from 'bignumber.js';
 import { BigNumber, constants, providers, Signer, utils } from 'ethers';
 
-import Wallet from "./wallet";
-import swapFn from "./swapFn";
-import HopUtils from "./hop";
-import CBridgeUtils from "./cbridge";
-import Nxtp from "./nxtp";
-import Storage from "./storage";
-
 import { getRandomBytes32 } from '@connext/nxtp-utils';
+import Wallet from './wallet';
+import swapFn from './swapFn';
+import HopUtils from './hop';
+import CBridgeUtils from './cbridge';
+import Nxtp from './nxtp';
+import Storage from './storage';
 
 // hard-code for now. I could not find this easily as a function in HopSDK
 const HOP_SUPPORTED_BRIDGE_TOKENS = [
@@ -25,9 +24,7 @@ const HOP_SUPPORTED_BRIDGE_TOKENS = [
 // hard-code for now, the HopSDK has "supportedChains", but let's integrate later.
 const HOP_SUPPORTED_CHAINS = [1, 137, 100, 10, 42161];
 
-const CBRIDGE_SUPPORTED_CHAINS = [
-    1, 10, 56, 137, 250, 42161, 43114
-];
+const CBRIDGE_SUPPORTED_CHAINS = [1, 10, 56, 137, 250, 42161, 43114];
 
 const CONNEXT_SUPPORTED_BRIDGE_TOKENS = [
   'USDC',
@@ -44,68 +41,66 @@ export default {
   _signerAddress: '',
   _queue: {},
 
-  initialize: async function () {},
+  async initialize() {},
 
-  getBridgeInterface: function (nonce) {
-    var tx = this.getTx(nonce);
-    var bridgeOption = Storage.swapSettings.bridgeOption;
+  getBridgeInterface(nonce) {
+    const tx = this.getTx(nonce);
+    let { bridgeOption } = Storage.swapSettings;
 
     if (tx?.bridge) {
       bridgeOption = tx.bridge;
     }
 
-    if ('hop' === bridgeOption) {
+    if (bridgeOption === 'hop') {
       return HopUtils;
-    } else if ("cbridge" === bridgeOption) {
-      return CBridgeUtils;
-    } else {
-      return Nxtp;
     }
+    if (bridgeOption === 'cbridge') {
+      return CBridgeUtils;
+    }
+    return Nxtp;
   },
 
-  isSupported: function (to, toChain, from, fromChain) {
-    var bridgeOption = Storage.swapSettings.bridgeOption;
+  isSupported(to, toChain, from, fromChain) {
+    const { bridgeOption } = Storage.swapSettings;
 
-    var targetChainIds = [+toChain.chainId, +fromChain.chainId];
+    const targetChainIds = [+toChain.chainId, +fromChain.chainId];
 
-    if ('hop' === bridgeOption) {
+    if (bridgeOption === 'hop') {
       if (!HOP_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
         return [false, `${toChain.name} is not supported by Hop Bridge`];
-      } else if (!HOP_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
-        return [false, `${fromChain.name} is not supported by Hop Bridge`];
-      } else {
-        return [true, false];
       }
+      if (!HOP_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
+        return [false, `${fromChain.name} is not supported by Hop Bridge`];
+      }
+      return [true, false];
     }
-    if ("cbridge" === bridgeOption) {
+    if (bridgeOption === 'cbridge') {
       if (!CBRIDGE_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
         return [false, `${toChain.name} is not supported by Celer Bridge`];
-      } else if (!CBRIDGE_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
+      }
+      if (!CBRIDGE_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
         return [false, `${fromChain.name} is not supported by Celer Bridge`];
-      } else {
-        return [true, false];
       }
+      return [true, false];
     }
-    else {
-      if (!CONNEXT_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
-        return [false, `${toChain.name} is not supported by Connext Bridge`];
-      } else if (!CONNEXT_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
-        return [false, `${fromChain.name} is not supported by Connext Bridge`];
-      } else {
-        return [true, false];
-      }
+    if (!CONNEXT_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
+      return [false, `${toChain.name} is not supported by Connext Bridge`];
     }
+    if (!CONNEXT_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
+      return [false, `${fromChain.name} is not supported by Connext Bridge`];
+    }
+    return [true, false];
   },
 
-  supportedBridges: function (to, toChain, from, fromChain) {
-    var bridges = [];
-    var targetChainIds = [+toChain.chainId, +fromChain.chainId];
+  supportedBridges(to, toChain, from, fromChain) {
+    const bridges = [];
+    const targetChainIds = [+toChain.chainId, +fromChain.chainId];
 
     if (_.includes(CONNEXT_SUPPORTED_CHAINS, targetChainIds)) {
     }
   },
 
-  getEstimate: async function(
+  async getEstimate(
     sendingChainId,
     sendingAssetId,
     receivingChainId,
@@ -115,19 +110,19 @@ export default {
   ) {
     const transactionId = getRandomBytes32();
     const bridgeInterface = this.getBridgeInterface();
-    const bridgeOption = Storage.swapSettings.bridgeOption;
+    const { bridgeOption } = Storage.swapSettings;
 
-    if ("cbridge" === bridgeOption) {
+    if (bridgeOption === 'cbridge') {
       const estimate = await this.getBridgeInterface().getEstimate(
-          transactionId,
-          sendingChainId,
-          sendingAssetId,
-          receivingChainId,
-          receivingAssetId,
-          amountBN,
-          receivingAddress
-      )
-      const maxSlippage = estimate.maxSlippage;
+        transactionId,
+        sendingChainId,
+        sendingAssetId,
+        receivingChainId,
+        receivingAssetId,
+        amountBN,
+        receivingAddress,
+      );
+      const { maxSlippage } = estimate;
       this._queue[transactionId] = {
         bridge: bridgeOption,
         sendingChainId,
@@ -136,7 +131,7 @@ export default {
         receivingAssetId,
         amountBN,
         receivingAddress,
-        maxSlippage
+        maxSlippage,
       };
       return estimate;
     }
@@ -162,9 +157,9 @@ export default {
     );
   },
 
-  transferStepOne: function (transactionId) {
+  transferStepOne(transactionId) {
     const bridgeInterface = this.getBridgeInterface(transactionId);
-    var tx = this.getTx(transactionId);
+    const tx = this.getTx(transactionId);
     return bridgeInterface.transferStepOne(
       transactionId,
       tx.sendingChainId,
@@ -173,13 +168,13 @@ export default {
       tx.receivingAssetId,
       tx.amountBN,
       tx.receivingAddress,
-      tx.maxSlippage
+      tx.maxSlippage,
     );
   },
 
-  transferStepTwo: function (transactionId) {
+  transferStepTwo(transactionId) {
     const bridgeInterface = this.getBridgeInterface(transactionId);
-    var tx = this.getTx(transactionId);
+    const tx = this.getTx(transactionId);
     return bridgeInterface.transferStepTwo(
       transactionId,
       tx.sendingChainId,
@@ -191,16 +186,16 @@ export default {
     );
   },
 
-  twoStepTransferRequired: function (nonce) {
-    var tx = this.getTx(nonce);
+  twoStepTransferRequired(nonce) {
+    const tx = this.getTx(nonce);
     if (!tx) {
       return false;
     }
 
-    return 'connext' === tx.bridge;
+    return tx.bridge === 'connext';
   },
 
-  getTx: function (nonce) {
+  getTx(nonce) {
     return this._queue[nonce];
   },
 };

@@ -22,20 +22,21 @@ export default class BridgeWidget extends Component {
     this.box = React.createRef();
     this.orderPage = React.createRef();
     this.NETWORKS = window.NETWORK_CONFIGS;
-    this.CROSS_CHAIN_NETWORKS = _.filter(this.NETWORKS, (v) => {
-      return v.crossChainSupported;
-    });
+    this.CROSS_CHAIN_NETWORKS = _.filter(
+      this.NETWORKS,
+      (v) => v.crossChainSupported,
+    );
 
-    var network = TokenListManager.getCurrentNetworkConfig();
-    var mergeState = {};
-    var toChain = this.CROSS_CHAIN_NETWORKS.find((v) => {
-      return v.chainId !== network.chainId;
-    });
-    var fromChain = network;
+    const network = TokenListManager.getCurrentNetworkConfig();
+    let mergeState = {};
+    const toChain = this.CROSS_CHAIN_NETWORKS.find(
+      (v) => v.chainId !== network.chainId,
+    );
+    const fromChain = network;
 
     mergeState = _.extend(mergeState, {
-      toChain: toChain,
-      fromChain: fromChain,
+      toChain,
+      fromChain,
       to:
         TokenListManager.findTokenById(
           toChain.supportedCrossChainTokens[0],
@@ -107,7 +108,7 @@ export default class BridgeWidget extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateBoxHeight);
-    this.subscribers.forEach(function (v) {
+    this.subscribers.forEach((v) => {
       EventManager.unsubscribe(v);
     });
   }
@@ -119,11 +120,11 @@ export default class BridgeWidget extends Component {
   }
 
   handleNetworkChange(e) {
-    var network = TokenListManager.getCurrentNetworkConfig();
-    var toChain = this.CROSS_CHAIN_NETWORKS.find((v) => {
-      return v.chainId != network.chainId;
-    });
-    var fromChain = network;
+    const network = TokenListManager.getCurrentNetworkConfig();
+    const toChain = this.CROSS_CHAIN_NETWORKS.find(
+      (v) => v.chainId != network.chainId,
+    );
+    const fromChain = network;
 
     this.setState({
       loading: false,
@@ -135,8 +136,8 @@ export default class BridgeWidget extends Component {
       from: TokenListManager.findTokenById(
         network.supportedCrossChainTokens[0],
       ),
-      toChain: toChain,
-      fromChain: fromChain,
+      toChain,
+      fromChain,
       availableBalance: undefined,
     });
   }
@@ -149,11 +150,9 @@ export default class BridgeWidget extends Component {
 
   updateBoxHeight() {
     this.box.current.style.height = '';
-    _.defer(
-      function () {
-        this.box.current.style.height = `${this.box.current.offsetHeight}px`;
-      }.bind(this),
-    );
+    _.defer(() => {
+      this.box.current.style.height = `${this.box.current.offsetHeight}px`;
+    });
   }
 
   triggerHeightResize(node, isAppearing) {
@@ -184,21 +183,18 @@ export default class BridgeWidget extends Component {
     this.box.current.style.height = '';
     this.setState(
       {
-        fromAmount: fromAmount,
-        toAmount: toAmount,
+        fromAmount,
+        toAmount,
         swapDistribution: dist,
         availableBalance: availBalBN,
-        approveStatus: approveStatus,
+        approveStatus,
       },
-      function () {
-        _.delay(
-          function () {
-            // put back height after dist expand anim
-            this.updateBoxHeight();
-          }.bind(this),
-          301,
-        );
-      }.bind(this),
+      () => {
+        _.delay(() => {
+          // put back height after dist expand anim
+          this.updateBoxHeight();
+        }, 301);
+      },
     );
   }
 
@@ -207,7 +203,7 @@ export default class BridgeWidget extends Component {
       return;
     }
     this.setState({
-      approveStatus: approveStatus,
+      approveStatus,
     });
   }
 
@@ -236,7 +232,7 @@ export default class BridgeWidget extends Component {
         showSearch: false,
       },
       () => {
-        let connectStrategy =
+        const connectStrategy =
           Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
         TokenListManager.updateNetwork(this.state.fromChain, connectStrategy);
       },
@@ -244,23 +240,23 @@ export default class BridgeWidget extends Component {
   }
 
   handleCrossChainChange(isFrom, network) {
-    var alt = isFrom ? 'to' : 'from';
-    var target = isFrom ? 'from' : 'to';
+    const alt = isFrom ? 'to' : 'from';
+    const target = isFrom ? 'from' : 'to';
 
     // if you select the same network as other, swap
-    if (this.state[alt + 'Chain'].chainId === network.chainId) {
+    if (this.state[`${alt}Chain`].chainId === network.chainId) {
       this.onSwapTokens();
       // don't need to do anything else
       return;
     }
 
-    var _s = {
+    const _s = {
       availableBalance: undefined,
       refresh: Date.now(),
     };
 
     // try to find the current token on the new network if available
-    var parallelToken = TokenListManager.findTokenById(
+    const parallelToken = TokenListManager.findTokenById(
       this.state[target].symbol,
       network,
     );
@@ -275,12 +271,12 @@ export default class BridgeWidget extends Component {
       );
     }
 
-    _s[target + 'Chain'] = network;
+    _s[`${target}Chain`] = network;
 
     this.setState(_s);
 
     if (isFrom) {
-      let connectStrategy =
+      const connectStrategy =
         Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
       TokenListManager.updateNetwork(network, connectStrategy);
     }
@@ -291,7 +287,7 @@ export default class BridgeWidget extends Component {
 
     return function (e) {
       Sentry.addBreadcrumb({
-        message: 'Page: Search Token: ' + target,
+        message: `Page: Search Token: ${target}`,
       });
 
       Metrics.track('bridge-search-view', { closing: this.state.showSearch });
@@ -359,14 +355,14 @@ export default class BridgeWidget extends Component {
   }
 
   handleTokenChange(token) {
-    var alt = this.state.searchTarget === 'from' ? 'to' : 'from';
+    const alt = this.state.searchTarget === 'from' ? 'to' : 'from';
 
     // if you select the same token pair, do a swap instead
     if (this.state[alt].address === token.address) {
       return this.onSwapTokens();
     }
 
-    var _s = {
+    const _s = {
       showSearch: false,
       availableBalance: undefined,
       refresh: Date.now(),
@@ -375,25 +371,22 @@ export default class BridgeWidget extends Component {
     _s[this.state.searchTarget] = token;
 
     if (this.state.searchTarget === 'from') {
-      _s['fromAmount'] = SwapFn.validateEthValue(token, this.state.fromAmount);
+      _s.fromAmount = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
     TokenListManager.updateSwapConfig({ [this.state.searchTarget]: token });
-    this.setState(
-      _s,
-      function () {
-        Metrics.track('swap-token-changed', {
-          changed: this.state.searchTarget,
-          from: this.state.from,
-          to: this.state.to,
-        });
-      }.bind(this),
-    );
+    this.setState(_s, () => {
+      Metrics.track('swap-token-changed', {
+        changed: this.state.searchTarget,
+        from: this.state.from,
+        to: this.state.to,
+      });
+    });
   }
 
   render() {
-    var animTiming = 300;
-    var isStack = !(
+    const animTiming = 300;
+    const isStack = !(
       this.state.showSettings ||
       this.state.showConfirm ||
       this.state.showSearch ||
@@ -443,7 +436,7 @@ export default class BridgeWidget extends Component {
           classNames="slidein"
         >
           <TokenSearchSlide
-            isCrossChain={true}
+            isCrossChain
             isFrom={this.state.searchTarget === 'from'}
             network={
               this.state.searchTarget === 'to'
