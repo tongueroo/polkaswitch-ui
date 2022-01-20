@@ -94,6 +94,14 @@ export default {
 
     const tokens = await this.fetchTokens(chainData.id);
 
-    return tokens;
+    return tokens.map((token) => {
+      const address = token.platforms[chainData.id];
+
+      return {
+        ...token,
+        chainId,
+        address,
+      };
+    });
   },
 };
