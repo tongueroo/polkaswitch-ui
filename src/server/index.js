@@ -3,6 +3,7 @@ const cookieSession = require('cookie-session');
 const helmet = require('helmet');
 var csrf = require('csurf');
 const os = require('os');
+const fs = require('fs');
 const path = require('path');
 var compression = require('compression');
 var morgan = require('morgan');
@@ -148,11 +149,27 @@ app.use(express.static('dist'));
 app.use(express.static('public'));
 
 app.use('*', function (req, res) {
-  res.sendFile(path.join(__dirname, '../../', '/dist/index.html'));
+  var indexPath = path.join(__dirname, '../../', '/dist/index.html');
+
+  fs.access(indexPath, fs.F_OK, (err) => {
+    if (err) {
+      console.error(err);
+
+      return res.status(404).send({
+        status: 404,
+        error: !isProduction ? '/dist/index.html not found. Please make sure to run `npm run watch` for local development' : '/dist/index.html not found'
+      });
+    }
+
+    res.sendFile(indexPath);
+  });
 });
 
 app.use(function onNotFound(req, res, next) {
-  res.status(404).send({ error: 'not found' });
+  res.status(404).send({
+    status: 404,
+    error: 'not found'
+  });
 });
 
 // The error handler must be before any other error
@@ -161,7 +178,11 @@ app.use(Sentry.Handlers.errorHandler());
 
 app.use(function onError(err, req, res, next) {
   console.error(err);
-  res.status(500).send({ error: 'crash - (X_X)' });
+  res.status(500).send({
+    status: 500,
+    error: 'crash - (X_X)',
+    message: !isProduction ? err : 'n/a'
+  });
 });
 
 var server = app.listen(process.env.PORT || 5000, () => {

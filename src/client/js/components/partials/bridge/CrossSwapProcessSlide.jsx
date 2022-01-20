@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import BN from 'bignumber.js';
+import { NxtpSdkEvents } from '@connext/nxtp-sdk';
 import TokenIconBalanceGroupView from '../TokenIconBalanceGroupView';
-import TokenIconImg from './../TokenIconImg';
+import TokenIconImg from '../TokenIconImg';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import TxBridgeManager from '../../../utils/txBridgeManager';
 import Nxtp from '../../../utils/nxtp';
-import { NxtpSdkEvents } from '@connext/nxtp-sdk';
 
 export default class CrossSwapProcessSlide extends Component {
   constructor(props) {
@@ -31,10 +31,6 @@ export default class CrossSwapProcessSlide extends Component {
     );
   }
 
-  componentWillUnmount() {
-    this.subNxtpUpdated.unsubscribe();
-  }
-
   componentDidUpdate(prevProps) {
     if (
       prevProps.crossChainTransactionId !== this.props.crossChainTransactionId
@@ -46,6 +42,10 @@ export default class CrossSwapProcessSlide extends Component {
         complete: false,
       });
     }
+  }
+
+  componentWillUnmount() {
+    this.subNxtpUpdated.unsubscribe();
   }
 
   completeProcess(hash) {
@@ -97,43 +97,39 @@ export default class CrossSwapProcessSlide extends Component {
       {
         loading: true,
       },
-      function () {
+      () => {
         TxBridgeManager.transferStepOne(this.props.crossChainTransactionId)
-          .then(
-            function (data) {
-              Metrics.track('bridge-started', {
-                toChain: this.props.toChain,
-                fromChain: this.props.fromChain,
-                from: this.props.from,
-                to: this.props.to,
-                fromAmont: this.props.fromAmount,
-              });
+          .then((data) => {
+            Metrics.track('bridge-started', {
+              toChain: this.props.toChain,
+              fromChain: this.props.fromChain,
+              from: this.props.from,
+              to: this.props.to,
+              fromAmont: this.props.fromAmount,
+            });
 
-              if (
-                TxBridgeManager.twoStepTransferRequired(
-                  this.props.crossChainTransactionId,
-                )
-              ) {
-                // do nothing.
-                // Waiting for events to indicate ready for Step2
-              } else {
-                this.completeProcess(data.transactionHash);
-              }
-            }.bind(this),
-          )
-          .catch(
-            function (e) {
-              console.error('#### swap failed from catch ####', e);
+            if (
+              TxBridgeManager.twoStepTransferRequired(
+                this.props.crossChainTransactionId,
+              )
+            ) {
+              // do nothing.
+              // Waiting for events to indicate ready for Step2
+            } else {
+              this.completeProcess(data.transactionHash);
+            }
+          })
+          .catch((e) => {
+            console.error('#### swap failed from catch ####', e);
 
-              this.props.handleTransactionComplete(false, undefined);
+            this.props.handleTransactionComplete(false, undefined);
 
-              this.setState({
-                loading: false,
-                errored: true,
-              });
-            }.bind(this),
-          );
-      }.bind(this),
+            this.setState({
+              loading: false,
+              errored: true,
+            });
+          });
+      },
     );
   }
 
@@ -142,36 +138,32 @@ export default class CrossSwapProcessSlide extends Component {
       {
         loading: true,
       },
-      function () {
+      () => {
         TxBridgeManager.transferStepTwo(this.props.crossChainTransactionId)
-          .then(
-            function () {
-              Metrics.track('bridge-complete', {
-                toChain: this.props.toChain,
-                fromChain: this.props.fromChain,
-                from: this.props.from,
-                to: this.props.to,
-                fromAmont: this.props.fromAmount,
-              });
+          .then(() => {
+            Metrics.track('bridge-complete', {
+              toChain: this.props.toChain,
+              fromChain: this.props.fromChain,
+              from: this.props.from,
+              to: this.props.to,
+              fromAmont: this.props.fromAmount,
+            });
 
-              this.setState({
-                loading: false,
-              });
-            }.bind(this),
-          )
-          .catch(
-            function (e) {
-              console.error('#### swap failed from catch ####', e);
+            this.setState({
+              loading: false,
+            });
+          })
+          .catch((e) => {
+            console.error('#### swap failed from catch ####', e);
 
-              this.props.handleTransactionComplete(false, undefined);
+            this.props.handleTransactionComplete(false, undefined);
 
-              this.setState({
-                loading: false,
-                errored: true,
-              });
-            }.bind(this),
-          );
-      }.bind(this),
+            this.setState({
+              loading: false,
+              errored: true,
+            });
+          });
+      },
     );
   }
 
@@ -181,12 +173,11 @@ export default class CrossSwapProcessSlide extends Component {
 
   hasSufficientBalance() {
     if (this.props.availableBalance) {
-      var balBN = BN(this.props.availableBalance);
-      var fromBN = BN(this.props.fromAmount);
+      const balBN = BN(this.props.availableBalance);
+      const fromBN = BN(this.props.fromAmount);
       return fromBN.lte(balBN);
-    } else {
-      return false;
     }
+    return false;
   }
 
   allowSwap() {
@@ -203,7 +194,7 @@ export default class CrossSwapProcessSlide extends Component {
         <div className="level is-mobile">
           <div className="level-left">
             <div className="level-item chain-icon">
-              <TokenIconImg size={'35'} imgSrc={this.props.fromChain.logoURI} />
+              <TokenIconImg size="35" imgSrc={this.props.fromChain.logoURI} />
             </div>
             <TokenIconBalanceGroupView
               network={this.props.fromChain}
@@ -227,7 +218,7 @@ export default class CrossSwapProcessSlide extends Component {
                   )}
                 >
                   <span className="icon">
-                    <ion-icon name="warning-outline"></ion-icon>
+                    <ion-icon name="warning-outline" />
                   </span>
                   <span>Insufficient funds</span>
                 </div>
@@ -239,13 +230,13 @@ export default class CrossSwapProcessSlide extends Component {
         <hr />
 
         <div className="text-gray-stylized">
-          <span>You Recieve</span>
+          <span>You Receive</span>
         </div>
 
         <div className="level is-mobile">
           <div className="level-left">
             <div className="level-item chain-icon">
-              <TokenIconImg size={'35'} imgSrc={this.props.toChain.logoURI} />
+              <TokenIconImg size="35" imgSrc={this.props.toChain.logoURI} />
             </div>
             <TokenIconBalanceGroupView
               network={this.props.toChain}
@@ -272,7 +263,7 @@ export default class CrossSwapProcessSlide extends Component {
     return (
       <div className={classnames('centered-view')}>
         <div className="icon">
-          <ion-icon name="hourglass-outline"></ion-icon>
+          <ion-icon name="hourglass-outline" />
         </div>
         <div className="title">
           {this.state.finishable ? 'Finalizing Transfer' : 'Starting Transfer'}
@@ -297,7 +288,7 @@ export default class CrossSwapProcessSlide extends Component {
       return <div />;
     }
 
-    var bodyContent;
+    let bodyContent;
 
     if (this.state.loading) {
       bodyContent = this.renderLoading();
@@ -316,7 +307,7 @@ export default class CrossSwapProcessSlide extends Component {
                     className="icon ion-icon clickable"
                     onClick={this.handleBack}
                   >
-                    <ion-icon name="arrow-back-outline"></ion-icon>
+                    <ion-icon name="arrow-back-outline" />
                   </span>
                 </div>
               </div>
@@ -332,6 +323,7 @@ export default class CrossSwapProcessSlide extends Component {
 
           <div>
             <button
+              type="button"
               className={classnames(
                 'button is-primary is-fullwidth is-medium',
                 {
