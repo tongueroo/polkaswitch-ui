@@ -62,4 +62,38 @@ export default {
       return null;
     }
   },
+  // fetch available chains from coingecko
+  fetchAssetPlatforms: async function () {
+    const data = await this.fetchData(`asset_platforms`);
+    if (data) {
+      return data;
+    } else {
+      return [];
+    }
+  },
+  fetchTokens: async function (chainId) {
+    const data = await this.fetchData(
+      `coins/list?include_platform=true&include_symbol=true&asset_platform_id=${chainId}`,
+    );
+    if (data) {
+      return data;
+    } else {
+      return [];
+    }
+  },
+  fetchTokenList: async function (chainId) {
+    const assetPlatforms = await this.fetchAssetPlatforms();
+
+    const chainData = assetPlatforms.find(
+      (chain) => chain.chain_identifier === chainId,
+    );
+
+    if (!chainData) {
+      return [];
+    }
+
+    const tokens = await this.fetchTokens(chainData.id);
+
+    return tokens;
+  },
 };
