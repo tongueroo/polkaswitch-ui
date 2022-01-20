@@ -94,6 +94,7 @@ export default {
 
     const tokens = await this.fetchTokens(chainData.id);
 
+    // update token format
     return tokens.map((token) => {
       const address = token.platforms[chainData.id];
 
@@ -101,6 +102,7 @@ export default {
         ...token,
         chainId,
         address,
+        decimals: 18,
       };
     });
   },

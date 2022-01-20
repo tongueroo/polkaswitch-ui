@@ -113,11 +113,11 @@
       }
     },
     "defaultPair": {
-      "to": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+      "to": "USDT",
+      "from": "MATIC"
     },
     "topTokens": [
-      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "MATIC",
       "0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
       "0xb33EaAd8d922B1083446DC23f610c2567fB5180f",
       "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
@@ -163,11 +163,11 @@
       }
     },
     "defaultPair": {
-      "to": "0x55d398326f99059fF775485246999027B3197955",
-      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+      "to": "USDT",
+      "from": "BNB"
     },
     "topTokens": [
-      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "BNB",
       "0x55d398326f99059fF775485246999027B3197955",
       "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
       "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
@@ -213,11 +213,11 @@
       }
     },
     "defaultPair": {
-      "to": "0xc7198437980c041c805a1edcba50c1ce5db95118",
-      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+      "to": "USDT",
+      "from": "AVAX"
     },
     "topTokens": [
-      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "AVAX",
       "0xc7198437980c041c805a1edcba50c1ce5db95118",
       "0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15",
       "0x408D4cD0ADb7ceBd1F1A1C33A0Ba2098E1295bAB",
@@ -262,11 +262,11 @@
       }
     },
     "defaultPair": {
-      "to": "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
-      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+      "to": "USDT",
+      "from": "xDai"
     },
     "topTokens": [
-      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "xDai",
       "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
       "0x4ECaBa5870353805a9F068101A40E0f32ed605C6",
       "0x8e5bBbb09Ed1ebdE8674Cda39A0c169401db4252",
@@ -311,11 +311,11 @@
       }
     },
     "defaultPair": {
-      "to": "0x04068da6c83afcfa0e13ba15a6696662335d5b75",
-      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+      "to": "USDT",
+      "from": "FTM"
     },
     "topTokens": [
-      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "FTM",
       "0x04068da6c83afcfa0e13ba15a6696662335d5b75",
       "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E",
       "0x321162Cd933E2Be498Cd2267a90534A804051b11",
@@ -358,11 +358,11 @@
       }
     },
     "defaultPair": {
-      "to": "0x6bD193Ee6D2104F14F94E2cA6efefae561A4334B",
-      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+      "to": "USDT",
+      "from": "MOVR"
     },
     "topTokens": [
-      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "MOVR",
       "0x6bD193Ee6D2104F14F94E2cA6efefae561A4334B",
       "0xB44a9B6905aF7c801311e8F4E76932ee959c663C",
       "0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D",
@@ -402,11 +402,11 @@
       }
     },
     "defaultPair": {
-      "to": "0xEf977d2f931C1978Db5F6747666fa1eACB0d0339",
-      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+      "to": "USDT",
+      "from": "ONE"
     },
     "topTokens": [
-      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "ONE",
       "0xEf977d2f931C1978Db5F6747666fa1eACB0d0339",
       "0x985458E523dB3d53125813eD68c274899e9DfAb4",
       "0x3C2B8Be99c50593081EAA2A724F0B8285F5aba8f",
@@ -446,11 +446,11 @@
       }
     },
     "defaultPair": {
-      "to": "0xb12bfca5a55806aaf64e99521918a4bf0fc40802",
-      "from": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+      "to": "USDT",
+      "from": "aETH"
     },
     "topTokens": [
-      "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "aETH",
       "0xb12bfca5a55806aaf64e99521918a4bf0fc40802",
       "0x4988a896b1227218e4a686fde5eabdcabd91571f",
       "0x8bec47865ade3b172a928df8f990bc7f2a3b9f79",
