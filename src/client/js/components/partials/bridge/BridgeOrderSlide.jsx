@@ -86,6 +86,7 @@ export default class BridgeOrderSlide extends Component {
       {
         errored: false,
         calculatingSwap: true,
+        availableRoutes: []
       },
       function (_timeNow, _attempt, _cb) {
         var fromAmountBN = window.ethers.utils.parseUnits(
@@ -496,10 +497,10 @@ export default class BridgeOrderSlide extends Component {
           <div
             className={classnames(
               'hint--large',
-              'token-dist-expand-wrapper expand',
+              'token-dist-expand-wrapper',
               {
-                //"hint--top": this.props.swapDistribution,
-                //"expand": this.props.swapDistribution
+                "hint--top": this.state.availableRoutes.length > 0,
+                "expand": this.state.availableRoutes.length > 0
               },
             )}
           >
@@ -511,6 +512,7 @@ export default class BridgeOrderSlide extends Component {
               <span className="hint-icon">?</span>
             </div>
             <AvailableRoutes
+              loading={this.state.calculatingSwap}
               to={this.props.to}
               from={this.props.from}
               toChain={this.props.toChain}

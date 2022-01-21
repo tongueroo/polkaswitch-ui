@@ -358,9 +358,10 @@ export default class BridgeWidget extends Component {
     const alt = this.state.searchTarget === 'from' ? 'to' : 'from';
 
     // if you select the same token pair, do a swap instead
-    if (this.state[alt].address === token.address) {
-      return this.onSwapTokens();
-    }
+    // TODO disable this for now.
+    //if (this.state[alt].address === token.address) {
+    //return this.onSwapTokens();
+    //}
 
     const _s = {
       showSearch: false,
@@ -369,6 +370,13 @@ export default class BridgeWidget extends Component {
     };
 
     _s[this.state.searchTarget] = token;
+
+    // TODO temporarily match the same token pair on the opposite network for the reduced
+    // stable coin token list
+    let foundToken = TokenListManager.findTokenById(token.symbol, this.state[alt + 'Chain']);
+    if (foundToken) {
+      _s[alt] = foundToken;
+    }
 
     if (this.state.searchTarget === 'from') {
       _s.fromAmount = SwapFn.validateEthValue(token, this.state.fromAmount);

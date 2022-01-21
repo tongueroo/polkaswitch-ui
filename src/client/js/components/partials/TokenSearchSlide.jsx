@@ -17,7 +17,7 @@ export default class TokenSearchSlide extends Component {
     // passing undefined, will default to the original network list.
     // we only want to show the cross-chain tokens from the sending chain
     const tokenList =
-      this.props.isCrossChain && this.props.isFrom
+      this.props.isCrossChain // TODO always show reduced list; && this.props.isFrom
         ? crossChainTokens
         : undefined;
 

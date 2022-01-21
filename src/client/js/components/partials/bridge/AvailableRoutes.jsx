@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'underscore';
+import classnames from 'classnames';
 import TokenListManager from '../../../utils/tokenList';
 import RouteItemWrapper from './RouteItemWrapper';
 
@@ -9,6 +10,7 @@ export default function AvailableRoutes(props) {
 
   const routes = _.map(props.routes, function(v, i) {
     var route = [];
+    var targetBridgeToken = 'USDC';
 
     route.push({
       type: 'token-network',
@@ -22,23 +24,8 @@ export default function AvailableRoutes(props) {
       }
     });
 
-    if (props.from.symbol != props.to.symbol) {
-
-    }
-
-    if (v === "connext") {
-      return [
-        {
-          type: 'token-network',
-          token: {
-            amount: props.fromAmount,
-            name: props.from.symbol,
-            logoURI: props.from.logoURI
-          },
-          network: {
-            name: props.fromChain.name
-          }
-        },
+    if (!GENERIC_SUPPORTED_BRIDGE_TOKENS.includes(props.from.symbol.toUpperCase())) {
+      route = route.concat([
         {
           type: "swap",
           data: {
@@ -48,52 +35,75 @@ export default function AvailableRoutes(props) {
         {
           type: 'token-network',
           token: {
-            amount: 1475.27,
+            amount: props.fromAmount,
             name: 'USDC',
             logoURI: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png'
           },
           network: {
             name: 'Polygon'
           }
-        },
-        {
-          type: "bridge",
-          data: {
-            fee: 0.05
-          }
-        },
-        {
-          type: 'token-network',
-          token: {
-            amount: props.toAmount,
-            name: props.to.symbol,
-            logoURI: props.to.logoURI
-          },
-          network: {
-            name: props.toChain.name
-          }
-        },
-        {
-          type: 'additional',
-          fee: 0.0051232,
-          duration: '-5 Minutes'
         }
-      ];
-    } else if (v === "hop") {
-    };
+      ]);
+    } else {
+      targetBridgeToken = props.from.symbol.toUpperCase();
+    }
+
+    route.push({
+      type: "bridge",
+      data: {
+        fee: 0.05
+      }
+    });
+
+    if (targetBridgeToken != props.to.symbol.toUpperCase()) {
+      route.push({
+        type: "swap",
+        data: {
+          fee: 0.39
+        }
+      });
+    }
+
+    route = route.concat([
+      {
+        type: 'token-network',
+        token: {
+          amount: props.toAmount,
+          name: props.to.symbol,
+          logoURI: props.to.logoURI
+        },
+        network: {
+          name: props.toChain.name
+        }
+      },
+      {
+        type: 'additional',
+        fee: 0.0051232,
+        duration: '-5 Minutes'
+      }
+    ]);
+
+    return route;
   });
 
   return (
     <div
-      className="token-dist-wrapper control"
+      className={classnames("token-dist-wrapper control", { "is-hidden": routes.length === 0 })}
       aria-label="Available routes for the swap"
     >
-      {routes.length > 0 &&
-        _.map(routes, function (item, i) {
-          return (
-            <RouteItemWrapper key={i} data={item} index={i}></RouteItemWrapper>
-          );
+      <div
+        className={classnames('loader-wrapper', {
+          'is-active': props.loading,
         })}
-    </div>
+      >
+        <div className="loader is-loading"></div>
+      </div>
+      {routes.length > 0 &&
+          _.map(routes, function (item, i) {
+            return (
+              <RouteItemWrapper key={i} data={item} index={i}></RouteItemWrapper>
+            );
+          })}
+        </div>
   );
 }
