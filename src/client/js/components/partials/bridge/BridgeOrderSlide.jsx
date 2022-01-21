@@ -128,6 +128,13 @@ export default class BridgeOrderSlide extends Component {
       console.error(
         'SwapOrderSlide: Wallet not connected, skipping crossChainEstimate',
       );
+
+      this.setState({
+        calculatingSwap: false,
+        errored: true,
+        errorMsg: 'Please connect wallet first',
+      });
+
       return false;
     }
 
