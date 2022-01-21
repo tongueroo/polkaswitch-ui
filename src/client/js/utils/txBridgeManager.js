@@ -11,20 +11,12 @@ import CBridgeUtils from './cbridge';
 import Nxtp from './nxtp';
 import Storage from './storage';
 
-// hard-code for now. I could not find this easily as a function in HopSDK
-const HOP_SUPPORTED_BRIDGE_TOKENS = [
-  'USDC',
-  'USDT',
-  'DAI',
-  // TODO This is list is longer and is dynamically available per network pair.
-  // Let's keep it simple for now
-  // ... "MATIC", "ETH", "WBTC"
-];
-
 // hard-code for now, the HopSDK has "supportedChains", but let's integrate later.
 const HOP_SUPPORTED_CHAINS = [1, 137, 100, 10, 42161];
 
 const CBRIDGE_SUPPORTED_CHAINS = [1, 10, 56, 137, 250, 42161, 43114];
+
+const CONNEXT_SUPPORTED_CHAINS = [1, 56, 137, 100, 250, 42161, 43114];
 
 const CONNEXT_SUPPORTED_BRIDGE_TOKENS = [
   'USDC',
@@ -35,7 +27,23 @@ const CONNEXT_SUPPORTED_BRIDGE_TOKENS = [
   // ... "MATIC", "ETH", "WBTC", "BNB"
 ];
 
-const CONNEXT_SUPPORTED_CHAINS = [1, 56, 137, 100, 250, 42161, 43114];
+// hard-code for now. I could not find this easily as a function in HopSDK
+const HOP_SUPPORTED_BRIDGE_TOKENS = [
+  'USDC',
+  'USDT',
+  'DAI',
+  // TODO This is list is longer and is dynamically available per network pair.
+  // Let's keep it simple for now
+  // ... "MATIC", "ETH", "WBTC"
+];
+
+const CBRIDGE_SUPPORTED_BRIDGE_TOKENS = [
+  'USDC',
+  'USDT'
+  // TODO This is list is longer and is dynamically available per network pair.
+  // Let's keep it simple for now
+  // ... "MATIC", "ETH", "WBTC"
+];
 
 export default {
   _signerAddress: '',
@@ -106,6 +114,12 @@ export default {
     if (targetChainIds.every(e => HOP_SUPPORTED_CHAINS.includes(e))) {
       if (to.symbol === from.symbol && targetTokenIds.every(e => HOP_SUPPORTED_BRIDGE_TOKENS.includes(e))) {
         bridges.push("hop");
+      }
+    }
+
+    if (targetChainIds.every(e => CBRIDGE_SUPPORTED_CHAINS.includes(e))) {
+      if (to.symbol === from.symbol && targetTokenIds.every(e => CBRIDGE_SUPPORTED_BRIDGE_TOKENS.includes(e))) {
+        bridges.push("cbridge");
       }
     }
 

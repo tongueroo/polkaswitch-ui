@@ -155,7 +155,12 @@ export default class BridgeOrderSlide extends Component {
       return false;
     }
 
-    var bridgeRoutes = TxBridgeManager.supportedBridges();
+    var bridgeRoutes = TxBridgeManager.supportedBridges(
+      this.props.to,
+      this.props.toChain,
+      this.props.from,
+      this.props.fromChain,
+    );
 
     TxBridgeManager.getEstimate(
       +this.props.fromChain.chainId,
@@ -188,7 +193,7 @@ export default class BridgeOrderSlide extends Component {
 
               this.setState(
                 {
-                  AvailableRoutes: bridgeRoutes,
+                  availableRoutes: bridgeRoutes,
                   calculatingSwap: false,
                 },
                 () => {
@@ -505,7 +510,13 @@ export default class BridgeOrderSlide extends Component {
               <span>Available Routes</span>
               <span className="hint-icon">?</span>
             </div>
-            <AvailableRoutes routes={this.props.swapDistribution} />
+            <AvailableRoutes
+              to={this.props.to}
+              from={this.props.from}
+              toChain={this.props.toChain}
+              fromChain={this.props.fromChain}
+              fromAmount={this.props.fromAmount}
+              routes={this.state.availableRoutes} />
           </div>
 
           <div className="bridge-order-btn-wrapper">

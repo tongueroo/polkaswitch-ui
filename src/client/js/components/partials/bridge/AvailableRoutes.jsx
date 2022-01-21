@@ -25,9 +25,6 @@ export default function AvailableRoutes(props) {
     if (props.from.symbol != props.to.symbol) {
 
     }
-      if (targetTokenIds.every(e => HOP_SUPPORTED_BRIDGE_TOKENS.includes(e))) {
-        bridges.push("hop");
-      }
 
     if (v === "connext") {
       return [
