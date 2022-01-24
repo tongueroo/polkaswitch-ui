@@ -55,7 +55,7 @@ window.SwapFn = {
   getContract() {
     const signer = Wallet.getProvider().getSigner();
     const currentNetworkConfig = TokenListManager.getCurrentNetworkConfig();
-    const currentNetworkName = currentNetworkConfig.name;
+    const { chainId } = currentNetworkConfig;
     const abiName = currentNetworkConfig.abi;
     const recipient = Wallet.currentAddress();
     const contract = new Contract(
@@ -64,7 +64,7 @@ window.SwapFn = {
       signer
     );
 
-    return { currentNetworkName, contract, recipient };
+    return { chainId, contract, recipient };
   },
 
   isNetworkGasDynamic() {
@@ -112,11 +112,20 @@ window.SwapFn = {
     amountBN,
     distribution
   ) {
-    const { currentNetworkName, contract, recipient } = this.getContract();
-    switch (currentNetworkName) {
-      case 'Polygon':
+    const { chainId, contract, recipient } = this.getContract();
+    switch (chainId) {
+      case '56':
+        return this.estimateGasWithBscAbi(
+          contract,
+          fromToken,
+          toToken,
+          amountBN,
+          recipient,
+          distribution
+        );
+      case '137':
         return this.estimateGasWithPolygonAbi(contract, fromToken, toToken, amountBN, distribution);
-      case 'Moonriver':
+      case '1285':
         return this.estimateGasWithMoonriverAbi(
           contract,
           fromToken,
@@ -125,11 +134,11 @@ window.SwapFn = {
           recipient,
           distribution
         );
-      case 'xDai':
+      case '100':
         return this.estimateGasWithXdaiAbi(contract, fromToken, toToken, amountBN, distribution);
-      case 'Harmony':
+      case '1666600000':
         return this.estimateGasWithHarmonyAbi(contract, fromToken, toToken, amountBN, distribution);
-      case 'Aurora':
+      case '1313161554':
         return this.estimateGasWithAuroraAbi(contract, fromToken, toToken, amountBN, distribution);
       default:
         return this.estimateGasWithOneSplitAbi(
@@ -342,7 +351,7 @@ window.SwapFn = {
 
   swap(fromToken, toToken, amountBN) {
     console.log(`Calling SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
-    const { currentNetworkName, contract, recipient } = this.getContract();
+    const { chainId, contract, recipient } = this.getContract();
 
     return this.calculateMinReturn(
       fromToken, toToken, amountBN
@@ -352,8 +361,19 @@ window.SwapFn = {
           uint256 returnAmount
         )
       */
-      switch (currentNetworkName) {
-        case 'Polygon':
+      switch (chainId) {
+        case '56':
+          return this.swapWithBscAbi(
+            contract,
+            fromToken,
+            toToken,
+            amountBN,
+            expectedAmount,
+            minReturn,
+            recipient,
+            distribution
+          );
+        case '137':
           return this.swapWithPolygonAbi(
             contract,
             fromToken,
@@ -363,7 +383,7 @@ window.SwapFn = {
             minReturn,
             distribution
           );
-        case 'Moonriver':
+        case '1287':
           return this.swapWithMoonriverAbi(
             contract,
             fromToken,
@@ -373,7 +393,7 @@ window.SwapFn = {
             recipient,
             distribution
           );
-        case 'xDai':
+        case '100':
           return this.swapWithXdaiAbi(
             contract,
             fromToken,
@@ -382,7 +402,7 @@ window.SwapFn = {
             minReturn,
             distribution
           );
-        case 'Harmony':
+        case '1666600000':
           return this.swapWithHarmonyAbi(
             contract,
             fromToken,
@@ -391,7 +411,7 @@ window.SwapFn = {
             minReturn,
             distribution
           );
-        case 'Aurora':
+        case '1313161554':
           return this.swapWithAuroraAbi(
             contract,
             fromToken,
@@ -432,6 +452,29 @@ window.SwapFn = {
       toToken.address,
       amountBN, // uint256 in wei
       Utils.parseUnits(minReturn, toToken.decimals), // minReturn
+      distribution,
+      0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+      this.getGasParams(fromToken, amountBN)
+    ).then((transaction) => this.returnSwapResult(transaction, fromToken, toToken, amountBN));
+  },
+
+  swapWithBscAbi(
+    contract,
+    fromToken,
+    toToken,
+    amountBN,
+    expectedAmount,
+    minReturn,
+    recipient,
+    distribution
+  ) {
+    return contract.swap(
+      fromToken.address,
+      toToken.address,
+      amountBN, // uint256 in wei
+      Utils.parseUnits(expectedAmount, toToken.decimals), // expectedReturn
+      Utils.parseUnits(minReturn, toToken.decimals), // minReturn
+      recipient,
       distribution,
       0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
       this.getGasParams(fromToken, amountBN)
@@ -574,6 +617,20 @@ window.SwapFn = {
       toToken.address,
       amountBN, // uint256 in wei
       BigNumber.from(0),
+      distribution,
+      0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+      this.getGasParams(fromToken, amountBN)
+    ).then((gasUnitsEstimated) => this.returnEstimatedGasResult(gasUnitsEstimated));
+  },
+
+  estimateGasWithBscAbi(contract, fromToken, toToken, amountBN, recipient, distribution) {
+    return contract.estimateGas.swap(
+      fromToken.address,
+      toToken.address,
+      amountBN, // uint256 in wei
+      BigNumber.from(0), // expectedReturn
+      BigNumber.from(0), // minReturn
+      recipient,
       distribution,
       0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
       this.getGasParams(fromToken, amountBN)
