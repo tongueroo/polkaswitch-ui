@@ -11,6 +11,8 @@ import CBridgeUtils from './cbridge';
 import Nxtp from './nxtp';
 import Storage from './storage';
 
+const BRIDGES = ['hop', 'cbridge', 'connext'];
+
 // hard-code for now, the HopSDK has "supportedChains", but let's integrate later.
 const HOP_SUPPORTED_CHAINS = [1, 137, 100, 10, 42161];
 
@@ -48,8 +50,20 @@ const CBRIDGE_SUPPORTED_BRIDGE_TOKENS = [
 export default {
   _signerAddress: '',
   _queue: {},
+  _routes: {},
 
   async initialize() {},
+
+  // TODO merge into getBridgeInterface, to avoid conflicts
+  getBridge(type) {
+    if (type === 'hop') {
+      return HopUtils;
+    }
+    if (type === 'cbridge') {
+      return CBridgeUtils;
+    }
+    return Nxtp;
+  },
 
   getBridgeInterface(nonce) {
     const tx = this.getTx(nonce);
@@ -126,9 +140,6 @@ export default {
     return bridges;
   },
 
-  isSwapRequiredForBridge: function(to, toChain, from, fromChain) {
-  },
-
   async getEstimate(
     sendingChainId,
     sendingAssetId,
@@ -184,6 +195,44 @@ export default {
       amountBN,
       receivingAddress,
     );
+  },
+
+  getAllEstimates(to, toChain, from, fromChain, amountBN, receivingAddress) {
+    const parentTransactionId = getRandomBytes32();
+    this._routes[parentTransactionId] = {};
+
+    var supportedBridges = this.supportedBridges(to, toChain, from, fromChain);
+
+    return supportedBridges.map(bridgeType => {
+      var txData = {
+        bridge: bridgeType,
+        sendingChainId: +fromChain.chainId,
+        sendingAssetId: from.address,
+        receivingChainId: +toChain.chainId,
+        receivingAssetId: to.address,
+        amountBN,
+        receivingAddress
+      }
+
+      const childTransactionId = getRandomBytes32();
+      this._routes[parentTransactionId][bridgeType] = _.extend({}, txData);
+      this._queue[childTransactionId] = _.extend({}, txData);
+
+      return this.getBridge(bridgeType).getEstimate(
+        childTransactionId,
+        +fromChain.chainId,
+        from.address,
+        +toChain.chainId,
+        to.address,
+        amountBN,
+        receivingAddress
+      ).then((estimate) => {
+        this._routes[parentTransactionId][bridgeType].estimate = estimate;
+        this._queue[childTransactionId].estimate = estimate;
+
+        return this._routes[parentTransactionId][bridgeType];
+      });
+    });
   },
 
   transferStepOne(transactionId) {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from 'underscore';
 import classnames from 'classnames';
 import BN from 'bignumber.js';
+import { BigNumber, constants, Signer, utils } from 'ethers';
 import * as Sentry from '@sentry/react';
 import TokenIconBalanceGroupView from '../TokenIconBalanceGroupView';
 import NetworkDropdown from '../NetworkDropdown';
@@ -19,6 +20,7 @@ export default class BridgeOrderSlide extends Component {
     this.state = {
       calculatingSwap: false,
       errored: false,
+      allEstimates: [],
       availableRoutes: [],
       errorMsg: false,
     };
@@ -163,19 +165,26 @@ export default class BridgeOrderSlide extends Component {
       this.props.fromChain,
     );
 
-    TxBridgeManager.getEstimate(
-      +this.props.fromChain.chainId,
-      this.props.from.address,
-      +this.props.toChain.chainId,
-      this.props.to.address,
+    var allEstimatesFn = TxBridgeManager.getAllEstimates(
+      this.props.to,
+      this.props.toChain,
+      this.props.from,
+      this.props.fromChain,
       fromAmountBN,
       Wallet.currentAddress(),
-    )
+    );
+
+    Promise.allSettled(allEstimatesFn)
       .then(
-        function (_timeNow3, _cb3, response) {
+        function (_timeNow3, _cb3, results) {
           if (this.calculatingSwapTimestamp !== _timeNow3) {
             return;
           }
+
+          var successfulEstimates = _.map(_.where(results, { status: "fulfilled" }), function(v) {
+            return v.value;
+          });
+          var response = successfulEstimates[0].estimate;
 
           Wallet.getBalance(this.props.from)
             .then((bal) => {
@@ -194,7 +203,7 @@ export default class BridgeOrderSlide extends Component {
 
               this.setState(
                 {
-                  availableRoutes: bridgeRoutes,
+                  availableRoutes: successfulEstimates,
                   calculatingSwap: false,
                 },
                 () => {
@@ -503,11 +512,9 @@ export default class BridgeOrderSlide extends Component {
                 "expand": this.state.availableRoutes.length > 0
               },
             )}
+            aria-label="We have queried multiple bridges to find the best possible routes for this swap. Choose a route that either favours speed or pricing"
           >
-            <div
-              className="token-dist-hint-text"
-              aria-label="We have queried multiple exchanges to find the best possible pricing for this swap. The below routing chart shows which exchanges we used to achieve the best swap."
-            >
+            <div className="token-dist-hint-text">
               <span>Available Routes</span>
               <span className="hint-icon">?</span>
             </div>

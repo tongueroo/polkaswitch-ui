@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import classnames from 'classnames';
+import { BigNumber, constants, providers, Signer, utils } from 'ethers';
 import TokenListManager from '../../../utils/tokenList';
 import RouteItemWrapper from './RouteItemWrapper';
 
@@ -10,6 +11,7 @@ export default function AvailableRoutes(props) {
 
   const routes = _.map(props.routes, function(v, i) {
     var route = [];
+    var bridgeType = v.bridge;
     var targetBridgeToken = 'USDC';
 
     route.push({
@@ -24,7 +26,8 @@ export default function AvailableRoutes(props) {
       }
     });
 
-    if (!GENERIC_SUPPORTED_BRIDGE_TOKENS.includes(props.from.symbol.toUpperCase())) {
+    if (bridgeType === "connext" &&
+      GENERIC_SUPPORTED_BRIDGE_TOKENS.includes(props.from.symbol.toUpperCase())) {
       route = route.concat([
         {
           type: "swap",
@@ -51,11 +54,13 @@ export default function AvailableRoutes(props) {
     route.push({
       type: "bridge",
       data: {
+        name: bridgeType.toUpperCase(),
         fee: 0.05
       }
     });
 
-    if (targetBridgeToken != props.to.symbol.toUpperCase()) {
+    if (bridgeType === "connext" &&
+      targetBridgeToken != props.to.symbol.toUpperCase()) {
       route.push({
         type: "swap",
         data: {
@@ -68,7 +73,10 @@ export default function AvailableRoutes(props) {
       {
         type: 'token-network',
         token: {
-          amount: props.toAmount,
+          amount: utils.formatUnits(
+            v.estimate?.returnAmount ?? constants.Zero,
+            props.to.decimals,
+          ),
           name: props.to.symbol,
           logoURI: props.to.logoURI
         },

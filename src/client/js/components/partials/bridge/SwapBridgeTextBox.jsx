@@ -17,7 +17,7 @@ export default function SwapBridgeTextBox(props) {
               alt={info.type === 'swap' ? 'swap-box' : 'bridge_box'}
             />
             <div className="title">
-              {info.type === 'swap' ? 'Swap' : 'Bridge'}
+              {info.type === 'swap' ? 'Swap' : `${info.data.name} Bridge`}
             </div>
           </div>
           <div className="fee-wrapper">
