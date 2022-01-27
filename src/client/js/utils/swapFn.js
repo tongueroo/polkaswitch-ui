@@ -383,7 +383,7 @@ window.SwapFn = {
             minReturn,
             distribution
           );
-        case '1287':
+        case '1285':
           return this.swapWithMoonriverAbi(
             contract,
             fromToken,
