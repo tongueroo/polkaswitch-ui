@@ -441,7 +441,7 @@
       "chainName": "Aurora",
       "nativeCurrency": {
         "name": "ETH",
-        "symbol": "aETH",
+        "symbol": "ETH",
         "decimals": 18
       }
     },
