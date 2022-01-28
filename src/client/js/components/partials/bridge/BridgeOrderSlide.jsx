@@ -21,6 +21,7 @@ export default class BridgeOrderSlide extends Component {
       calculatingSwap: false,
       errored: false,
       allEstimates: [],
+      showRoutes: false,
       availableRoutes: [],
       errorMsg: false,
     };
@@ -141,30 +142,6 @@ export default class BridgeOrderSlide extends Component {
       return false;
     }
 
-    var bridgeSupported = TxBridgeManager.isSupported(
-      this.props.to,
-      this.props.toChain,
-      this.props.from,
-      this.props.fromChain,
-    );
-
-    if (!bridgeSupported[0]) {
-      this.setState({
-        calculatingSwap: false,
-        errored: true,
-        errorMsg: bridgeSupported[1],
-      });
-
-      return false;
-    }
-
-    var bridgeRoutes = TxBridgeManager.supportedBridges(
-      this.props.to,
-      this.props.toChain,
-      this.props.from,
-      this.props.fromChain,
-    );
-
     var allEstimatesFn = TxBridgeManager.getAllEstimates(
       this.props.to,
       this.props.toChain,
@@ -204,6 +181,7 @@ export default class BridgeOrderSlide extends Component {
               this.setState(
                 {
                   availableRoutes: successfulEstimates,
+                  showRoutes: true,
                   calculatingSwap: false,
                 },
                 () => {
@@ -508,8 +486,8 @@ export default class BridgeOrderSlide extends Component {
               'hint--large',
               'token-dist-expand-wrapper',
               {
-                "hint--top": this.state.availableRoutes.length > 0,
-                "expand": this.state.availableRoutes.length > 0
+                "hint--top": this.state.showRoutes,
+                "expand": this.state.showRoutes
               },
             )}
             aria-label="We have queried multiple bridges to find the best possible routes for this swap. Choose a route that either favours speed or pricing"
@@ -519,6 +497,7 @@ export default class BridgeOrderSlide extends Component {
               <span className="hint-icon">?</span>
             </div>
             <AvailableRoutes
+              showRoutes={this.state.showRoutes}
               loading={this.state.calculatingSwap}
               to={this.props.to}
               from={this.props.from}

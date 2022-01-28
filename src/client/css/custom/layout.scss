@@ -460,7 +460,8 @@ html, body {
 
 .bridge-column {
   flex: none;
-  width: 726px;
+  width: 100%;
+  max-width: 800px;
 }
 
 @media screen and (max-width: 768px) {

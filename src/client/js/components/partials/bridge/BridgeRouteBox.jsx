@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function SwapBridgeTextBox(props) {
+export default function BridgeRouteBox(props) {
   const info = props.info;
 
   return (

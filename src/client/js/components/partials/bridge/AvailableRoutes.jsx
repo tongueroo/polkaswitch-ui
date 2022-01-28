@@ -16,14 +16,9 @@ export default function AvailableRoutes(props) {
 
     route.push({
       type: 'token-network',
-      token: {
-        amount: props.fromAmount,
-        name: props.from.symbol,
-        logoURI: props.from.logoURI
-      },
-      network: {
-        name: props.fromChain.name
-      }
+      token: props.from,
+      amount: props.fromAmount,
+      network: props.fromChain
     });
 
     if (bridgeType === "connext" &&
@@ -37,14 +32,10 @@ export default function AvailableRoutes(props) {
         },
         {
           type: 'token-network',
-          token: {
-            amount: props.fromAmount,
-            name: 'USDC',
-            logoURI: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png'
-          },
-          network: {
-            name: 'Polygon'
-          }
+          // DEFAULT to using USDC as a the bridge
+          token: TokenListManager.findTokenById('USDC', props.fromChain),
+          amount: props.fromAmount,
+          network: props.fromChain
         }
       ]);
     } else {
@@ -72,21 +63,16 @@ export default function AvailableRoutes(props) {
     route = route.concat([
       {
         type: 'token-network',
-        token: {
-          amount: utils.formatUnits(
-            v.estimate?.returnAmount ?? constants.Zero,
-            props.to.decimals,
-          ),
-          name: props.to.symbol,
-          logoURI: props.to.logoURI
-        },
-        network: {
-          name: props.toChain.name
-        }
+        amount: utils.formatUnits(
+          v.estimate?.returnAmount ?? constants.Zero,
+          props.to.decimals,
+        ),
+        token: props.to,
+        network: props.toChain
       },
       {
         type: 'additional',
-        fee: 0.0051232,
+        fee: bridgeType === "connext" ? "High" : "Low",
         duration: '-5 Minutes'
       }
     ]);
@@ -96,7 +82,9 @@ export default function AvailableRoutes(props) {
 
   return (
     <div
-      className={classnames("token-dist-wrapper control", { "is-hidden": routes.length === 0 })}
+      className={classnames("token-dist-wrapper control", {
+        "is-hidden": !props.showRoutes
+      })}
       aria-label="Available routes for the swap"
     >
       <div

@@ -1,6 +1,7 @@
 import React from 'react';
 import TokenNetworkRouteBox from './TokenNetworkRouteBox';
-import SwapBridgeTextBox from './SwapBridgeTextBox';
+import BridgeRouteBox from './BridgeRouteBox';
+import SwapRouteBox from './SwapRouteBox';
 import AdditionalInfoItem from './AdditionalInfoItem';
 import DashedDivider from './DashedDivider';
 
@@ -28,7 +29,7 @@ export default function RouteItemView(props) {
                   key={index}
                   className="is-flex is-flex-direction-row is-align-items-center"
                 >
-                  <SwapBridgeTextBox info={item} />
+                  <SwapRouteBox info={item} />
                   {data.length - 2 !== index && <DashedDivider />}
                 </div>
               );
@@ -38,7 +39,7 @@ export default function RouteItemView(props) {
                   key={index}
                   className="is-flex is-flex-direction-row is-align-items-center"
                 >
-                  <SwapBridgeTextBox info={item} />
+                  <BridgeRouteBox info={item} />
                   {data.length - 2 !== index && <DashedDivider />}
                 </div>
               );
