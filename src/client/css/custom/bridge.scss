@@ -824,7 +824,6 @@ $bridge-widget-anim-timing: 300ms;
   }
 
   .bridge-route-item-wrapper {
-    overflow: hidden;
     height: 75px;
     display: flex;
     flex-direction: row;
@@ -851,6 +850,7 @@ $bridge-widget-anim-timing: 300ms;
     }
 
     label {
+      overflow: hidden;
       height: 100%;
       width: 100%;
       display: flex;
@@ -859,11 +859,12 @@ $bridge-widget-anim-timing: 300ms;
       border-radius: 12px;
       align-items: center;
       position: relative;
+      border: 2px solid var(--primary-background);
+
       &:after {
         width: 18px;
         height: 18px;
         content: '';
-        border: 2px solid #D1D7DC;
         background-color: #fff;
         background-image: url('data:image/svg+xml;utf8, <svg width="8" height="8" viewBox="0 -1 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M1 2.71427L3.18183 5L7 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> </svg>');
         background-repeat: no-repeat;
@@ -907,7 +908,7 @@ $bridge-widget-anim-timing: 300ms;
         min-width: 130px;
         margin-left: auto;
         background: white;
-        height: 70px;
+        height: 80px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -917,6 +918,7 @@ $bridge-widget-anim-timing: 300ms;
         padding-right: 10px;
         border-bottom-left-radius: 0;
         border-top-left-radius: 0;
+        box-shadow: 0 0 24px 10px #ececec8f;
 
         .fee-wrapper {
           display: flex;
