@@ -15,7 +15,7 @@ export default function TokenNetworkRouteBox(props) {
               <div className="amount">{info.amount}</div>
             </div>
           </div>
-          <div className="network-name">
+          <div className="network-name" style={{ backgroundColor: info.network.color }}>
             <div className="text">{info.network.name}</div>
           </div>
         </div>

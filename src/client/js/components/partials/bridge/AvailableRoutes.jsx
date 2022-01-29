@@ -45,7 +45,7 @@ export default function AvailableRoutes(props) {
     route.push({
       type: "bridge",
       data: {
-        name: bridgeType.toUpperCase(),
+        name: bridgeType[0].toUpperCase() + bridgeType.substring(1),
         fee: 0.05
       }
     });

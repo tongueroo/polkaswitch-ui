@@ -6,7 +6,7 @@ export default function SwapRouteBox(props) {
   return (
     <div className="swap-bridge-route-box">
       {info && (
-        <div>
+        <>
           <div className="title-wrapper">
             <img
               src={
@@ -28,7 +28,7 @@ export default function SwapRouteBox(props) {
                 : `${info.data.fee}%`}
             </span>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

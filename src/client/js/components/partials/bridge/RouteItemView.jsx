@@ -39,7 +39,7 @@ export default function RouteItemView(props) {
                   key={index}
                   className="is-flex is-flex-direction-row is-align-items-center"
                 >
-                  <BridgeRouteBox info={item} />
+                  <SwapRouteBox info={item} />
                   {data.length - 2 !== index && <DashedDivider />}
                 </div>
               );
