@@ -44,6 +44,7 @@ window.WalletJS = {
     window.xDaiAbi = await (await fetch('/abi/test/Xdai.json')).json();
     window.harmonyAbi = await (await fetch('/abi/test/Harmony.json')).json();
     window.auroraAbi = await (await fetch('/abi/test/Aurora.json')).json();
+    window.bscAbi = await (await fetch('/abi/test/Bsc.json')).json();
 
     EventManager.listenFor(
       'initiateWalletConnect',

@@ -5,6 +5,7 @@
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
     "name": "Ethereum",
     "native": true,
+    "decimals": 18,
     "symbol": "ETH"
   },
   {

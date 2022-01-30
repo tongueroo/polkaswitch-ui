@@ -90,11 +90,11 @@ window.TokenListManager = {
     }
 
     // xDai GasAPI has different fields
-    if (network.name === 'xDai') {
+    if (network.chainId === '100') {
       gasStats.fastest = gasStats.fast;
       gasStats.safeLow = gasStats.slow;
       gasStats.fast = gasStats.average;
-    } else if (network.name === 'Smart Chain') {
+    } else if (network.chainId === '56') {
       // Binance Smart Chain GasAPI has different fields
       if (!_.has(gasStats, 'safeLow')) {
         gasStats.safeLow = gasStats.standard;
