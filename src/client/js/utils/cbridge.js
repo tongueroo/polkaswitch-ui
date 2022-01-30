@@ -201,7 +201,7 @@ window.CBridgeUtils = {
 
     const nonce = Date.now();
 
-    bridgeContract.send(
+    const sendTxResponse = await bridgeContract.send(
       ownerAddress,
       sendingAsset.address,
       amountBN,

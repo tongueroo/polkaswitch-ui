@@ -217,7 +217,7 @@ export default {
       tx.receivingAssetId,
       tx.amountBN,
       tx.receivingAddress,
-      tx.maxSlippage,
+      tx.estimate.maxSlippage,
     );
   },
 
