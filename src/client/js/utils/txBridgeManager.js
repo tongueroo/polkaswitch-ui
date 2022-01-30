@@ -65,6 +65,7 @@ export default {
     return Nxtp;
   },
 
+  // TODO this is deprecated
   getBridgeInterface(nonce) {
     const tx = this.getTx(nonce);
     let { bridgeOption } = Storage.swapSettings;
@@ -80,38 +81,6 @@ export default {
       return CBridgeUtils;
     }
     return Nxtp;
-  },
-
-  isSupported(to, toChain, from, fromChain) {
-    const { bridgeOption } = Storage.swapSettings;
-
-    const targetChainIds = [+toChain.chainId, +fromChain.chainId];
-
-    if (bridgeOption === 'hop') {
-      if (!HOP_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
-        return [false, `${toChain.name} is not supported by Hop Bridge`];
-      }
-      if (!HOP_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
-        return [false, `${fromChain.name} is not supported by Hop Bridge`];
-      }
-      return [true, false];
-    }
-    if (bridgeOption === 'cbridge') {
-      if (!CBRIDGE_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
-        return [false, `${toChain.name} is not supported by Celer Bridge`];
-      }
-      if (!CBRIDGE_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
-        return [false, `${fromChain.name} is not supported by Celer Bridge`];
-      }
-      return [true, false];
-    }
-    if (!CONNEXT_SUPPORTED_CHAINS.includes(+toChain.chainId)) {
-      return [false, `${toChain.name} is not supported by Connext Bridge`];
-    }
-    if (!CONNEXT_SUPPORTED_CHAINS.includes(+fromChain.chainId)) {
-      return [false, `${fromChain.name} is not supported by Connext Bridge`];
-    }
-    return [true, false];
   },
 
   supportedBridges(to, toChain, from, fromChain) {
@@ -141,6 +110,7 @@ export default {
     return bridges;
   },
 
+  // TODO this is deprecated
   async getEstimate(
     sendingChainId,
     sendingAssetId,
