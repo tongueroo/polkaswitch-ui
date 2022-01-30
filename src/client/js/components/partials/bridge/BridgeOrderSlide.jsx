@@ -23,6 +23,7 @@ export default class BridgeOrderSlide extends Component {
       allEstimates: [],
       showRoutes: false,
       availableRoutes: [],
+      selectedRouteId: false,
       errorMsg: false,
     };
     this.calculatingSwapTimestamp = Date.now();
@@ -32,6 +33,7 @@ export default class BridgeOrderSlide extends Component {
     this.fetchCrossChainEstimate = this.fetchCrossChainEstimate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleMax = this.handleMax.bind(this);
+    this.handleRouteChange = this.handleRouteChange.bind(this);
     this.handleTokenSwap = this.handleTokenSwap.bind(this);
   }
 
@@ -172,8 +174,7 @@ export default class BridgeOrderSlide extends Component {
                   this.props.to.decimals,
                 ),
                 false,
-                window.ethers.utils.formatUnits(bal, this.props.from.decimals),
-                status,
+                window.ethers.utils.formatUnits(bal, this.props.from.decimals)
               );
 
               this.props.onCrossChainEstimateComplete(response.id);
@@ -348,6 +349,27 @@ export default class BridgeOrderSlide extends Component {
     }
   }
 
+  handleRouteChange(e) {
+    var transactionId = e.target.value;
+    const estimateTx = TxBridgeManager.getTx(transactionId).estimate;
+
+    this.setState({
+      selectedRouteId: transactionId
+    });
+
+    this.props.onSwapEstimateComplete(
+      this.props.fromAmount,
+      window.ethers.utils.formatUnits(
+        estimateTx.returnAmount ?? constants.Zero,
+        this.props.to.decimals,
+      ),
+      false,
+      this.props.availableBalance
+    );
+
+    this.props.onCrossChainEstimateComplete(transactionId);
+  }
+
   renderTokenInput(target, token) {
     if (!token) {
       return <div />;
@@ -504,6 +526,7 @@ export default class BridgeOrderSlide extends Component {
               toChain={this.props.toChain}
               fromChain={this.props.fromChain}
               fromAmount={this.props.fromAmount}
+              handleChange={this.handleRouteChange}
               routes={this.state.availableRoutes} />
           </div>
 

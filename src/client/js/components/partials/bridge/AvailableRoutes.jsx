@@ -77,7 +77,11 @@ export default function AvailableRoutes(props) {
       }
     ]);
 
-    return route;
+    return {
+      transactionId: v.estimate?.id,
+      route: route,
+      bridgeType: bridgeType
+    };
   });
 
   return (
@@ -97,7 +101,10 @@ export default function AvailableRoutes(props) {
       {routes.length > 0 &&
           _.map(routes, function (item, i) {
             return (
-              <RouteItemWrapper key={i} data={item} index={i}></RouteItemWrapper>
+              <RouteItemWrapper
+                handleChange={props.handleChange}
+                key={i} data={item} index={i}
+              ></RouteItemWrapper>
             );
           })}
         </div>
