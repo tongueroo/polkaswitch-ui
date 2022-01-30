@@ -27,6 +27,18 @@ export default class BridgeWidget extends Component {
       (v) => v.crossChainSupported,
     );
 
+    /*
+    // Move ETH to last, it has too high of fees
+    this.CROSS_CHAIN_NETWORKS.push(
+      this.CROSS_CHAIN_NETWORKS.splice(
+        _.findIndex(this.CROSS_CHAIN_NETWORKS, (v) => {
+          return +v.chainId === 1;
+        }),
+        1
+      )[0]
+    );
+    */
+
     const network = TokenListManager.getCurrentNetworkConfig();
     let mergeState = {};
     const toChain = this.CROSS_CHAIN_NETWORKS.find(
@@ -121,9 +133,9 @@ export default class BridgeWidget extends Component {
 
   handleNetworkChange(e) {
     const network = TokenListManager.getCurrentNetworkConfig();
-    const toChain = this.CROSS_CHAIN_NETWORKS.find(
-      (v) => v.chainId != network.chainId,
-    );
+    const toChain = this.state.toChain?.chainId == network.chainId ?
+      this.CROSS_CHAIN_NETWORKS.find(v => v.chainId != network.chainId) :
+      this.state.toChain;
     const fromChain = network;
 
     this.setState({
