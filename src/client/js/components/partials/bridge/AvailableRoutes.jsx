@@ -22,7 +22,7 @@ export default function AvailableRoutes(props) {
     });
 
     if (bridgeType === "connext" &&
-      GENERIC_SUPPORTED_BRIDGE_TOKENS.includes(props.from.symbol.toUpperCase())) {
+      !GENERIC_SUPPORTED_BRIDGE_TOKENS.includes(props.from.symbol.toUpperCase())) {
       route = route.concat([
         {
           type: "swap",
@@ -73,7 +73,7 @@ export default function AvailableRoutes(props) {
       {
         type: 'additional',
         fee: bridgeType === "connext" ? "High" : "Low",
-        duration: '-5 Minutes'
+        duration: bridgeType === "connext" ? '~15 Minutes' : '~10 Minutes'
       }
     ]);
 

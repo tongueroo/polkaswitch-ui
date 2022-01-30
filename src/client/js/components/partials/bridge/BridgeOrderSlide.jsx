@@ -370,6 +370,7 @@ export default class BridgeOrderSlide extends Component {
     this.props.onCrossChainEstimateComplete(transactionId);
   }
 
+
   renderTokenInput(target, token) {
     if (!token) {
       return <div />;

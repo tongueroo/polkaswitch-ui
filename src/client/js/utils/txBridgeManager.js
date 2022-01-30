@@ -119,10 +119,12 @@ export default {
     const targetChainIds = [+toChain.chainId, +fromChain.chainId];
     const targetTokenIds = [to.symbol, from.symbol];
 
+    // This also controls the order they appear in the UI
 
-    if (targetChainIds.every(e => CONNEXT_SUPPORTED_CHAINS.includes(e))) {
-      // Connext always supported regardless of token due to the extra swap steps
-      bridges.push("connext");
+    if (targetChainIds.every(e => CBRIDGE_SUPPORTED_CHAINS.includes(e))) {
+      if (to.symbol === from.symbol && targetTokenIds.every(e => CBRIDGE_SUPPORTED_BRIDGE_TOKENS.includes(e))) {
+        bridges.push("cbridge");
+      }
     }
 
     if (targetChainIds.every(e => HOP_SUPPORTED_CHAINS.includes(e))) {
@@ -131,10 +133,9 @@ export default {
       }
     }
 
-    if (targetChainIds.every(e => CBRIDGE_SUPPORTED_CHAINS.includes(e))) {
-      if (to.symbol === from.symbol && targetTokenIds.every(e => CBRIDGE_SUPPORTED_BRIDGE_TOKENS.includes(e))) {
-        bridges.push("cbridge");
-      }
+    if (targetChainIds.every(e => CONNEXT_SUPPORTED_CHAINS.includes(e))) {
+      // Connext always supported regardless of token due to the extra swap steps
+      bridges.push("connext");
     }
 
     return bridges;
