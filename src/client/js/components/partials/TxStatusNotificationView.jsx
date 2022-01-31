@@ -3,7 +3,7 @@ import _ from 'underscore';
 import classnames from 'classnames';
 import * as ethers from 'ethers';
 import numeral from 'numeral';
-import moment from 'moment';
+import dayjs from 'dayjs';
 const Utils = ethers.utils;
 import TxExplorerLink from './TxExplorerLink';
 
@@ -59,7 +59,7 @@ export default class TxStatusNotificationView extends Component {
           </div>
         </div>
         <div className="level-item tx-meta">
-          {moment(this.props.data.lastUpdated).format('LT')}
+          {dayjs(this.props.data.lastUpdated).format('LT')}
         </div>
       </div>
     );

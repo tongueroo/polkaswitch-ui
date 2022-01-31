@@ -4,7 +4,6 @@ import {
   ResponsiveContainer, AreaChart, Area, Tooltip, XAxis, YAxis
 } from 'recharts';
 import BN from 'bignumber.js';
-import moment from 'moment';
 import TokenPairSelector from './TokenPairSelector';
 import ChartPriceDetails from './ChartPriceDetails';
 import ChartViewOption from './ChartViewOption';
@@ -12,6 +11,8 @@ import ChartRangeSelector from './ChartRangeSelector';
 import EventManager from '../../../utils/events';
 import TokenListManager from '../../../utils/tokenList';
 import CoingeckoManager from '../../../utils/coingecko';
+import dayjs from 'dayjs';
+
 
 export default function TradingViewChart() {
   const DECIMAL_PLACES = 4;
@@ -463,7 +464,7 @@ export default function TradingViewChart() {
     }
   };
 
-  const dateFormatter = (item) => moment(item * 1000).format('h:mm A MMM. Do z');
+  const dateFormatter = (item) => dayjs(item * 1000).format('h:mm A MMM. Do z');
 
   useEffect(() => {
     const subSwapConfigChange = EventManager.listenFor(

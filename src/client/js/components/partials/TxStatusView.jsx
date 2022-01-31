@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import * as ethers from 'ethers';
 import numeral from 'numeral';
-import moment from 'moment';
+import dayjs from 'dayjs';
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
 import TxExplorerLink from './TxExplorerLink';
@@ -68,7 +68,7 @@ export default class TxStatusView extends Component {
             <span>{lang}</span>
           </div>
           <div className="item-2">
-            {moment(data.lastUpdated).format('MM/DD/YYYY h:mm A')}
+            {dayjs(data.lastUpdated).format('MM/DD/YYYY h:mm A')}
           </div>
         </div>
       </div>
