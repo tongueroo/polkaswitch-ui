@@ -27,6 +27,18 @@ export default class BridgeWidget extends Component {
       (v) => v.crossChainSupported,
     );
 
+    /*
+    // Move ETH to last, it has too high of fees
+    this.CROSS_CHAIN_NETWORKS.push(
+      this.CROSS_CHAIN_NETWORKS.splice(
+        _.findIndex(this.CROSS_CHAIN_NETWORKS, (v) => {
+          return +v.chainId === 1;
+        }),
+        1
+      )[0]
+    );
+    */
+
     const network = TokenListManager.getCurrentNetworkConfig();
     let mergeState = {};
     const toChain = this.CROSS_CHAIN_NETWORKS.find(
@@ -121,9 +133,9 @@ export default class BridgeWidget extends Component {
 
   handleNetworkChange(e) {
     const network = TokenListManager.getCurrentNetworkConfig();
-    const toChain = this.CROSS_CHAIN_NETWORKS.find(
-      (v) => v.chainId != network.chainId,
-    );
+    const toChain = this.state.toChain?.chainId == network.chainId ?
+      this.CROSS_CHAIN_NETWORKS.find(v => v.chainId != network.chainId) :
+      this.state.toChain;
     const fromChain = network;
 
     this.setState({
@@ -358,9 +370,10 @@ export default class BridgeWidget extends Component {
     const alt = this.state.searchTarget === 'from' ? 'to' : 'from';
 
     // if you select the same token pair, do a swap instead
-    if (this.state[alt].address === token.address) {
-      return this.onSwapTokens();
-    }
+    // TODO disable this for now.
+    //if (this.state[alt].address === token.address) {
+    //return this.onSwapTokens();
+    //}
 
     const _s = {
       showSearch: false,
@@ -369,6 +382,13 @@ export default class BridgeWidget extends Component {
     };
 
     _s[this.state.searchTarget] = token;
+
+    // TODO temporarily match the same token pair on the opposite network for the reduced
+    // stable coin token list
+    let foundToken = TokenListManager.findTokenById(token.symbol, this.state[alt + 'Chain']);
+    if (foundToken) {
+      _s[alt] = foundToken;
+    }
 
     if (this.state.searchTarget === 'from') {
       _s.fromAmount = SwapFn.validateEthValue(token, this.state.fromAmount);

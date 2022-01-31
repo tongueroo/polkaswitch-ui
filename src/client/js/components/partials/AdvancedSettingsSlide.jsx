@@ -11,15 +11,11 @@ export default class AdvancedSettingsSlide extends Component {
   constructor(props) {
     super(props);
 
-    const bridgeOption = SwapFn.getSetting().bridgeOption;
-
     this.state = {
-      refresh: Date.now(),
-      bridgeOption: bridgeOption,
+      refresh: Date.now()
     };
     this.handleSlippage = this.handleSlippage.bind(this);
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
-    this.handleBridge = this.handleBridge.bind(this);
 
     this.subscribers = [];
     this.subscribers.push(
@@ -43,21 +39,6 @@ export default class AdvancedSettingsSlide extends Component {
     SwapFn.updateSettings({
       slippage: v,
     });
-  }
-
-  handleBridge(e) {
-    var val = e.currentTarget.value;
-
-    this.setState(
-      {
-        bridgeOption: val,
-      },
-      () => {
-        SwapFn.updateSettings({
-          bridgeOption: val,
-        });
-      },
-    );
   }
 
   render() {
@@ -136,37 +117,6 @@ export default class AdvancedSettingsSlide extends Component {
                     <option>10</option>
                     <option>2</option>
                     <option>1</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="level is-mobile option">
-            <div className="level-left">
-              <div className="level-item">
-                <span>
-                  <b className="setting-input-title">Bridge SDK</b>
-                  <span
-                    className="hint-icon hint--top hint--medium"
-                    aria-label="Change the underlying bridge SDK to use"
-                  >
-                    ?
-                  </span>
-                </span>
-              </div>
-            </div>
-
-            <div className="level-right">
-              <div className="level-item">
-                <div className="select">
-                  <select
-                    onChange={this.handleBridge}
-                    value={this.state.bridgeOption}
-                  >
-                    <option value="hop">Hop</option>
-                    <option value="connext">Connext</option>
-                    <option value="cbridge">Celer Bridge</option>
                   </select>
                 </div>
               </div>

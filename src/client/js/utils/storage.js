@@ -15,7 +15,8 @@ const DEFAULT_SWAP_SETTINGS = Object.freeze({
   customGasPrice: 0,
   isCustomGasPrice: false,
   slippage: 0.5,
-  bridgeOption: 'cbridge' // 'hop', 'connext', 'cbridge'
+  // TODO this is deprecated
+  bridgeOption: 'cbridge'
 });
 
 window.Storage = {
