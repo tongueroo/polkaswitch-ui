@@ -34,22 +34,32 @@ window.WalletJS = {
       // TODO init WalletConnect
     }
 
-    window.erc20Abi = await (await fetch('/abi/erc20_standard.json')).json();
-    window.oneSplitAbi = await (await fetch('/abi/test/OneSplit.json')).json();
-    window.crossChainOneSplitAbi = await (
-      await fetch('/abi/cross-chain/cross-chain-aggregator.json')
-    ).json();
-    window.polygonAbi = await (await fetch('/abi/test/Polygon.json')).json();
-    window.moonriverAbi = await (await fetch('/abi/test/Moonriver.json')).json();
-    window.xDaiAbi = await (await fetch('/abi/test/Xdai.json')).json();
-    window.harmonyAbi = await (await fetch('/abi/test/Harmony.json')).json();
-    window.auroraAbi = await (await fetch('/abi/test/Aurora.json')).json();
-    window.bscAbi = await (await fetch('/abi/test/Bsc.json')).json();
-
     EventManager.listenFor(
       'initiateWalletConnect',
       this._connectWalletHandler.bind(this),
     );
+  },
+
+  initializeAbis: function() {
+    window.ABIS = {};
+
+    return Promise.all([
+      ['erc20Abi', '/abi/erc20_standard.json'],
+      ['oneSplitAbi', '/abi/test/OneSplit.json'],
+      ['crossChainOneSplitAbi', '/abi/cross-chain/cross-chain-aggregator.json'],
+      ['polygonAbi', '/abi/test/Polygon.json'],
+      ['moonriverAbi', '/abi/test/Moonriver.json'],
+      ['xDaiAbi', '/abi/test/Xdai.json'],
+      ['harmonyAbi', '/abi/test/Harmony.json'],
+      ['auroraAbi', '/abi/test/Aurora.json'],
+      ['bscAbi', '/abi/test/Bsc.json']
+    ].map((data) => {
+      fetch(data[1]).then((resp) => {
+        return resp.json();
+      }).then((abiJson) => {
+        window.ABIS[data[0]] = abiJson;
+      });
+    }));
   },
 
   initListeners: function (provider) {
@@ -149,7 +159,7 @@ window.WalletJS = {
 
     const contract = new Contract(
       tokenContractAddress,
-      window.erc20Abi,
+      window.ABIS.erc20Abi,
       provider,
     );
     return await contract.balanceOf(this.currentAddress());
@@ -159,7 +169,7 @@ window.WalletJS = {
     if (this.isConnected() && tokenAddr) {
       const contract = new Contract(
         tokenAddr,
-        window.erc20Abi,
+        window.ABIS.erc20Abi,
         this.getProvider(),
       );
       return await contract.name();
@@ -172,7 +182,7 @@ window.WalletJS = {
     if (this.isConnected() && tokenAddr) {
       const contract = new Contract(
         tokenAddr,
-        window.erc20Abi,
+        window.ABIS.erc20Abi,
         this.getProvider(),
       );
       return await contract.decimals();
@@ -185,7 +195,7 @@ window.WalletJS = {
     if (this.isConnected() && tokenAddr) {
       const contract = new Contract(
         tokenAddr,
-        window.erc20Abi,
+        window.ABIS.erc20Abi,
         this.getProvider(),
       );
       return await contract.symbol();
