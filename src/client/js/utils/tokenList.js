@@ -14,30 +14,36 @@ window.TokenListManager = {
   },
 
   _tokenLists: {},
-  initialize: async function () {
+  initialize: async function () {},
+
+  initializeTokenLists: function() {
     // pre-load all token lists
     var filteredNetworks = _.filter(window.NETWORK_CONFIGS, (v) => {
       return v.enabled;
     });
 
-    for (var network of filteredNetworks) {
-      var tokenList = await (await fetch(network.tokenList)).json();
+    return Promise.all(filteredNetworks.map((network) => {
+      return fetch(network.tokenList).then((response) => {
+        return response.json();
+      }).then((tokenList) => {
+        tokenList = _.map(
+          _.filter(tokenList, function (v) {
+            return v.native || (v.symbol && Utils.isAddress(v.address));
+          }),
+          function (v) {
+            if (v.address) {
+              v.address = Utils.getAddress(v.address);
+            }
+            return v;
+          },
+        );
 
-      tokenList = _.map(
-        _.filter(tokenList, function (v) {
-          return v.native || (v.symbol && Utils.isAddress(v.address));
-        }),
-        function (v) {
-          if (v.address) {
-            v.address = Utils.getAddress(v.address);
-          }
-          return v;
-        },
-      );
+        this._tokenLists[+network.chainId] = tokenList;
+        this.updateTokenListwithCustom(network);
 
-      this._tokenLists[+network.chainId] = tokenList;
-      this.updateTokenListwithCustom(network);
-    }
+        return tokenList;
+      });
+    }));
   },
 
   getCurrentNetworkConfig: function () {

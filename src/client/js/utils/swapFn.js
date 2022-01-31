@@ -255,7 +255,7 @@ window.SwapFn = {
     const signer = Wallet.getProvider().getSigner();
     const contract = new Contract(
       tokenContractAddress,
-      window.erc20Abi,
+      window.ABIS.erc20Abi,
       signer,
     );
     return contract
@@ -283,7 +283,7 @@ window.SwapFn = {
     console.log(`Calling ALLOWANCE() with ${token.address}`);
     const contract = new Contract(
       token.address,
-      window.erc20Abi,
+      window.ABIS.erc20Abi,
       Wallet.getProvider(),
     );
     return contract.allowance(
@@ -331,7 +331,7 @@ window.SwapFn = {
 
     const contract = new Contract(
       network.aggregatorAddress,
-      window[network.abi],
+      window.ABIS[network.abi],
       Wallet.getReadOnlyProvider(chainId)
     );
 

@@ -374,7 +374,7 @@ window.NxtpUtils = {
       callToAddr = receivingChain.crossChainAggregatorAddress;
       console.log(`callToAddr = ${callToAddr}`);
 
-      const aggregator = new utils.Interface(window.crossChainOneSplitAbi);
+      const aggregator = new utils.Interface(window.ABIS.crossChainOneSplitAbi);
 
       // NXTP has a 0.05% flat fee
       const o1 = BN(utils.formatUnits(amountBN, sendingAsset.decimals))
