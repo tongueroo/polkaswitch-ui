@@ -152,11 +152,11 @@ export default function TradingViewChart() {
     return timestampSec - (timestampSec % 60);
   };
 
-  const getContractAddress = (contract, symbol, platform) => {
+  const getContractAddress = async (contract, symbol, platform) => {
     if (wrapTokens.hasOwnProperty(symbol)) {
       return wrapTokens[symbol];
     }
-    const coin = TokenListManager.findTokenBySymbolFromCoinGecko(
+    const coin = await TokenListManager.findTokenBySymbolFromCoinGecko(
       symbol.toLowerCase(),
     );
     if (coin && coin.platforms.hasOwnProperty(platform)) {
@@ -358,12 +358,12 @@ export default function TradingViewChart() {
 
       if (pair.fromSymbol && pair.toSymbol) {
         const platformOfToChain = toChain.coingecko.platform;
-        const fromAddress = getContractAddress(
+        const fromAddress = await getContractAddress(
           pair.fromAddress,
           pair.fromSymbol,
           platformOfFromChain,
         );
-        const toAddress = getContractAddress(
+        const toAddress = await getContractAddress(
           pair.toAddress,
           pair.toSymbol,
           platformOfToChain,
@@ -385,7 +385,7 @@ export default function TradingViewChart() {
         )) || [];
         tokenPrices = mergeLinePrices(fromTokenPrices, toTokenPrices);
       } else {
-        const fromAddress = getContractAddress(
+        const fromAddress = await getContractAddress(
           pair.fromAddress,
           pair.fromSymbol,
           platformOfFromChain,
@@ -401,10 +401,10 @@ export default function TradingViewChart() {
         tokenPrices = mergeLinePrices(fromTokenPrices, null);
       }
     } else if (pair.fromSymbol && pair.toSymbol) {
-      const fromCoin = TokenListManager.findTokenBySymbolFromCoinGecko(
+      const fromCoin = await TokenListManager.findTokenBySymbolFromCoinGecko(
         pair.fromSymbol.toLowerCase(),
       );
-      const toCoin = TokenListManager.findTokenBySymbolFromCoinGecko(
+      const toCoin = await TokenListManager.findTokenBySymbolFromCoinGecko(
         pair.toSymbol.toLowerCase(),
       );
 
@@ -423,7 +423,7 @@ export default function TradingViewChart() {
 
       tokenPrices = mergeCandleStickPrices(fromTokenPrices, toTokenPrices);
     } else {
-      const coinId = TokenListManager.findTokenBySymbolFromCoinGecko(pair.fromSymbol.toLowerCase());
+      const coinId = await TokenListManager.findTokenBySymbolFromCoinGecko(pair.fromSymbol.toLowerCase());
       if (coinId) {
         fromTokenPrices = await fetchCandleStickPrices(coinId.id, 'usd', timeRange.value);
       }

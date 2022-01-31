@@ -39,11 +39,6 @@ var config = await fetch(
   IS_MAIN_NETWORK ? '/config/main.config.json' : '/config/test.config.json',
 );
 window.NETWORK_CONFIGS = await config.json();
-
-// initialize TokenList
-window.COINGECKO_TOKEN_LIST = await (
-  await fetch('/tokens/coingecko.list.json')
-).json();
 window.MAX_RETRIES = process.env.IS_PRODUCTION ? 3 : 1;
 
 // import after NETWORK_CONFIGs is initialized

@@ -168,7 +168,14 @@ window.TokenListManager = {
     return foundToken;
   },
 
-  findTokenBySymbolFromCoinGecko: function (symbol) {
+  findTokenBySymbolFromCoinGecko: async function (symbol) {
+    if (!window.COINGECKO_TOKEN_LIST) {
+      window.COINGECKO_TOKEN_LIST = [{ temp: true }];
+      window.COINGECKO_TOKEN_LIST = await (
+        await fetch('/tokens/coingecko.list.json')
+      ).json();
+    }
+
     return _.find(window.COINGECKO_TOKEN_LIST, function (v) {
       return v.symbol.toLowerCase() === symbol;
     });
