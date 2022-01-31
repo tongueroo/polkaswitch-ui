@@ -64,6 +64,7 @@ export default class BridgeOrderSlide extends Component {
         calculatingSwap: false,
         errored: true,
         errorMsg: false,
+        showRoutes: true
       });
       console.error('Swap Failure: MAX RETRIES REACHED');
       return;
@@ -90,8 +91,7 @@ export default class BridgeOrderSlide extends Component {
     this.setState(
       {
         errored: false,
-        calculatingSwap: true,
-        availableRoutes: []
+        calculatingSwap: true
       },
       function (_timeNow, _attempt, _cb) {
         var fromAmountBN = window.ethers.utils.parseUnits(
@@ -507,7 +507,7 @@ export default class BridgeOrderSlide extends Component {
           <div
             className={classnames(
               'hint--large',
-              'token-dist-expand-wrapper',
+              'available-routes-expand-wrapper',
               {
                 "hint--top": this.state.showRoutes,
                 "expand": this.state.showRoutes
@@ -515,12 +515,13 @@ export default class BridgeOrderSlide extends Component {
             )}
             aria-label="We have queried multiple bridges to find the best possible routes for this swap. Choose a route that either favours speed or pricing"
           >
-            <div className="token-dist-hint-text">
+            <div className="hint-text">
               <span>Available Routes</span>
               <span className="hint-icon">?</span>
             </div>
             <AvailableRoutes
               showRoutes={this.state.showRoutes}
+              showUnavailable={this.state.errored}
               loading={this.state.calculatingSwap}
               to={this.props.to}
               from={this.props.from}

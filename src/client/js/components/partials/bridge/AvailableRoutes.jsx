@@ -86,7 +86,7 @@ export default function AvailableRoutes(props) {
 
   return (
     <div
-      className={classnames("token-dist-wrapper control", {
+      className={classnames("available-routes-wrapper control", {
         "is-hidden": !props.showRoutes
       })}
       aria-label="Available routes for the swap"
@@ -97,6 +97,20 @@ export default function AvailableRoutes(props) {
         })}
       >
         <div className="loader is-loading"></div>
+      </div>
+      <div
+        className={classnames("unavailable-warning-wrapper", {
+          "is-hidden": !props.showUnavailable
+        })}
+      >
+        <div className='centered-view'>
+          <div className="icon">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+          </div>
+          <div className="details">
+            No routes available at this time
+          </div>
+        </div>
       </div>
       {routes.length > 0 &&
           _.map(routes, function (item, i) {
