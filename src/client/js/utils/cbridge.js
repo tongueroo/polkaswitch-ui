@@ -1,7 +1,7 @@
 // Celer doc: https://cbridge-docs.celer.network/developer/cbridge-sdk
 import { Contract } from '@ethersproject/contracts';
 import _ from 'underscore';
-import { constants } from 'ethers';
+import { BigNumber, constants, providers, Signer, utils } from 'ethers';
 import HttpUtilis from './http';
 import EventManager from './events';
 import Wallet from './wallet';
@@ -136,12 +136,12 @@ window.CBridgeUtils = {
 
     console.log(response.data);
     const { data } = response;
-    const percFee = parseInt(data.perc_fee);
-    const baseFee = parseInt(data.base_fee);
-    const amountOut = parseInt(data.estimated_receive_amt);
+    const percFee = BigNumber.from(data.perc_fee);
+    const baseFee = BigNumber.from(data.base_fee);
+    const amountOut = BigNumber.from(data.estimated_receive_amt);
     return {
       id: transactionId,
-      transactionFee: percFee + baseFee,
+      transactionFee: percFee.add(baseFee),
       returnAmount: amountOut,
       maxSlippage: data.max_slippage,
     };
