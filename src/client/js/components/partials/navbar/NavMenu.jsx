@@ -11,19 +11,7 @@ export default function NavMenu(props) {
   );
 
   const handleClick = async (isSwap) => {
-    const currNetwork = TokenListManager.getCurrentNetworkConfig();
-    const changeNetwork = !isSwap && !currNetwork.crossChainSupported;
-    const nextNetwork = !changeNetwork
-      ? currNetwork
-      : _.first(CROSS_CHAIN_NETWORKS);
-
-    if (changeNetwork) {
-      const connectStrategy =
-        Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
-      TokenListManager.updateNetwork(nextNetwork, connectStrategy);
-    }
-
-    await TokenListManager.updateTokenList();
+     await Wallet.changeNetworkForSwapOrBridge(isSwap);
   };
 
   return (

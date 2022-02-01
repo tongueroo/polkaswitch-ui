@@ -96,11 +96,11 @@ window.TokenListManager = {
     }
 
     // xDai GasAPI has different fields
-    if (network.chainId === '100') {
+    if (+network.chainId === 100) {
       gasStats.fastest = gasStats.fast;
       gasStats.safeLow = gasStats.slow;
       gasStats.fast = gasStats.average;
-    } else if (network.chainId === '56') {
+    } else if (+network.chainId === 56) {
       // Binance Smart Chain GasAPI has different fields
       if (!_.has(gasStats, 'safeLow')) {
         gasStats.safeLow = gasStats.standard;
@@ -177,7 +177,7 @@ window.TokenListManager = {
     }
 
     return _.find(window.COINGECKO_TOKEN_LIST, function (v) {
-      return v.symbol.toLowerCase() === symbol;
+      return v.symbol?.toLowerCase() === symbol;
     });
   },
 

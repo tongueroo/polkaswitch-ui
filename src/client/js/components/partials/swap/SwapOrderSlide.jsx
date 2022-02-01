@@ -32,11 +32,8 @@ export default class SwapOrderSlide extends Component {
 
   componentDidUpdate(prevProps) {
     if (
-      (this.props.from &&
-        this.props.to &&
-        prevProps.from &&
-        this.props.from.address !== prevProps.from.address) ||
-      this.props.to.address !== prevProps.to.address ||
+      this.props.from?.address !== prevProps.from?.address ||
+      this.props.to?.address !== prevProps.to?.address ||
       this.props.refresh !== prevProps.refresh ||
       (this.props.fromAmount !== prevProps.fromAmount &&
         !this.state.calculatingSwap)

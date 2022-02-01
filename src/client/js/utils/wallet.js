@@ -263,6 +263,42 @@ window.WalletJS = {
     EventManager.emitEvent('walletUpdated', 1);
   },
 
+  changeNetworkForSwapOrBridge: async function(isSingleSwap) {
+    const CROSS_CHAIN_NETWORKS = _.filter(
+      window.NETWORK_CONFIGS,
+      (v) => v.enabled && v.crossChainSupported,
+    );
+    const SINGLE_CHAIN_NETWORKS = _.filter(
+      window.NETWORK_CONFIGS,
+      v => v.enabled && v.singleChainSupported
+    );
+
+    const currNetwork = TokenListManager.getCurrentNetworkConfig();
+
+    // we should change if:
+    // A) if current network is NOT singleSwap supported && isSwap page
+    // B) if current network is NOT crossChain supported && is not isSwap page
+    const shouldChangeNetwork = (
+      (!isSingleSwap && !currNetwork.crossChainSupported) ||
+      (isSingleSwap && !currNetwork.singleChainSupported)
+    );
+
+    const potentialDefaultNetwork = isSingleSwap
+      ? SINGLE_CHAIN_NETWORKS[0]
+      : CROSS_CHAIN_NETWORKS[0];
+    const targetNetwork = !shouldChangeNetwork
+      ? currNetwork
+      : potentialDefaultNetwork;
+
+    if (shouldChangeNetwork) {
+      const connectStrategy =
+        this.isConnectedToAnyNetwork() && this.getConnectionStrategy();
+      TokenListManager.updateNetwork(targetNetwork, connectStrategy);
+    }
+
+    await TokenListManager.updateTokenList();
+  },
+
   _connectWalletHandler: function (target) {
     if (target === 'metamask') {
       this._connectProviderMetamask();

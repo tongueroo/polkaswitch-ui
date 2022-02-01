@@ -21,10 +21,9 @@ export default class BridgeWidget extends Component {
 
     this.box = React.createRef();
     this.orderPage = React.createRef();
-    this.NETWORKS = window.NETWORK_CONFIGS;
     this.CROSS_CHAIN_NETWORKS = _.filter(
-      this.NETWORKS,
-      (v) => v.crossChainSupported,
+      window.NETWORK_CONFIGS,
+      (v) => v.enabled && v.crossChainSupported,
     );
 
     /*
@@ -116,6 +115,10 @@ export default class BridgeWidget extends Component {
     );
     window.addEventListener('resize', this.updateBoxHeight);
     this.updateBoxHeight();
+
+    // trigger a network change if needed, if current network is not supported.
+    // 'networkUpdated' event will be triggered.
+    Wallet.changeNetworkForSwapOrBridge(false);
   }
 
   componentWillUnmount() {
