@@ -333,7 +333,7 @@
     ]
   },
   {
-    "enabled": false,
+    "enabled": true,
     "name": "Moonriver",
     "aggregatorAddress": "0xF554A77A1749cFDf5cBCe777B4b3A109692cF3F0",
     "logoURI": "https://assets.coingecko.com/coins/images/17984/small/9285.png",
@@ -377,7 +377,7 @@
     ]
   },
   {
-    "enabled": false,
+    "enabled": true,
     "name": "Harmony",
     "aggregatorAddress": "0x81921F5881b4917b40aA75eC33F0b1c52BFdbae2",
     "logoURI": "https://assets.coingecko.com/coins/images/4344/small/Y88JAze.png?1565065793",
