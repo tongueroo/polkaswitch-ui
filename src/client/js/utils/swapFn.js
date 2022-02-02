@@ -60,7 +60,7 @@ window.SwapFn = {
     const recipient = Wallet.currentAddress();
     const contract = new Contract(
       currentNetworkConfig.aggregatorAddress,
-      window[abiName],
+      window.ABIS[abiName],
       signer
     );
 
