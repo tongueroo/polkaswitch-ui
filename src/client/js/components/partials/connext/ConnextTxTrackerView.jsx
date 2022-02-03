@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import _ from 'underscore';
 import classnames from 'classnames';
 
-import Wallet from '../../utils/wallet';
-import Metrics from '../../utils/metrics';
-import EventManager from '../../utils/events';
-import TokenListManager from '../../utils/tokenList';
+import EventManager from '../../../utils/events';
 import Nxtp from '../../utils/nxtp';
 
-import TxExplorerLink from './TxExplorerLink';
 import TxStatusView from './TxStatusView';
+
+// POSSIBLY NON USED COMPONENT/DEPRECATED COMP
 
 export default class ConnextTxTrackerView extends Component {
   constructor(props) {
@@ -36,7 +34,7 @@ export default class ConnextTxTrackerView extends Component {
   }
 
   render() {
-    var queue = Nxtp.getQueue();
+    const queue = Nxtp.getQueue();
 
     return (
       <div>
@@ -47,15 +45,15 @@ export default class ConnextTxTrackerView extends Component {
                 No recent transactions
               </div>
               <div className="icon has-text-info-light">
-                <ion-icon name="file-tray-outline"></ion-icon>
+                <ion-icon name="file-tray-outline" />
               </div>
             </div>
           </div>
         )}
 
-        {_.map(queue, function (item, i) {
-          return <TxStatusView key={i} data={item} />;
-        })}
+        {_.map(queue, (item, i) => (
+          <TxStatusView key={i} data={item} />
+        ))}
       </div>
     );
   }
