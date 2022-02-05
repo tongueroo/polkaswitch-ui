@@ -9,6 +9,8 @@ const buildTxGenericStatus = (status) => {
       return 'PENDING';
     case 5:
       return 'FULFILLED';
+    case 6:
+      return 'TRANSFER_TO_BE_REFUNDED';
     case 10:
       return 'REFUNDED';
     case 2:

@@ -24,6 +24,7 @@ const TxHistoryModal = () => {
   const [loading, setLoading] = useState(false);
   const [showSingleChain, setShowSingleChain] = useState(false);
   const [txAllBridgesHistoryQueue, setTxAllBridgesHistoryQueue] = useState([]);
+  const [txAllBridgesActiveQueue, setTxAllBridgesActiveQueue] = useState([]);
 
   const handleUpdate = () => {
     setRefresh(Date.now());
@@ -80,7 +81,9 @@ const TxHistoryModal = () => {
   const singleChainQueue = TxQueue.getQueue();
 
   // implement active to cbridge as well
-  const xActiveQueue = Nxtp.getAllActiveTxs();
+  const xActiveQueue = txAllBridgesActiveQueue.sort(
+    (first, second) => second.preparedTimestamp - first.preparedTimestamp,
+  );
 
   const xAllHistQueue = txAllBridgesHistoryQueue.sort(
     (first, second) => second.preparedTimestamp - first.preparedTimestamp,
@@ -105,6 +108,12 @@ const TxHistoryModal = () => {
   useEffect(async () => {
     const resp = await txBridgeManager.getAllTxHistory();
     setTxAllBridgesHistoryQueue(resp);
+  }, [loading]);
+
+  useEffect(async () => {
+    const resp = await txBridgeManager.getAllActiveTxs();
+
+    setTxAllBridgesActiveQueue(resp);
   }, [loading]);
 
   return (

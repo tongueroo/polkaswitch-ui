@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable react/button-has-type */
 
 import React from 'react';
 import classnames from 'classnames';
@@ -14,25 +15,26 @@ dayjs.extend(relativeTime);
 
 const Utils = ethers.utils;
 
-const TxCrossChainActiveStatusView = ({ data, handleFinishAction }) => {
-  const txData = data.crosschainTx;
+const actionNeededList = [
+  'TRANSFER_TO_BE_REFUNDED',
+  'ReceiverTransactionPrepared',
+];
 
+const TxCrossChainActiveStatusView = ({ data: txData, handleFinishAction }) => {
   if (!txData) {
     return <div />;
   }
 
-  const sendingChain = TokenListManager.getNetworkById(
-    txData.invariant.sendingChainId,
-  );
+  const sendingChain = TokenListManager.getNetworkById(txData.sendingChainId);
   const receivingChain = TokenListManager.getNetworkById(
-    txData.invariant.receivingChainId,
+    txData.receivingChainId,
   );
   const sendingAsset = TokenListManager.findTokenById(
-    Utils.getAddress(txData.invariant.sendingAssetId),
+    Utils.getAddress(txData.sendingAssetTokenAddr),
     sendingChain,
   );
   const receivingAsset = TokenListManager.findTokenById(
-    Utils.getAddress(txData.invariant.receivingAssetId),
+    Utils.getAddress(txData.receivingAssetTokenAddr),
     receivingChain,
   );
 
@@ -46,7 +48,7 @@ const TxCrossChainActiveStatusView = ({ data, handleFinishAction }) => {
   let lang;
   let clazz;
 
-  const isActionNeeded = data.status === 'ReceiverTransactionPrepared';
+  const isActionNeeded = actionNeededList.includes(txData.status);
 
   if (isActionNeeded) {
     icon = <ion-icon name="information-circle" />;
@@ -72,7 +74,13 @@ const TxCrossChainActiveStatusView = ({ data, handleFinishAction }) => {
             {sendingChain.name} > {receivingChain.name}
           </div>
           <div className="tx-meta">
-            {dayjs(data.preparedTimestamp * 1000).fromNow()}
+            {dayjs(txData.preparedTimestamp * 1000).fromNow()}
+            <span className="bridge-selected">
+              &nbsp;@&nbsp;
+              {txData.bridge === 'cbridge'
+                ? 'Celer Bridge'
+                : `${txData.bridge} bridge`}
+            </span>
           </div>
         </div>
       </div>
@@ -80,9 +88,11 @@ const TxCrossChainActiveStatusView = ({ data, handleFinishAction }) => {
         <div className="level-item tx-action">
           <button
             className="button is-warning is-small"
-            onClick={handleFinishAction(txData.invariant.transactionId)}
+            onClick={handleFinishAction(txData.transactionId)}
           >
-            Finish
+            {txData.status === 'ReceiverTransactionPrepared'
+              ? 'Finish'
+              : 'Refund'}
           </button>
         </div>
       )}

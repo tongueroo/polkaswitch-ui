@@ -52,6 +52,7 @@ export default {
   _queue: {},
   _routes: {},
   _genericTxHistory: [],
+  _activeTxHistory: [],
 
   async initialize() {},
 
@@ -309,5 +310,24 @@ export default {
     }
   },
 
+  async getAllActiveTxs() {
+    const NON_ACTIVE_STATUS_CBRIDGE = [0, 5, 10];
+
+    const nxtpActiveTxs = mappingToGenerateConnextArray({
+      array: Nxtp.getAllActiveTxs(),
+    });
+
+    const cbridgeAllTxs = await CBridgeUtils.getTxHistory();
+
+    const cbridgeActiveTxs = cbridgeAllTxs.filter(
+      (tx) => !NON_ACTIVE_STATUS_CBRIDGE.includes(tx.status),
+    );
+
+    const cbridgeActiveTxsFormatted = mappingToGenerateArrayAnyBridge({
+      array: cbridgeActiveTxs,
+      bridge: 'cbridge',
+    });
+
+    return [...cbridgeActiveTxsFormatted, ...nxtpActiveTxs];
   },
 };
