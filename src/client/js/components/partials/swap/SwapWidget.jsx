@@ -288,9 +288,8 @@ export default class SwapWidget extends Component {
 
   handleTokenChange(token) {
     var alt = this.state.searchTarget === 'from' ? 'to' : 'from';
-
     // if you select the same token pair, do a swap instead
-    if (this.state[alt].address === token.address) {
+    if (this.state[alt] && this.state[alt].address && this.state[alt].address === token.address) {
       return this.onSwapTokens();
     }
 

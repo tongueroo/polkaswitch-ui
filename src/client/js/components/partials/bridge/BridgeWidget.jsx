@@ -45,18 +45,18 @@ export default class BridgeWidget extends Component {
       (v) => v.chainId !== network.chainId,
     );
     const fromChain = network;
+    const swapConfig = GlobalStateManager.getSwapConfig()
 
     mergeState = _.extend(mergeState, {
       toChain,
       fromChain,
-      to:
+      to: TokenListManager.findTokenById(swapConfig?.to?.address || network.defaultPair.to, toChain) ||
         TokenListManager.findTokenById(
           toChain.supportedCrossChainTokens[0],
           toChain,
-        ) || TokenListManager.findTokenById(network.defaultPair.to, toChain),
-      from:
-        TokenListManager.findTokenById(network.supportedCrossChainTokens[0]) ||
-        TokenListManager.findTokenById(network.defaultPair.from),
+        ),
+      from: TokenListManager.findTokenById(swapConfig?.from?.address || network.defaultPair.from) ||
+        TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
     });
 
     this.state = _.extend(mergeState, {
