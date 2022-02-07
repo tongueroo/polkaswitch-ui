@@ -10,6 +10,7 @@ import CrossSwapProcessSlide from './CrossSwapProcessSlide';
 import AdvancedSettingsSlide from '../AdvancedSettingsSlide';
 import BridgeFinalResultSlide from './BridgeFinalResultSlide';
 import TokenListManager from '../../../utils/tokenList';
+import GlobalStateManager from '../../../utils/global';
 import Metrics from '../../../utils/metrics';
 import Wallet from '../../../utils/wallet';
 import EventManager from '../../../utils/events';
@@ -227,7 +228,7 @@ export default class BridgeWidget extends Component {
       message: 'Action: Swap Tokens',
     });
     Metrics.track('swap-flipped-tokens');
-    TokenListManager.updateSwapConfig({
+    GlobalStateManager.updateSwapConfig({
       to: this.state.from,
       from: this.state.to,
     });
@@ -397,7 +398,7 @@ export default class BridgeWidget extends Component {
       _s.fromAmount = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
-    TokenListManager.updateSwapConfig({ [this.state.searchTarget]: token });
+    GlobalStateManager.updateSwapConfig({ [this.state.searchTarget]: token });
     this.setState(_s, () => {
       Metrics.track('swap-token-changed', {
         changed: this.state.searchTarget,

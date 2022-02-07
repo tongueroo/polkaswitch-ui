@@ -10,6 +10,7 @@ import AdvancedSettingsSlide from '../AdvancedSettingsSlide';
 import SwapFinalResultSlide from './SwapFinalResultSlide';
 import Wallet from '../../../utils/wallet';
 import TokenListManager from '../../../utils/tokenList';
+import GlobalStateManager from '../../../utils/global';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import { ApprovalState } from '../../../constants/Status';
@@ -20,13 +21,14 @@ export default class SwapWidget extends Component {
     this.box = React.createRef();
     this.orderPage = React.createRef();
     const network = TokenListManager.getCurrentNetworkConfig();
+    const swapConfig = GlobalStateManager.getSwapConfig()
 
     var mergeState = {};
     mergeState = _.extend(mergeState, {
       toChain: network,
       fromChain: network,
-      to: TokenListManager.findTokenById(network.defaultPair.to),
-      from: TokenListManager.findTokenById(network.defaultPair.from),
+      to: TokenListManager.findTokenById(swapConfig?.to?.address || network.defaultPair.to),
+      from: TokenListManager.findTokenById(swapConfig?.from?.address || network.defaultPair.from),
     });
 
     this.state = _.extend(mergeState, {
@@ -191,7 +193,7 @@ export default class SwapWidget extends Component {
       message: 'Action: Swap Tokens',
     });
     Metrics.track('swap-flipped-tokens');
-    TokenListManager.updateSwapConfig({
+    GlobalStateManager.updateSwapConfig({
       to: this.state.from,
       from: this.state.to,
     });
@@ -304,7 +306,7 @@ export default class SwapWidget extends Component {
       _s['fromAmount'] = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
-    TokenListManager.updateSwapConfig({ [this.state.searchTarget]: token });
+    GlobalStateManager.updateSwapConfig({ [this.state.searchTarget]: token });
     this.setState(
       _s,
       function () {

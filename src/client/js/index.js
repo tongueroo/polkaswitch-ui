@@ -44,6 +44,7 @@ window.MAX_RETRIES = process.env.IS_PRODUCTION ? 3 : 1;
 // import after NETWORK_CONFIGs is initialized
 import Wallet from './utils/wallet';
 import TokenListManager from './utils/tokenList';
+import GlobalStateManager from './utils/global';
 import SwapFn from './utils/swapFn';
 import Nxtp from './utils/nxtp';
 import HopUtils from './utils/hop';
@@ -60,6 +61,7 @@ await Promise.all([
 await Storage.initialize();
 await TokenListManager.initialize();
 await TokenListManager.updateTokenList();
+await GlobalStateManager.initialize();
 await Wallet.initialize();
 await SwapFn.initialize();
 await Nxtp.initalize();
