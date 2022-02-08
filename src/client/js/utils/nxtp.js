@@ -366,46 +366,66 @@ window.NxtpUtils = {
       receivingChain,
     );
 
-    let callToAddr; let callData; let
-      expectedReturn;
-
-    // if same token on both chains, don't do getExpectedReturn
-    if (bridgeAsset.address !== receivingAsset.address) {
-      callToAddr = receivingChain.crossChainAggregatorAddress;
-      console.log(`callToAddr = ${callToAddr}`);
-
-      const aggregator = new utils.Interface(window.ABIS.crossChainOneSplitAbi);
-
-      // NXTP has a 0.05% flat fee
-      const o1 = BN(utils.formatUnits(amountBN, sendingAsset.decimals))
-        .times(0.9995)
-        .times(10 ** bridgeAsset.decimals)
-        .toString();
-      const estimatedOutputBN = utils.parseUnits(
-        swapFn.validateEthValue(bridgeAsset, o1),
-        0,
-      );
-
-      expectedReturn = await swapFn.getExpectedReturn(
-        bridgeAsset,
-        receivingAsset,
-        estimatedOutputBN,
+    // if same token on both chains, don't include callTo or callData
+    if (bridgeAsset.address === receivingAsset.address) {
+      const quote = await this._sdk.getTransferQuote({
+        sendingAssetId,
+        sendingChainId,
         receivingChainId,
-      );
-
-      const distBN = _.map(expectedReturn.distribution, (e) => window.ethers.utils.parseUnits(`${e}`, 'wei'));
-
-      // TODO missing the options i.e { gasprice, value }
-      callData = aggregator.encodeFunctionData('swap', [
-        bridgeAsset.address,
-        receivingAssetId,
-        estimatedOutputBN,
-        BigNumber.from(0), // TODO: Add MinReturn/Slippage
+        receivingAssetId: bridgeAsset.address,
         receivingAddress,
-        distBN,
-        0,
-      ]);
+        amount: amountBN.toString(),
+        transactionId,
+        expiry: Math.floor(Date.now() / 1000) + 3600 * 24 * 3 // 3 days
+      });
+
+      this._queue[transactionId] = {
+        quote,
+        expectedReturn,
+      };
+
+      return {
+        id: transactionId,
+        transactionFee: 0.0, // TODO
+        returnAmount: expectedReturn
+            ? expectedReturn.returnAmount
+            : quote.bid.amountReceived,
+      };
     }
+
+    let callToAddr; let callData; let expectedReturn;
+    callToAddr = receivingChain.crossChainAggregatorAddress;
+    const aggregator = new utils.Interface(window.ABIS.crossChainOneSplitAbi);
+
+    // NXTP has a 0.05% flat fee
+    const o1 = BN(utils.formatUnits(amountBN, sendingAsset.decimals))
+      .times(0.9995)
+      .times(10 ** bridgeAsset.decimals)
+      .toString();
+    const estimatedOutputBN = utils.parseUnits(
+      swapFn.validateEthValue(bridgeAsset, o1),
+      0,
+    );
+
+    expectedReturn = await swapFn.getExpectedReturn(
+      bridgeAsset,
+      receivingAsset,
+      estimatedOutputBN,
+      receivingChainId,
+    );
+
+    const distBN = _.map(expectedReturn.distribution, (e) => window.ethers.utils.parseUnits(`${e}`, 'wei'));
+
+    // TODO missing the options i.e { gasprice, value }
+    callData = aggregator.encodeFunctionData('swap', [
+      bridgeAsset.address,
+      receivingAssetId,
+      estimatedOutputBN,
+      BigNumber.from(0), // TODO: Add MinReturn/Slippage
+      receivingAddress,
+      distBN,
+      0,
+    ]);
 
     const quote = await this._sdk.getTransferQuote({
       callData,
