@@ -10,6 +10,11 @@
     "comma-dangle": "off",
     "react/jsx-filename-extension": "off",
     "react/sort-comp": "off",
-    "react/destructuring-assignment": "off"
+    "react/destructuring-assignment": "off",
+    "import/no-extraneous-dependencies": "off",
+    "react/prop-types": "off",
+    "react/button-has-type": "off",
+    "react/jsx-one-expression-per-line": "off"
+
   }
 }

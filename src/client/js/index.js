@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
+import * as Sentry from '@sentry/react';
 import _ from 'underscore';
 import { ethers } from 'ethers';
 import BN from 'bignumber.js';
-import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 
 const IS_MAIN_NETWORK = process.env.IS_MAIN_NETWORK === 'true';
@@ -14,8 +13,7 @@ if (process.env.IS_PRODUCTION) {
     dsn: process.env.SENTRY_JS_DSN,
     environment: IS_MAIN_NETWORK ? 'production' : 'development',
     integrations: [new Integrations.BrowserTracing()],
-    release:
-      process.env.HEROKU_APP_NAME + '-' + process.env.HEROKU_RELEASE_VERSION,
+    release: `${process.env.HEROKU_APP_NAME}-${process.env.HEROKU_RELEASE_VERSION}`,
 
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
@@ -35,7 +33,7 @@ if (IS_MAIN_NETWORK) {
   console.log('Loading TEST config...');
 }
 
-var config = await fetch(
+const config = await fetch(
   IS_MAIN_NETWORK ? '/config/main.config.json' : '/config/test.config.json',
 );
 window.NETWORK_CONFIGS = await config.json();
@@ -54,7 +52,7 @@ import Storage from './utils/storage';
 // to reduce initial app load times
 await Promise.all([
   Wallet.initializeAbis(),
-  TokenListManager.initializeTokenLists()
+  TokenListManager.initializeTokenLists(),
 ]);
 
 await Storage.initialize();
