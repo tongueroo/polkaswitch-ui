@@ -47,6 +47,7 @@ import Nxtp from './utils/nxtp';
 import HopUtils from './utils/hop';
 import TxQueue from './utils/txQueue';
 import Storage from './utils/storage';
+import App from "./components/App";
 
 // pre-load and collase/parallelize all our external JSON config loading
 // to reduce initial app load times
