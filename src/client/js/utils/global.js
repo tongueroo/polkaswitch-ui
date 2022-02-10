@@ -7,10 +7,16 @@ import Storage from './storage';
 let store = require('store');
 
 window.GlobalStateManager = {
-  // TODO - not a great place to store this state
   swap: {
     from: {},
     to: {},
+  },
+
+  bridge: {
+    from: {},
+    to: {},
+    fromChain: '',
+    toChain: ''
   },
 
   initialize: async function () {  
@@ -24,8 +30,8 @@ window.GlobalStateManager = {
       // get swapConfig from localstorage
       const swapConfig = store.get('swap');
       const defaultSwapConfig = {
-        from: TokenListManager.findTokenById(network.defaultPair.from),
-        to: TokenListManager.findTokenById(network.defaultPair.to),
+        from: network.defaultPair.from,
+        to: network.defaultPair.to,
         fromChain: network.name,
         toChain: network.name,
       };
@@ -33,6 +39,28 @@ window.GlobalStateManager = {
       const swap = swapConfig ? swapConfig : defaultSwapConfig;
       
       this.updateSwapConfig(swap);
+
+      // init bridgeConfig
+      const bridgeConfig = store.get('bridge');
+      const crossChainNetworks = _.filter(
+        window.NETWORK_CONFIGS,
+        (v) => v.enabled && v.crossChainSupported,
+      );
+      const toChain = crossChainNetworks.find(
+        (v) => v.chainId !== network.chainId,
+      );
+      const defaultBridgeConfig = {
+        from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
+        to: TokenListManager.findTokenById(
+          toChain.supportedCrossChainTokens[0],
+          toChain,
+        ),
+        fromChain: network.name,
+        toChain
+      };
+      const bridge = bridgeConfig ? bridgeConfig : defaultBridgeConfig;
+
+      this.updateBridgeConfig(bridge);
     }
   },
 
@@ -45,6 +73,17 @@ window.GlobalStateManager = {
 
   getSwapConfig: function () {
     return this.swap;
+  },
+
+  updateBridgeConfig: function (bridge) {
+    console.log("updateBridge Config", bridge)
+    this.bridge = _.extend(this.getBridgeConfig(), bridge);
+    store.set('bridge', this.bridge);
+    EventManager.emitEvent('bridgeConfigUpdated', 1);
+  },
+
+  getBridgeConfig: function () {
+    return this.bridge;
   },
 };
 

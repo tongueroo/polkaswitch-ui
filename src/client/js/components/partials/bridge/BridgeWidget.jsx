@@ -45,17 +45,25 @@ export default class BridgeWidget extends Component {
       (v) => v.chainId !== network.chainId,
     );
     const fromChain = network;
-    const swapConfig = GlobalStateManager.getSwapConfig()
+    const bridgeConfig = GlobalStateManager.getBridgeConfig();
+    
+    console.log("bridge", toChain.supportedCrossChainTokens, network.supportedCrossChainTokens)
 
+    const toToken = bridgeConfig?.to?.address || network.defaultPair.to;
+    const fromToken = bridgeConfig?.from?.address || network.defaultPair.from;
+
+    // TODO; need to update set default token pair logic - Tyler
+    // need to check if tokens from swapConfig exist on supportedChainTokens
+    // if not select the first supportedChainToken
     mergeState = _.extend(mergeState, {
-      toChain,
+      toChain: bridgeConfig?.toChain || toChain,
       fromChain,
-      to: TokenListManager.findTokenById(swapConfig?.to?.address || network.defaultPair.to, toChain) ||
+      to: TokenListManager.findTokenById(bridgeConfig?.to?.address) ||
         TokenListManager.findTokenById(
           toChain.supportedCrossChainTokens[0],
           toChain,
         ),
-      from: TokenListManager.findTokenById(swapConfig?.from?.address || network.defaultPair.from) ||
+      from: TokenListManager.findTokenById(bridgeConfig?.from?.address) ||
         TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
     });
 
@@ -228,9 +236,12 @@ export default class BridgeWidget extends Component {
       message: 'Action: Swap Tokens',
     });
     Metrics.track('swap-flipped-tokens');
-    GlobalStateManager.updateSwapConfig({
+
+    console.log("onSwapTokens", this.state)
+    GlobalStateManager.updateBridgeConfig({
       to: this.state.from,
       from: this.state.to,
+      toChain: this.state.toChain,
     });
     this.setState(
       {
@@ -295,6 +306,9 @@ export default class BridgeWidget extends Component {
       const connectStrategy =
         Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
       TokenListManager.updateNetwork(network, connectStrategy);
+      GlobalStateManager.updateBridgeConfig({
+        toChain: network
+      })
     }
   }
 
@@ -398,7 +412,7 @@ export default class BridgeWidget extends Component {
       _s.fromAmount = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
-    GlobalStateManager.updateSwapConfig({ [this.state.searchTarget]: token });
+    GlobalStateManager.updateBridgeConfig({ [this.state.searchTarget]: token });
     this.setState(_s, () => {
       Metrics.track('swap-token-changed', {
         changed: this.state.searchTarget,
