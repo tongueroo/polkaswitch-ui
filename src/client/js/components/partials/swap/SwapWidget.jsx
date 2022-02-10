@@ -27,8 +27,8 @@ export default class SwapWidget extends Component {
     mergeState = _.extend(mergeState, {
       toChain: network,
       fromChain: network,
-      to: TokenListManager.findTokenById(swapConfig?.to || network.defaultPair.to),
-      from: TokenListManager.findTokenById(swapConfig?.from || network.defaultPair.from),
+      to: TokenListManager.findTokenById(swapConfig?.to?.address || network.defaultPair.to),
+      from: TokenListManager.findTokenById(swapConfig?.from?.address || network.defaultPair.from),
     });
 
     this.state = _.extend(mergeState, {
@@ -104,8 +104,8 @@ export default class SwapWidget extends Component {
 
   handleNetworkChange(e) {
     const network = TokenListManager.getCurrentNetworkConfig();
-    const defaultTo = network.defaultPair.to;
-    const defaultFrom = network.defaultPair.from;
+    const defaultTo = TokenListManager.findTokenById(network.defaultPair.to);
+    const defaultFrom = TokenListManager.findTokenById(network.defaultPair.from);
     GlobalStateManager.updateSwapConfig({
       to: defaultTo,
       from: defaultFrom,
@@ -115,8 +115,8 @@ export default class SwapWidget extends Component {
     this.setState({
       loading: false,
       crossChainEnabled: false,
-      to: TokenListManager.findTokenById(defaultTo),
-      from: TokenListManager.findTokenById(defaultFrom),
+      to: defaultTo,
+      from: defaultFrom,
       toChain: network,
       fromChain: network,
       showSettings: false,
@@ -202,8 +202,8 @@ export default class SwapWidget extends Component {
     });
     Metrics.track('swap-flipped-tokens');
     GlobalStateManager.updateSwapConfig({
-      to: this.state.from.address,
-      from: this.state.to.address,
+      to: this.state.from,
+      from: this.state.to,
     });
     this.setState(
       {
@@ -313,7 +313,7 @@ export default class SwapWidget extends Component {
       _s['fromAmount'] = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
-    GlobalStateManager.updateSwapConfig({ [this.state.searchTarget]: token.address });
+    GlobalStateManager.updateSwapConfig({ [this.state.searchTarget]: token });
     this.setState(
       _s,
       function () {

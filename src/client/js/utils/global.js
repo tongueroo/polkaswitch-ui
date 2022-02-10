@@ -30,8 +30,8 @@ window.GlobalStateManager = {
       // get swapConfig from localstorage
       const swapConfig = store.get('swap');
       const defaultSwapConfig = {
-        from: network.defaultPair.from,
-        to: network.defaultPair.to,
+        from: TokenListManager.findTokenById(network.defaultPair.from),
+        to: TokenListManager.findTokenById(network.defaultPair.to),
         fromChain: network.name,
         toChain: network.name,
       };
