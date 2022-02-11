@@ -12,7 +12,7 @@ import Wallet from '../../../utils/wallet';
 import TokenListManager from '../../../utils/tokenList';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
-import { ApprovalState } from '../../../constants/Status';
+import { approvalState } from '../../../constants';
 
 export default class SwapWidget extends Component {
   constructor(props) {
@@ -34,7 +34,7 @@ export default class SwapWidget extends Component {
       toAmount: undefined,
       availableBalance: undefined,
       swapDistribution: undefined,
-      approveStatus: ApprovalState.UNKNOWN,
+      approveStatus: approvalState.UNKNOWN,
       searchTarget: '',
       showSettings: false,
       showConfirm: false,

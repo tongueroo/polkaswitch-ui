@@ -21,10 +21,7 @@ import {
 } from '@connext/nxtp-utils';
 import EventManager from './events';
 import Wallet from './wallet';
-import TxQueue from './txQueue';
 import TokenListManager from './tokenList';
-import Storage from './storage';
-import { ApprovalState } from '../constants/Status';
 
 import swapFn from './swapFn';
 

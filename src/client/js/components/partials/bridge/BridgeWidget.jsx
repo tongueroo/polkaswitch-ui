@@ -13,7 +13,7 @@ import TokenListManager from '../../../utils/tokenList';
 import Metrics from '../../../utils/metrics';
 import Wallet from '../../../utils/wallet';
 import EventManager from '../../../utils/events';
-import { ApprovalState } from '../../../constants/Status';
+import { approvalState } from '../../../constants';
 
 export default class BridgeWidget extends Component {
   constructor(props) {
@@ -63,7 +63,7 @@ export default class BridgeWidget extends Component {
       toAmount: undefined,
       availableBalance: undefined,
       swapDistribution: undefined,
-      approveStatus: ApprovalState.UNKNOWN,
+      approveStatus: approvalState.UNKNOWN,
       searchTarget: '',
       showSettings: false,
       showConfirm: false,

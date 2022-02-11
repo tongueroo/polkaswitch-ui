@@ -84,15 +84,16 @@ export default class SwapTransactionDetails extends Component {
         this.props.from,
         this.props.to,
         Utils.parseUnits(fromAmount, this.props.from.decimals),
+        fromAmount
       )
         .then(
           function (priceImpact) {
+            console.log('priceImpact', priceImpact);
             _.defer(
               function () {
                 this.setState({
-                  highSlippage:
-                    priceImpact * 100.0 > SwapFn.getSetting().slippage,
-                  priceImpact: (priceImpact * 100.0).toFixed(5),
+                  highSlippage: priceImpact > SwapFn.getSetting().slippage,
+                  priceImpact,
                 });
               }.bind(this),
             );
@@ -224,7 +225,7 @@ export default class SwapTransactionDetails extends Component {
                     </span>
                     <span>High Slippage)&nbsp;&nbsp;</span>
                   </span>
-                  <span>- {this.state.priceImpact}%</span>
+                  <span>{this.state.priceImpact}%</span>
                 </div>
               </div>
             </div>

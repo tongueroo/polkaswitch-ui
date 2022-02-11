@@ -6,7 +6,8 @@ import TxQueue from './txQueue';
 import TokenListManager from './tokenList';
 import Wallet from './wallet';
 import Storage from './storage';
-import { ApprovalState } from '../constants/Status';
+import { approvalState, wrapTokens } from '../constants';
+import CoingeckoManager from './coingecko';
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e9 });
@@ -151,50 +152,34 @@ window.SwapFn = {
     }
   },
 
-  calculatePriceImpact(fromToken, toToken, amount) {
-    return this.findSmallResult(fromToken, toToken, 1).then(
-      (small) => {
-        const [smallResult, smallAmount] = small;
+  async calculatePriceImpact(fromToken, toToken, amount, originAmount) {
+    let priceImpact = 0.0;
+    const network = TokenListManager.getCurrentNetworkConfig();
+    const assetPlatform = (network.coingecko && network.coingecko.platform) || '';
+    let fromTokenAddress = fromToken.address;
 
-        return this.getExpectedReturn(fromToken, toToken, amount).then(
-          (actualReturn) => {
-            const x = BN(smallResult.returnAmount.toString()).div(
-              BN(smallAmount.toString()),
-            );
-            const y = BN(actualReturn.returnAmount.toString()).div(
-              BN(amount.toString()),
-            );
+    if (wrapTokens.hasOwnProperty(fromToken.symbol)) {
+      fromTokenAddress = wrapTokens[fromToken.symbol][network.chainId];
+    }
+    const tokenPrice = await CoingeckoManager.getTokenPrice(assetPlatform, fromTokenAddress);
 
-            return x.minus(y).abs().div(x).toFixed(6);
-          },
-        );
-      },
-    );
-  },
+    if (tokenPrice) {
+      // get small token amount equals to $1
+      const smallAmount = BN(1).div(tokenPrice).toFixed(6);
+      const pmExpectReturn = await this.getExpectedReturn(fromToken, toToken, Utils.parseUnits(smallAmount, fromToken.decimals));
+      const pm = BN(pmExpectReturn.returnAmount.toString());
+      const poExpectReturn = await this.getExpectedReturn(fromToken, toToken, amount);
+      const po = BN(poExpectReturn.returnAmount.toString());
+      const factor = BN(originAmount).div(smallAmount).toFixed(6);
 
-  smallResultCache: {},
-
-  findSmallResult(fromToken, toToken, factor) {
-    if (this.smallResultCache[`${fromToken.symbol}-${toToken.symbol}`]) {
-      return Promise.resolve(
-        this.smallResultCache[`${fromToken.symbol}-${toToken.symbol}`],
-      );
+      if (BN(po).isGreaterThan(pm.times(factor))) {
+        priceImpact = parseFloat(BN(po.minus(pm.times(factor))).div(pm.times(factor)).times(100).toFixed(6));
+      } else {
+        priceImpact = parseFloat(BN(pm.times(factor).minus(po)).div(pm.times(factor)).times(100).toFixed(6));
+      }
     }
 
-    const smallAmount = Utils.parseUnits(`${Math.ceil(10 ** (factor * 3))}`, 0);
-
-    return this.getExpectedReturn(fromToken, toToken, smallAmount).then(
-      (smallResult) => {
-        if (smallResult.returnAmount.gt(100)) {
-          this.smallResultCache[`${fromToken.symbol}-${toToken.symbol}`] = [
-            smallResult,
-            smallAmount,
-          ];
-          return [smallResult, smallAmount];
-        }
-        return this.findSmallResult(fromToken, toToken, factor + 1);
-      },
-    );
+    return priceImpact;
   },
 
   async mint(symbol, value) {
@@ -241,9 +226,9 @@ window.SwapFn = {
       (allowanceBN) => {
         console.log('allowanceBN', allowanceBN);
         if (token.native || (allowanceBN && allowanceBN.gte(amountBN))) {
-          return Promise.resolve(ApprovalState.APPROVED);
+          return Promise.resolve(approvalState.APPROVED);
         }
-        return Promise.resolve(ApprovalState.NOT_APPROVED);
+        return Promise.resolve(approvalState.NOT_APPROVED);
       },
     );
   },
