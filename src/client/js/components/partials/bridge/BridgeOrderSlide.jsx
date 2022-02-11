@@ -499,7 +499,7 @@ export default class BridgeOrderSlide extends Component {
 
           <div className="notification is-white border-top">
             <div className="text-gray-stylized">
-              <span>Receive</span>
+              <span>Receiveeee</span>
             </div>
             {this.renderTokenInput('to', this.props.to)}
           </div>

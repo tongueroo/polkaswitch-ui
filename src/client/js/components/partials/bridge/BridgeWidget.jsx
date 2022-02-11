@@ -144,22 +144,31 @@ export default class BridgeWidget extends Component {
   }
 
   handleNetworkChange(e) {
+    console.log("handleNetworkChange")
     const network = TokenListManager.getCurrentNetworkConfig();
     const toChain = this.state.toChain?.chainId == network.chainId ?
       this.CROSS_CHAIN_NETWORKS.find(v => v.chainId != network.chainId) :
       this.state.toChain;
     const fromChain = network;
+    const to = TokenListManager.findTokenById(
+      toChain.supportedCrossChainTokens[0],
+      toChain,
+    );
+    const from = TokenListManager.findTokenById(
+      network.supportedCrossChainTokens[0],
+    )
+    GlobalStateManager.updateBridgeConfig({
+      toChain,
+      fromChain,
+      to,
+      from,
+    })
 
     this.setState({
       loading: false,
       crossChainEnabled: true,
-      to: TokenListManager.findTokenById(
-        toChain.supportedCrossChainTokens[0],
-        toChain,
-      ),
-      from: TokenListManager.findTokenById(
-        network.supportedCrossChainTokens[0],
-      ),
+      to,
+      from,
       toChain,
       fromChain,
       availableBalance: undefined,
@@ -237,11 +246,9 @@ export default class BridgeWidget extends Component {
     });
     Metrics.track('swap-flipped-tokens');
 
-    console.log("onSwapTokens", this.state)
     GlobalStateManager.updateBridgeConfig({
       to: this.state.from,
       from: this.state.to,
-      toChain: this.state.toChain,
     });
     this.setState(
       {
@@ -269,6 +276,7 @@ export default class BridgeWidget extends Component {
   handleCrossChainChange(isFrom, network) {
     const alt = isFrom ? 'to' : 'from';
     const target = isFrom ? 'from' : 'to';
+    const bridgeChainKey = isFrom ? 'fromChain' : 'toChain';
 
     // if you select the same network as other, swap
     if (this.state[`${alt}Chain`].chainId === network.chainId) {
@@ -306,15 +314,16 @@ export default class BridgeWidget extends Component {
       const connectStrategy =
         Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
       TokenListManager.updateNetwork(network, connectStrategy);
-      GlobalStateManager.updateBridgeConfig({
-        toChain: network
-      })
     }
+
+    // update bridgeConfig
+    GlobalStateManager.updateBridgeConfig({
+      [bridgeChainKey]: network
+    })
   }
 
   handleSearchToggle(target) {
     // TODO handle cross-chain swap
-
     return function (e) {
       Sentry.addBreadcrumb({
         message: `Page: Search Token: ${target}`,
@@ -386,6 +395,8 @@ export default class BridgeWidget extends Component {
 
   handleTokenChange(token) {
     const alt = this.state.searchTarget === 'from' ? 'to' : 'from';
+
+    console.log("token change", token, this.state.searchTarget)
 
     // if you select the same token pair, do a swap instead
     // TODO disable this for now.

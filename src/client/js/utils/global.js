@@ -76,7 +76,6 @@ window.GlobalStateManager = {
   },
 
   updateBridgeConfig: function (bridge) {
-    console.log("updateBridge Config", bridge)
     this.bridge = _.extend(this.getBridgeConfig(), bridge);
     store.set('bridge', this.bridge);
     EventManager.emitEvent('bridgeConfigUpdated', 1);
