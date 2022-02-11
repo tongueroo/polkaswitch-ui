@@ -44,27 +44,21 @@ export default class BridgeWidget extends Component {
     const toChain = this.CROSS_CHAIN_NETWORKS.find(
       (v) => v.chainId !== network.chainId,
     );
-    const fromChain = network;
     const bridgeConfig = GlobalStateManager.getBridgeConfig();
     
-    console.log("bridge", toChain.supportedCrossChainTokens, network.supportedCrossChainTokens)
-
-    const toToken = bridgeConfig?.to?.address || network.defaultPair.to;
-    const fromToken = bridgeConfig?.from?.address || network.defaultPair.from;
+    const updatedConfig = {
+      fromChain: network,
+      toChain: bridgeConfig?.toChain || toChain,
+      to: TokenListManager.findTokenById(bridgeConfig.to.symbol),
+      from: TokenListManager.findTokenById(bridgeConfig.from.symbol)
+    }
 
     // TODO; need to update set default token pair logic - Tyler
     // need to check if tokens from swapConfig exist on supportedChainTokens
     // if not select the first supportedChainToken
+
     mergeState = _.extend(mergeState, {
-      toChain: bridgeConfig?.toChain || toChain,
-      fromChain,
-      to: TokenListManager.findTokenById(bridgeConfig?.to?.address) ||
-        TokenListManager.findTokenById(
-          toChain.supportedCrossChainTokens[0],
-          toChain,
-        ),
-      from: TokenListManager.findTokenById(bridgeConfig?.from?.address) ||
-        TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
+      ...updatedConfig
     });
 
     this.state = _.extend(mergeState, {
@@ -144,7 +138,6 @@ export default class BridgeWidget extends Component {
   }
 
   handleNetworkChange(e) {
-    console.log("handleNetworkChange")
     const network = TokenListManager.getCurrentNetworkConfig();
     const toChain = this.state.toChain?.chainId == network.chainId ?
       this.CROSS_CHAIN_NETWORKS.find(v => v.chainId != network.chainId) :
@@ -396,8 +389,6 @@ export default class BridgeWidget extends Component {
   handleTokenChange(token) {
     const alt = this.state.searchTarget === 'from' ? 'to' : 'from';
 
-    console.log("token change", token, this.state.searchTarget)
-
     // if you select the same token pair, do a swap instead
     // TODO disable this for now.
     //if (this.state[alt].address === token.address) {
@@ -409,21 +400,24 @@ export default class BridgeWidget extends Component {
       availableBalance: undefined,
       refresh: Date.now(),
     };
+    const bridgeConfig = {};
 
     _s[this.state.searchTarget] = token;
+    bridgeConfig[this.state.searchTarget] = token;
 
     // TODO temporarily match the same token pair on the opposite network for the reduced
     // stable coin token list
     let foundToken = TokenListManager.findTokenById(token.symbol, this.state[alt + 'Chain']);
     if (foundToken) {
       _s[alt] = foundToken;
+      bridgeConfig[alt] = foundToken;
     }
 
     if (this.state.searchTarget === 'from') {
       _s.fromAmount = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
-    GlobalStateManager.updateBridgeConfig({ [this.state.searchTarget]: token });
+    GlobalStateManager.updateBridgeConfig({ ...bridgeConfig });
     this.setState(_s, () => {
       Metrics.track('swap-token-changed', {
         changed: this.state.searchTarget,

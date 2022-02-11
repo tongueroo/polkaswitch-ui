@@ -49,6 +49,7 @@ window.GlobalStateManager = {
       const toChain = crossChainNetworks.find(
         (v) => v.chainId !== network.chainId,
       );
+
       const defaultBridgeConfig = {
         from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
         to: TokenListManager.findTokenById(
