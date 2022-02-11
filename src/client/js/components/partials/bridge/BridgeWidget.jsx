@@ -156,7 +156,15 @@ export default class BridgeWidget extends Component {
       to,
       from,
     })
-
+    const defaultTo = TokenListManager.findTokenById(network.defaultPair.to);
+    const defaultFrom = TokenListManager.findTokenById(network.defaultPair.from);
+    GlobalStateManager.updateSwapConfig({
+      to: defaultTo,
+      from: defaultFrom,
+      toChain: network.name,
+      fromChain: network.name
+    });
+    
     this.setState({
       loading: false,
       crossChainEnabled: true,
