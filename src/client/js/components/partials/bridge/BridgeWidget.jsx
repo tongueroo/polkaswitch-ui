@@ -41,21 +41,22 @@ export default class BridgeWidget extends Component {
 
     const network = TokenListManager.getCurrentNetworkConfig();
     let mergeState = {};
-    const toChain = this.CROSS_CHAIN_NETWORKS.find(
+    const bridgeConfig = GlobalStateManager.getBridgeConfig();
+    const toChain = bridgeConfig?.toChain || this.CROSS_CHAIN_NETWORKS.find(
       (v) => v.chainId !== network.chainId,
     );
-    const bridgeConfig = GlobalStateManager.getBridgeConfig();
     
     const updatedConfig = {
       fromChain: network,
-      toChain: bridgeConfig?.toChain || toChain,
-      to: TokenListManager.findTokenById(bridgeConfig.to.symbol),
-      from: TokenListManager.findTokenById(bridgeConfig.from.symbol)
+      toChain,
+      to: TokenListManager.findTokenById(bridgeConfig.to.symbol).address ?  TokenListManager.findTokenById(bridgeConfig.to.symbol) :  TokenListManager.findTokenById(
+        toChain.supportedCrossChainTokens[0],
+        toChain,
+      ),
+      from: TokenListManager.findTokenById(bridgeConfig.from.symbol).address ? TokenListManager.findTokenById(bridgeConfig.from.symbol) : TokenListManager.findTokenById(network.supportedCrossChainTokens[0])
     }
 
-    // TODO; need to update set default token pair logic - Tyler
-    // need to check if tokens from swapConfig exist on supportedChainTokens
-    // if not select the first supportedChainToken
+    GlobalStateManager.updateBridgeConfig(updatedConfig);
 
     mergeState = _.extend(mergeState, {
       ...updatedConfig
