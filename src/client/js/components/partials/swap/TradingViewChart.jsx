@@ -43,7 +43,7 @@ export default function TradingViewChart() {
   const candleChartContainerRef = useRef();
   const chart = useRef();
   const createTokenPairList = () => {
-    const swapConfig = TokenListManager.getSwapConfig();
+    const swapConfig = GlobalStateManager.getSwapConfig();
     const list = [];
     const fromSymbol = swapConfig.from.symbol;
     const fromAddress = swapConfig.from.address;

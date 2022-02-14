@@ -10,6 +10,7 @@ import CrossSwapProcessSlide from './CrossSwapProcessSlide';
 import AdvancedSettingsSlide from '../AdvancedSettingsSlide';
 import BridgeFinalResultSlide from './BridgeFinalResultSlide';
 import TokenListManager from '../../../utils/tokenList';
+import GlobalStateManager from '../../../utils/global';
 import Metrics from '../../../utils/metrics';
 import Wallet from '../../../utils/wallet';
 import EventManager from '../../../utils/events';
@@ -40,22 +41,25 @@ export default class BridgeWidget extends Component {
 
     const network = TokenListManager.getCurrentNetworkConfig();
     let mergeState = {};
-    const toChain = this.CROSS_CHAIN_NETWORKS.find(
+    const bridgeConfig = GlobalStateManager.getBridgeConfig();
+    const toChain = bridgeConfig?.toChain || this.CROSS_CHAIN_NETWORKS.find(
       (v) => v.chainId !== network.chainId,
     );
-    const fromChain = network;
+    
+    const updatedConfig = {
+      fromChain: network,
+      toChain,
+      to: TokenListManager.findTokenById(bridgeConfig.to.symbol)  ||  TokenListManager.findTokenById(
+        toChain.supportedCrossChainTokens[0],
+        toChain,
+      ),
+      from: TokenListManager.findTokenById(bridgeConfig.from.symbol) || TokenListManager.findTokenById(network.supportedCrossChainTokens[0])
+    }
+
+    GlobalStateManager.updateBridgeConfig(updatedConfig);
 
     mergeState = _.extend(mergeState, {
-      toChain,
-      fromChain,
-      to:
-        TokenListManager.findTokenById(
-          toChain.supportedCrossChainTokens[0],
-          toChain,
-        ) || TokenListManager.findTokenById(network.defaultPair.to, toChain),
-      from:
-        TokenListManager.findTokenById(network.supportedCrossChainTokens[0]) ||
-        TokenListManager.findTokenById(network.defaultPair.from),
+      ...updatedConfig
     });
 
     this.state = _.extend(mergeState, {
@@ -140,17 +144,33 @@ export default class BridgeWidget extends Component {
       this.CROSS_CHAIN_NETWORKS.find(v => v.chainId != network.chainId) :
       this.state.toChain;
     const fromChain = network;
-
+    const to = TokenListManager.findTokenById(
+      toChain.supportedCrossChainTokens[0],
+      toChain,
+    );
+    const from = TokenListManager.findTokenById(
+      network.supportedCrossChainTokens[0],
+    )
+    GlobalStateManager.updateBridgeConfig({
+      toChain,
+      fromChain,
+      to,
+      from,
+    })
+    const defaultTo = TokenListManager.findTokenById(network.defaultPair.to);
+    const defaultFrom = TokenListManager.findTokenById(network.defaultPair.from);
+    GlobalStateManager.updateSwapConfig({
+      to: defaultTo,
+      from: defaultFrom,
+      toChain: network.name,
+      fromChain: network.name
+    });
+    
     this.setState({
       loading: false,
       crossChainEnabled: true,
-      to: TokenListManager.findTokenById(
-        toChain.supportedCrossChainTokens[0],
-        toChain,
-      ),
-      from: TokenListManager.findTokenById(
-        network.supportedCrossChainTokens[0],
-      ),
+      to,
+      from,
       toChain,
       fromChain,
       availableBalance: undefined,
@@ -227,7 +247,8 @@ export default class BridgeWidget extends Component {
       message: 'Action: Swap Tokens',
     });
     Metrics.track('swap-flipped-tokens');
-    TokenListManager.updateSwapConfig({
+
+    GlobalStateManager.updateBridgeConfig({
       to: this.state.from,
       from: this.state.to,
     });
@@ -257,6 +278,7 @@ export default class BridgeWidget extends Component {
   handleCrossChainChange(isFrom, network) {
     const alt = isFrom ? 'to' : 'from';
     const target = isFrom ? 'from' : 'to';
+    const bridgeChainKey = isFrom ? 'fromChain' : 'toChain';
 
     // if you select the same network as other, swap
     if (this.state[`${alt}Chain`].chainId === network.chainId) {
@@ -295,11 +317,15 @@ export default class BridgeWidget extends Component {
         Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
       TokenListManager.updateNetwork(network, connectStrategy);
     }
+
+    // update bridgeConfig
+    GlobalStateManager.updateBridgeConfig({
+      [bridgeChainKey]: network
+    })
   }
 
   handleSearchToggle(target) {
     // TODO handle cross-chain swap
-
     return function (e) {
       Sentry.addBreadcrumb({
         message: `Page: Search Token: ${target}`,
@@ -383,21 +409,24 @@ export default class BridgeWidget extends Component {
       availableBalance: undefined,
       refresh: Date.now(),
     };
+    const bridgeConfig = {};
 
     _s[this.state.searchTarget] = token;
+    bridgeConfig[this.state.searchTarget] = token;
 
     // TODO temporarily match the same token pair on the opposite network for the reduced
     // stable coin token list
     let foundToken = TokenListManager.findTokenById(token.symbol, this.state[alt + 'Chain']);
     if (foundToken) {
       _s[alt] = foundToken;
+      bridgeConfig[alt] = foundToken;
     }
 
     if (this.state.searchTarget === 'from') {
       _s.fromAmount = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
 
-    TokenListManager.updateSwapConfig({ [this.state.searchTarget]: token });
+    GlobalStateManager.updateBridgeConfig({ ...bridgeConfig });
     this.setState(_s, () => {
       Metrics.track('swap-token-changed', {
         changed: this.state.searchTarget,
