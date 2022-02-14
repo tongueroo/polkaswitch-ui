@@ -49,11 +49,11 @@ export default class BridgeWidget extends Component {
     const updatedConfig = {
       fromChain: network,
       toChain,
-      to: TokenListManager.findTokenById(bridgeConfig.to.symbol).address ?  TokenListManager.findTokenById(bridgeConfig.to.symbol) :  TokenListManager.findTokenById(
+      to: TokenListManager.findTokenById(bridgeConfig.to.symbol)  ||  TokenListManager.findTokenById(
         toChain.supportedCrossChainTokens[0],
         toChain,
       ),
-      from: TokenListManager.findTokenById(bridgeConfig.from.symbol).address ? TokenListManager.findTokenById(bridgeConfig.from.symbol) : TokenListManager.findTokenById(network.supportedCrossChainTokens[0])
+      from: TokenListManager.findTokenById(bridgeConfig.from.symbol) || TokenListManager.findTokenById(network.supportedCrossChainTokens[0])
     }
 
     GlobalStateManager.updateBridgeConfig(updatedConfig);
