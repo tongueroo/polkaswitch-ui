@@ -311,7 +311,7 @@ export default {
   },
 
   async getAllActiveTxs() {
-    const NON_ACTIVE_STATUS_CBRIDGE = [0, 5, 10];
+    const NON_ACTIVE_STATUS_CBRIDGE = [0, 2, 5, 10];
 
     const nxtpActiveTxs = mappingToGenerateConnextArray({
       array: Nxtp.getAllActiveTxs(),
@@ -331,3 +331,16 @@ export default {
     return [...cbridgeActiveTxsFormatted, ...nxtpActiveTxs];
   },
 };
+
+const handleFinishActionOfActiveTx = {
+  cbridge: {
+    handleFinishAction: async (txId, estimated, sendingChainId) => {
+      await CBridgeUtils.withdrawLiquidity(txId, estimated, sendingChainId);
+    },
+  },
+  connext: {
+    handleFinishAction: (txId) => Nxtp.transferStepTwo(txId),
+  },
+};
+
+export { handleFinishActionOfActiveTx };

@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/button-has-type */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import * as ethers from 'ethers';
 import numeral from 'numeral';
 import dayjs from 'dayjs';
+import CbridgeUtils from '../../utils/cbridge';
 
 import TokenListManager from '../../utils/tokenList';
 
@@ -21,6 +22,10 @@ const actionNeededList = [
 ];
 
 const TxCrossChainActiveStatusView = ({ data: txData, handleFinishAction }) => {
+  const [isActionNeeded, setIsActionNeeded] = useState(false);
+  const [initiateRefund, setInitiateRefund] = useState(false);
+  const [isFinishedRefund, setIsfinishedRefund] = useState(false);
+
   if (!txData) {
     return <div />;
   }
@@ -48,12 +53,28 @@ const TxCrossChainActiveStatusView = ({ data: txData, handleFinishAction }) => {
   let lang;
   let clazz;
 
-  const isActionNeeded = actionNeededList.includes(txData.status);
+  useEffect(() => {
+    setIsActionNeeded(actionNeededList.includes(txData.status));
+  }, [txData]);
+
+  useEffect(() => {
+    if (initiateRefund) {
+      const isFinishedRefundListener = window.setInterval(() => {
+        setIsfinishedRefund(CbridgeUtils._isFinishedRefund);
+      }, 40000);
+
+      return () => window.clearInterval(isFinishedRefundListener);
+    }
+  }, [initiateRefund]);
 
   if (isActionNeeded) {
     icon = <ion-icon name="information-circle" />;
     lang = <div>ACTION NEEDED</div>;
     clazz = 'action';
+  } else if (isFinishedRefund) {
+    icon = <ion-icon name="checkmark-circle" />;
+    lang = 'REFUNDED';
+    clazz = 'success';
   } else {
     icon = <button className="button is-white is-loading">&nbsp;</button>;
     lang = 'PENDING';
@@ -88,11 +109,28 @@ const TxCrossChainActiveStatusView = ({ data: txData, handleFinishAction }) => {
         <div className="level-item tx-action">
           <button
             className="button is-warning is-small"
-            onClick={handleFinishAction(txData.transactionId)}
+            disabled={!isActionNeeded}
+            onClick={() => {
+              handleFinishAction(
+                txData.transactionId,
+                txData.bridge,
+                txData.sending.amount,
+                txData.sendingChainId,
+              );
+              setIsActionNeeded(false);
+              txData.bridge === 'cbridge' && setInitiateRefund(true);
+            }}
           >
             {txData.status === 'ReceiverTransactionPrepared'
               ? 'Finish'
               : 'Refund'}
+          </button>
+        </div>
+      )}
+      {isFinishedRefund && (
+        <div className="level-item tx-action">
+          <button className="button is-warning is-small" disabled>
+            Refunded
           </button>
         </div>
       )}

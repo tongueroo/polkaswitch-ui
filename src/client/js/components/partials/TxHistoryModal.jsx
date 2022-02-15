@@ -16,7 +16,9 @@ import TxStatusView from './TxStatusView';
 import TxCrossChainHistoricalStatusView from './TxCrossChainHistoricalStatusView';
 import TxCrossChainActiveStatusView from './TxCrossChainActiveStatusView';
 import CrossChainToggle from './swap/CrossChainToggle';
-import txBridgeManager from '../../utils/txBridgeManager';
+import txBridgeManager, {
+  handleFinishActionOfActiveTx,
+} from '../../utils/txBridgeManager';
 
 const TxHistoryModal = () => {
   const [refresh, setRefresh] = useState(Date.now());
@@ -34,13 +36,22 @@ const TxHistoryModal = () => {
     setOpen(false);
   };
 
-  const handleFinishAction = (transactionId) => {
+  const handleFinishAction = (
+    transactionId,
+    bridge,
+    estimated,
+    sendingChainId,
+  ) => {
     if (!Wallet.isConnected()) {
       console.error('TxHistoryModal: Wallet not connected');
       return;
     }
 
-    Nxtp.transferStepTwo(transactionId);
+    handleFinishActionOfActiveTx[bridge]?.handleFinishAction(
+      transactionId,
+      estimated,
+      sendingChainId,
+    );
   };
 
   const fetchCrossChainHistory = async () => {
@@ -116,6 +127,7 @@ const TxHistoryModal = () => {
     setTxAllBridgesActiveQueue(resp);
   }, [loading]);
 
+  console.log('active', xActiveQueue);
   return (
     <div className={classnames('modal', { 'is-active': open })}>
       <div onClick={handleClose} className="modal-background" />

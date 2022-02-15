@@ -4,13 +4,19 @@
 // Celer doc: https://cbridge-docs.celer.network/developer/cbridge-sdk
 import { Contract } from '@ethersproject/contracts';
 import _ from 'underscore';
-import { BigNumber, constants, providers, Signer, utils } from 'ethers';
+import { BigNumber, constants } from 'ethers';
+import { base64, getAddress, hexlify } from 'ethers/lib/utils';
 import BN from 'bignumber.js';
 import HttpUtilis from './http';
 import EventManager from './events';
 import Wallet from './wallet';
 import TokenListManager from './tokenList';
 import { abi as BridgeABI } from '../../../contract/celer_contract/Bridge.json';
+
+import {
+  WithdrawReq,
+  WithdrawType,
+} from '../../../contract/celer_contract/factories/ts-proto/sgn/cbridge/v1/tx_pb';
 
 const TokenABI = require('../../../contract/ERC20.json');
 
@@ -19,6 +25,7 @@ window.CBridgeUtils = {
 
   _activeTxs: [],
   _historicalTxs: [],
+  _isFinishedRefund: false,
 
   async initialize() {
     EventManager.listenFor('walletUpdated', this.resetClient.bind(this));
@@ -285,6 +292,116 @@ window.CBridgeUtils = {
     }
 
     return chainInfo.contract_addr;
+  },
+
+  async withdrawLiquidity(transferId, estimated, sendingChainId) {
+    const nonce = Math.floor(Date.now() / 1000);
+
+    const withdrawReqProto = new WithdrawReq();
+    withdrawReqProto.setReqId(nonce);
+    withdrawReqProto.setXferId(transferId);
+    withdrawReqProto.setWithdrawType(
+      WithdrawType.WITHDRAW_TYPE_REFUND_TRANSFER,
+    );
+
+    const bytes = await this.signForWithdrawTx(withdrawReqProto);
+
+    let resp;
+    try {
+      resp = await this._client.post('/v2/withdrawLiquidity ', {
+        withdraw_req: base64.encode(withdrawReqProto.serializeBinary() || ''),
+        sig: base64.encode(bytes || ''),
+        estimate_received_amt: estimated,
+        method_type: 'WD_METHOD_TYPE_ONE_RM',
+      });
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+
+    this.cbridgePolling = window.setInterval(
+      () => this.handleCbridgeEventToRefund(transferId, sendingChainId),
+      40000,
+    );
+  },
+
+  async signForWithdrawTx(withdrawReqProto) {
+    const signer = Wallet.getProvider().getSigner();
+
+    let sig;
+    try {
+      sig = await signer.signMessage(
+        window.ethers.utils.arrayify(
+          window.ethers.utils.keccak256(withdrawReqProto.serializeBinary()),
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+
+    const bytes = window.ethers.utils.arrayify(sig);
+
+    return bytes;
+  },
+
+  async handleCbridgeEventToRefund(transferId, sendingChainId) {
+    console.log('cBridge refund Started');
+
+    const currentStatusResp = await this._client.post('/v2/getTransferStatus', {
+      transfer_id: transferId,
+    });
+
+    const {
+      powers: _powers,
+      signers: _signers,
+      sorted_sigs,
+      wd_onchain,
+      status,
+    } = currentStatusResp.data;
+
+    const wdmsg = base64.decode(wd_onchain);
+
+    const signers = _signers.map((item) => {
+      const decodeSigners = base64.decode(item);
+      const hexlifyObj = hexlify(decodeSigners);
+      return getAddress(hexlifyObj);
+    });
+
+    const sigs = sorted_sigs.map((item) => {
+      return base64.decode(item);
+    });
+
+    const powers = _powers.map((item) => {
+      return base64.decode(item);
+    });
+
+    if (status === 8) {
+      const bridgeContractAddr = await this.findBridgeContractAddress(
+        sendingChainId,
+      );
+
+      const bridgeContract = new Contract(
+        bridgeContractAddr,
+        BridgeABI,
+        Wallet.getProvider().getSigner(),
+      );
+
+      const txWithdrawOnChain = await bridgeContract.withdraw(
+        wdmsg,
+        sigs,
+        signers,
+        powers,
+      );
+
+
+      this.stopPollingCbridge();
+
+      this._isFinishedRefund = true;
+    }
+  },
+
+  async stopPollingCbridge() {
+    window.clearInterval(this.cbridgePolling);
   },
 };
 

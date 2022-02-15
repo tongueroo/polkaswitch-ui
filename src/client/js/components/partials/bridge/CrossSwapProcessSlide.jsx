@@ -85,6 +85,16 @@ export default class CrossSwapProcessSlide extends Component {
 
         this.stopPollingCbridge();
       }
+
+      if (data.status === 6 || data.status === 2) {
+        this.stopPollingCbridge();
+
+        this.props.handleTransactionComplete(false, undefined);
+
+        this.setState({
+          loading: false,
+        });
+      }
     });
   }
 

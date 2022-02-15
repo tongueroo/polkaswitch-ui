@@ -5,16 +5,22 @@ const buildTxGenericStatus = (status) => {
   // cBridge status ref: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferstatus#transferhistorystatus-enum
 
   switch (status) {
+    case 2:
+      return 'CANCELLED';
     case 4:
       return 'PENDING';
     case 5:
       return 'FULFILLED';
     case 6:
       return 'TRANSFER_TO_BE_REFUNDED';
+    case 7:
+      return 'TRANSFER_REQUESTING_REFUND';
+    case 8:
+      return 'TRANSFER_REFUND_TO_BE_CONFIRMED';
+    case 9:
+      return 'TRANSFER_CONFIRMING_YOUR_REFUND';
     case 10:
       return 'REFUNDED';
-    case 2:
-      return 'CANCELLED';
     default:
       return status;
   }

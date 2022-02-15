@@ -141,6 +141,10 @@
     }
   }
 
+  &.refunded {
+    cursor: not-allowed;
+  }
+
   &.failed {
     .icon {
       color: $danger;
