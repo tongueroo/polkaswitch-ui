@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import _ from 'underscore';
 import classnames from 'classnames';
 import * as ethers from 'ethers';
 import numeral from 'numeral';
@@ -11,7 +10,6 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 
 dayjs.extend(relativeTime);
 
-const { BigNumber } = ethers;
 const Utils = ethers.utils;
 
 export default class TxCrossChainActiveStatusView extends Component {

@@ -141,6 +141,7 @@ window.HopUtils = {
     console.log(amountOut, bonderFee);
 
     return {
+      hasMinBridgeAmount: true,
       id: transactionId,
       transactionFee: bonderFee,
       returnAmount: amountOut,
