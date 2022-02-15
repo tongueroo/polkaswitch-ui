@@ -84,15 +84,16 @@ export default class SwapTransactionDetails extends Component {
         this.props.from,
         this.props.to,
         Utils.parseUnits(fromAmount, this.props.from.decimals),
+        fromAmount
       )
         .then(
           function (priceImpact) {
+            console.log('priceImpact', priceImpact);
             _.defer(
               function () {
                 this.setState({
-                  highSlippage:
-                    priceImpact * 100.0 > SwapFn.getSetting().slippage,
-                  priceImpact: (priceImpact * 100.0).toFixed(5),
+                  highSlippage: priceImpact > SwapFn.getSetting().slippage,
+                  priceImpact,
                 });
               }.bind(this),
             );
@@ -196,7 +197,7 @@ export default class SwapTransactionDetails extends Component {
         <div
           className={classnames(
             'level is-mobile is-narrow detail hint--bottom hint--medium',
-            { 'is-danger': this.state.highSlippage },
+            { 'is-danger': this.state.priceImpact >= 3, 'is-warning': (this.state.priceImpact >= 2 && this.state.priceImpact < 3) },
           )}
           aria-label="Expected slippage in price on swap. The difference between the current market price and the price you will actually pay when performing this swap"
         >
@@ -224,7 +225,7 @@ export default class SwapTransactionDetails extends Component {
                     </span>
                     <span>High Slippage)&nbsp;&nbsp;</span>
                   </span>
-                  <span>- {this.state.priceImpact}%</span>
+                  <span>{this.state.priceImpact}%</span>
                 </div>
               </div>
             </div>
