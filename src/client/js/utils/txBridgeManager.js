@@ -1,11 +1,7 @@
 import _ from 'underscore';
-import store from 'store';
-import BN from 'bignumber.js';
 import { BigNumber, constants, providers, Signer, utils } from 'ethers';
 
 import { getRandomBytes32 } from '@connext/nxtp-utils';
-import Wallet from './wallet';
-import swapFn from './swapFn';
 import HopUtils from './hop';
 import CBridgeUtils from './cbridge';
 import Nxtp from './nxtp';
@@ -41,7 +37,7 @@ const HOP_SUPPORTED_BRIDGE_TOKENS = [
 
 const CBRIDGE_SUPPORTED_BRIDGE_TOKENS = [
   'USDC',
-  'USDT'
+  'USDT',
   // TODO This is list is longer and is dynamically available per network pair.
   // Let's keep it simple for now
   // ... "MATIC", "ETH", "WBTC"
@@ -51,6 +47,7 @@ export default {
   _signerAddress: '',
   _queue: {},
   _routes: {},
+  _genericTxHistory: [],
 
   async initialize() {},
 
@@ -90,21 +87,27 @@ export default {
 
     // This also controls the order they appear in the UI
 
-    if (targetChainIds.every(e => CBRIDGE_SUPPORTED_CHAINS.includes(e))) {
-      if (to.symbol === from.symbol && targetTokenIds.every(e => CBRIDGE_SUPPORTED_BRIDGE_TOKENS.includes(e))) {
-        bridges.push("cbridge");
+    if (targetChainIds.every((e) => CBRIDGE_SUPPORTED_CHAINS.includes(e))) {
+      if (
+        to.symbol === from.symbol &&
+        targetTokenIds.every((e) => CBRIDGE_SUPPORTED_BRIDGE_TOKENS.includes(e))
+      ) {
+        bridges.push('cbridge');
       }
     }
 
-    if (targetChainIds.every(e => HOP_SUPPORTED_CHAINS.includes(e))) {
-      if (to.symbol === from.symbol && targetTokenIds.every(e => HOP_SUPPORTED_BRIDGE_TOKENS.includes(e))) {
-        bridges.push("hop");
+    if (targetChainIds.every((e) => HOP_SUPPORTED_CHAINS.includes(e))) {
+      if (
+        to.symbol === from.symbol &&
+        targetTokenIds.every((e) => HOP_SUPPORTED_BRIDGE_TOKENS.includes(e))
+      ) {
+        bridges.push('hop');
       }
     }
 
-    if (targetChainIds.every(e => CONNEXT_SUPPORTED_CHAINS.includes(e))) {
+    if (targetChainIds.every((e) => CONNEXT_SUPPORTED_CHAINS.includes(e))) {
       // Connext always supported regardless of token due to the extra swap steps
-      bridges.push("connext");
+      bridges.push('connext');
     }
 
     return bridges;
@@ -118,9 +121,9 @@ export default {
     receivingAssetId,
     amountBN,
     receivingAddress,
+    sendingAssetDecimals,
   ) {
     const transactionId = getRandomBytes32();
-    const bridgeInterface = this.getBridgeInterface();
     const { bridgeOption } = Storage.swapSettings;
 
     if (bridgeOption === 'cbridge') {
@@ -132,7 +135,9 @@ export default {
         receivingAssetId,
         amountBN,
         receivingAddress,
+        sendingAssetDecimals,
       );
+
       const { maxSlippage } = estimate;
       this._queue[transactionId] = {
         bridge: bridgeOption,
@@ -144,6 +149,7 @@ export default {
         receivingAddress,
         maxSlippage,
       };
+
       return estimate;
     }
 
@@ -172,43 +178,55 @@ export default {
     const parentTransactionId = getRandomBytes32();
     this._routes[parentTransactionId] = {};
 
-    var supportedBridges = this.supportedBridges(to, toChain, from, fromChain);
+    const supportedBridges = this.supportedBridges(
+      to,
+      toChain,
+      from,
+      fromChain,
+    );
 
-    return supportedBridges.map(bridgeType => {
-      var txData = {
+    return supportedBridges.map((bridgeType) => {
+      const txData = {
         bridge: bridgeType,
         sendingChainId: +fromChain.chainId,
         sendingAssetId: from.address,
         receivingChainId: +toChain.chainId,
         receivingAssetId: to.address,
         amountBN,
-        receivingAddress
-      }
+        receivingAddress,
+      };
 
       const childTransactionId = getRandomBytes32();
       this._routes[parentTransactionId][bridgeType] = _.extend({}, txData);
       this._queue[childTransactionId] = _.extend({}, txData);
 
-      return this.getBridge(bridgeType).getEstimate(
-        childTransactionId,
-        +fromChain.chainId,
-        from.address,
-        +toChain.chainId,
-        to.address,
-        amountBN,
-        receivingAddress
-      ).then((estimate) => {
-        this._routes[parentTransactionId][bridgeType].estimate = estimate;
-        this._queue[childTransactionId].estimate = estimate;
+      return this.getBridge(bridgeType)
+        .getEstimate(
+          childTransactionId,
+          +fromChain.chainId,
+          from.address,
+          +toChain.chainId,
+          to.address,
+          amountBN,
+          receivingAddress,
+        )
+        .then((estimate) => {
+          this._routes[parentTransactionId][bridgeType].estimate = estimate;
+          this._queue[childTransactionId].estimate = estimate;
 
-        return this._routes[parentTransactionId][bridgeType];
-      });
+          if (!estimate?.hasMinBridgeAmount) {
+            this._routes[parentTransactionId][bridgeType] = null;
+          }
+
+          return this._routes[parentTransactionId][bridgeType];
+        });
     });
   },
 
   transferStepOne(transactionId) {
     const bridgeInterface = this.getBridgeInterface(transactionId);
     const tx = this.getTx(transactionId);
+
     return bridgeInterface.transferStepOne(
       transactionId,
       tx.sendingChainId,
@@ -221,9 +239,14 @@ export default {
     );
   },
 
-  transferStepTwo(transactionId) {
+  transferStepTwo(transactionId, txBridgeInternalId) {
     const bridgeInterface = this.getBridgeInterface(transactionId);
     const tx = this.getTx(transactionId);
+
+    if (tx.bridge === 'cbridge') {
+      return bridgeInterface.transferStepTwo(txBridgeInternalId);
+    }
+
     return bridgeInterface.transferStepTwo(
       transactionId,
       tx.sendingChainId,
@@ -241,10 +264,94 @@ export default {
       return false;
     }
 
-    return tx.bridge === 'connext';
+    return tx.bridge === 'connext' || tx.bridge === 'cbridge';
   },
 
   getTx(nonce) {
     return this._queue[nonce];
+  },
+
+  async getAllTxHistory() {
+    // TODO: Implement Hop TxHistory
+
+    const nxtpQueue = Nxtp.getAllHistoricalTxs();
+    const cBridgeQueue = await CBridgeUtils.getTxHistory();
+
+    this.buildGenericTxHistory(nxtpQueue, 'connext');
+    this.buildGenericTxHistory(cBridgeQueue, 'cbridge');
+
+    return this._genericTxHistory;
+  },
+
+  buildGenericTxHistory(bridgeTxHistory, bridge) {
+    // TODO: Implement Hop TxHistory
+
+    if (bridge === 'connext') {
+      const genericTxHistoryNxtp = bridgeTxHistory.map((tx) => ({
+        receivingAssetTokenAddr: tx.crosschainTx.invariant.receivingAssetId,
+        sendingAssetTokenAddr: tx.crosschainTx.invariant.sendingAssetId,
+        receivingChainId: tx.crosschainTx.invariant.receivingChainId,
+        sendingChainId: tx.crosschainTx.invariant.sendingChainId,
+        receiving: {
+          amount: tx.crosschainTx?.receiving?.amount,
+        },
+        fulfilledTxHash: tx?.fulfilledTxHash,
+        preparedTimestamp: tx.preparedTimestamp,
+        sending: {
+          amount: tx.crosschainTx.sending.amount,
+        },
+        bridge,
+        status: tx.status,
+        src_api_resp: tx,
+      }));
+
+      this._genericTxHistory = genericTxHistoryNxtp;
+    } else {
+      const genericTxHistoryCbridge = bridgeTxHistory.map((tx) => {
+        const hash = tx.dst_block_tx_link.split('tx/');
+        const timeStampInSeconds = Math.round(parseInt(tx.ts, 10) / 1000);
+
+        return {
+          receivingAssetTokenAddr: tx.dst_received_info.token.address,
+          receivingChainId: tx.dst_received_info.chain.id,
+          sendingAssetTokenAddr: tx.src_send_info.token.address,
+          sendingChainId: tx.src_send_info.chain.id,
+          fulfilledTxHash: hash[1],
+          preparedTimestamp: timeStampInSeconds.toString(),
+          receiving: {
+            amount: tx.dst_received_info.amount,
+          },
+          sending: {
+            amount: tx.src_send_info.amount,
+          },
+          bridge,
+          status: this.buildTxGenericStatus(tx.status),
+          src_api_resp: tx,
+        };
+      });
+
+      this._genericTxHistory = [
+        ...this._genericTxHistory,
+        ...genericTxHistoryCbridge,
+      ];
+    }
+  },
+
+  buildTxGenericStatus(status) {
+    // building generic tx status msg to our react component
+    // cBridge status ref: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferstatus#transferhistorystatus-enum
+
+    switch (status) {
+      case 4:
+        return 'PENDING';
+      case 5:
+        return 'FULFILLED';
+      case 10:
+        return 'REFUNDED';
+      case 2:
+        return 'CANCELLED';
+      default:
+        return status;
+    }
   },
 };

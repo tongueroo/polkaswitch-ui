@@ -10,7 +10,7 @@ import SwapTransactionDetails from './SwapTransactionDetails';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import SwapFn from '../../../utils/swapFn';
-import { ApprovalState } from '../../../constants/Status';
+import { approvalState } from '../../../constants';
 
 export default class SwapConfirmSlide extends Component {
   constructor(props) {
@@ -50,7 +50,7 @@ export default class SwapConfirmSlide extends Component {
           this.props.from.decimals,
         );
 
-        if (this.props.approveStatus === ApprovalState.APPROVED) {
+        if (this.props.approveStatus === approvalState.APPROVED) {
           const distBN = _.map(this.props.swapDistribution, (e) =>
             window.ethers.utils.parseUnits(`${e}`, 'wei'),
           );
@@ -96,7 +96,7 @@ export default class SwapConfirmSlide extends Component {
               this.setState({
                 loading: false,
               });
-              this.props.onApproveComplete(ApprovalState.APPROVED);
+              this.props.onApproveComplete(approvalState.APPROVED);
             })
             .catch((e) => {
               console.error('#### approve failed from catch ####', e);
@@ -249,7 +249,7 @@ export default class SwapConfirmSlide extends Component {
               disabled={!this.allowSwap()}
               onClick={this.handleConfirm}
             >
-              {this.props.approveStatus === ApprovalState.APPROVED
+              {this.props.approveStatus === approvalState.APPROVED
                 ? 'Swap'
                 : 'Approve'}
             </button>
