@@ -15,7 +15,8 @@
     "start": "node src/server/index.js",
     "server": "nodemon -r dotenv/config src/server/index.js",
     "format": "prettier --write \"src/**/*.js*\"",
-    "lint": "eslint \"src/**/*.js*\" --fix"
+    "lint": "eslint \"src/**/*.js*\" --fix",
+    "test": "NODE_OPTIONS=--unhandled-rejections=warn jest"
   },
   "author": "polkaswitch",
   "dependencies": {
