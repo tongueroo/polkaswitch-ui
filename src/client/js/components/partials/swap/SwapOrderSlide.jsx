@@ -35,8 +35,7 @@ export default class SwapOrderSlide extends Component {
       this.props.from?.address !== prevProps.from?.address ||
       this.props.to?.address !== prevProps.to?.address ||
       this.props.refresh !== prevProps.refresh ||
-      (this.props.fromAmount !== prevProps.fromAmount &&
-        !this.state.calculatingSwap)
+      (this.props.fromAmount !== prevProps.fromAmount && !this.state.calculatingSwap)
     ) {
       if (this.props.fromAmount) {
         this.fetchSwapEstimate(this.props.fromAmount);
@@ -59,11 +58,7 @@ export default class SwapOrderSlide extends Component {
       return;
     }
 
-    this.props.onSwapEstimateComplete(
-      origFromAmount,
-      this.props.toAmount,
-      this.props.swapDistribution,
-    );
+    this.props.onSwapEstimateComplete(origFromAmount, this.props.toAmount, this.props.swapDistribution);
 
     if (!fromAmount || fromAmount.length === 0) {
       fromAmount = '0';
@@ -84,10 +79,7 @@ export default class SwapOrderSlide extends Component {
         calculatingSwap: true,
       },
       function (_timeNow, _attempt, _cb) {
-        var fromAmountBN = window.ethers.utils.parseUnits(
-          fromAmount,
-          this.props.from.decimals,
-        );
+        var fromAmountBN = window.ethers.utils.parseUnits(fromAmount, this.props.from.decimals);
 
         // add delay to slow down UI snappiness
         _.delay(
@@ -95,13 +87,7 @@ export default class SwapOrderSlide extends Component {
             if (this.calculatingSwapTimestamp !== _timeNow2) {
               return;
             }
-            this.fetchSingleChainSwapEstimate(
-              origFromAmount,
-              fromAmountBN,
-              _timeNow2,
-              _attempt2,
-              _cb2,
-            );
+            this.fetchSingleChainSwapEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2);
           }.bind(this),
           500,
           _timeNow,
@@ -112,46 +98,25 @@ export default class SwapOrderSlide extends Component {
     );
   }
 
-  fetchSingleChainSwapEstimate(
-    origFromAmount,
-    fromAmountBN,
-    _timeNow2,
-    _attempt2,
-    _cb2,
-  ) {
-    return SwapFn.getExpectedReturn(
-      this.props.from,
-      this.props.to,
-      fromAmountBN,
-    )
+  fetchSingleChainSwapEstimate(origFromAmount, fromAmountBN, _timeNow2, _attempt2, _cb2) {
+    return SwapFn.getExpectedReturn(this.props.from, this.props.to, fromAmountBN)
       .then(
         function (_timeNow3, _cb3, result) {
           if (this.calculatingSwapTimestamp !== _timeNow3) {
             return;
           }
 
-          var dist = _.map(result.distribution, function (e) {
-            return e.toNumber();
-          });
+          const dist = _.map(result.distribution, (e) => (Number.isNaN(e) ? e.toNumber() : e));
 
           Wallet.getBalance(this.props.from)
             .then((bal) => {
-              return SwapFn.getApproveStatus(
-                this.props.from,
-                fromAmountBN,
-              ).then((status) => {
+              return SwapFn.getApproveStatus(this.props.from, fromAmountBN).then((status) => {
                 console.log('Approval Status', status);
                 this.props.onSwapEstimateComplete(
                   origFromAmount,
-                  window.ethers.utils.formatUnits(
-                    result.returnAmount,
-                    this.props.to.decimals,
-                  ),
+                  window.ethers.utils.formatUnits(result.returnAmount, this.props.to.decimals),
                   dist,
-                  window.ethers.utils.formatUnits(
-                    bal,
-                    this.props.from.decimals,
-                  ),
+                  window.ethers.utils.formatUnits(bal, this.props.from.decimals),
                   status,
                 );
 
@@ -188,12 +153,7 @@ export default class SwapOrderSlide extends Component {
           }
 
           // try again
-          this.fetchSwapEstimate(
-            origFromAmount,
-            _timeNow3,
-            _attempt3 + 1,
-            _cb3,
-          );
+          this.fetchSwapEstimate(origFromAmount, _timeNow3, _attempt3 + 1, _cb3);
         }.bind(this, _timeNow2, _attempt2, _cb2),
       );
   }
@@ -241,12 +201,7 @@ export default class SwapOrderSlide extends Component {
   }
 
   hasSufficientBalance() {
-    if (
-      Wallet.isConnected() &&
-      this.props.availableBalance &&
-      this.props.fromAmount &&
-      this.props.from
-    ) {
+    if (Wallet.isConnected() && this.props.availableBalance && this.props.fromAmount && this.props.from) {
       var balBN = BN(this.props.availableBalance);
       var fromBN = BN(this.props.fromAmount);
       return fromBN.lte(balBN);
@@ -258,19 +213,9 @@ export default class SwapOrderSlide extends Component {
   handleSubmit(e) {
     if (!Wallet.isConnected()) {
       EventManager.emitEvent('promptWalletConnect', 1);
-    } else if (
-      !SwapFn.isValidParseValue(this.props.from, this.props.fromAmount)
-    ) {
-      var correctAmt = SwapFn.validateEthValue(
-        this.props.from,
-        this.props.fromAmount,
-      );
-      this.fetchSwapEstimate(
-        correctAmt,
-        undefined,
-        undefined,
-        this.props.handleSubmit,
-      );
+    } else if (!SwapFn.isValidParseValue(this.props.from, this.props.fromAmount)) {
+      var correctAmt = SwapFn.validateEthValue(this.props.from, this.props.fromAmount);
+      this.fetchSwapEstimate(correctAmt, undefined, undefined, this.props.handleSubmit);
     } else if (this.validateOrderForm()) {
       EventManager.emitEvent('networkHoverableUpdated', { hoverable: false });
       this.props.handleSubmit();
@@ -303,12 +248,7 @@ export default class SwapOrderSlide extends Component {
             _.defer(
               function () {
                 // balance is in WEI and is a BigNumber
-                this.fetchSwapEstimate(
-                  window.ethers.utils.formatUnits(
-                    bal,
-                    this.props.from.decimals,
-                  ),
-                );
+                this.fetchSwapEstimate(window.ethers.utils.formatUnits(bal, this.props.from.decimals));
               }.bind(this),
             );
           }.bind(this),
@@ -332,10 +272,7 @@ export default class SwapOrderSlide extends Component {
 
     return (
       <div className="level is-mobile">
-        <div
-          className="level is-mobile is-narrow my-0 token-dropdown"
-          onClick={this.props.handleSearchToggle(target)}
-        >
+        <div className="level is-mobile is-narrow my-0 token-dropdown" onClick={this.props.handleSearchToggle(target)}>
           <TokenIconBalanceGroupView
             network={isFrom ? this.props.fromChain : this.props.toChain}
             token={token}
@@ -357,11 +294,7 @@ export default class SwapOrderSlide extends Component {
             >
               <input
                 onChange={this.handleTokenAmountChange}
-                value={
-                  !isFrom && this.state.errored
-                    ? ''
-                    : this.props[`${target}Amount`] || ''
-                }
+                value={!isFrom && this.state.errored ? '' : this.props[`${target}Amount`] || ''}
                 type="number"
                 min="0"
                 lang="en"
@@ -382,14 +315,10 @@ export default class SwapOrderSlide extends Component {
                 </div>
               )}
 
-              {isFrom && !this.hasSufficientBalance() && (
-                <div className="warning-funds">Insufficient funds</div>
-              )}
+              {isFrom && !this.hasSufficientBalance() && <div className="warning-funds">Insufficient funds</div>}
 
               {!isFrom && this.state.errored && (
-                <div className="warning-funds">
-                  {this.state.errorMsg || 'Estimate failed. Try again'}
-                </div>
+                <div className="warning-funds">{this.state.errorMsg || 'Estimate failed. Try again'}</div>
               )}
             </div>
           </div>
@@ -405,10 +334,7 @@ export default class SwapOrderSlide extends Component {
           <div className="level is-mobile">
             <div className="level-right">
               <div className="level-item">
-                <span
-                  className="icon clickable settings-icon"
-                  onClick={this.props.handleSettingsToggle}
-                >
+                <span className="icon clickable settings-icon" onClick={this.props.handleSettingsToggle}>
                   <ion-icon name="settings-outline"></ion-icon>
                 </span>
               </div>
