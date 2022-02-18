@@ -68,10 +68,10 @@ export default class GasPriceControl extends Component {
       <div className="gas-price-control">
         <div className={classnames('select', { disabled: this.state.custom })}>
           <select value={gasSpeed} onChange={this.handleClick}>
-            <option value="safeLow">Auto (~{window.GAS_STATS.safeLow})</option>
-            <option value="fast">Fast (~{window.GAS_STATS.fast})</option>
+            <option value="safeLow">Auto (~{window.GAS_STATS?.safeLow})</option>
+            <option value="fast">Fast (~{window.GAS_STATS?.fast})</option>
             <option value="fastest">
-              Fastest (~{window.GAS_STATS.fastest})
+              Fastest (~{window.GAS_STATS?.fastest})
             </option>
           </select>
         </div>

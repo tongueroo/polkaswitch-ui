@@ -29,7 +29,7 @@ export default class TokenSwapDistribution extends Component {
     var network = TokenListManager.getCurrentNetworkConfig();
     var sumOne, sumTwo, sumThree, sumFour, sumFive, parts, totalParts;
 
-    if (network.chainId === '1') {
+    if (network?.chainId === '1') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0];
 
       /*
@@ -50,7 +50,7 @@ export default class TokenSwapDistribution extends Component {
         icon: this.state.pools[i] ? TokenListManager.findTokenById(this.state.pools[i]) : {},
         size: totalParts === 0 ? 0 : v / totalParts,
       }));
-    } else if (network.chainId === '137') {
+    } else if (network?.chainId === '137') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       /*
@@ -95,7 +95,7 @@ export default class TokenSwapDistribution extends Component {
           size: sumFive / totalParts,
         },
       ];
-    } else if (network.chainId === '56') {
+    } else if (network?.chainId === '56') {
       parts = this.props.parts || [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       ];
@@ -109,10 +109,14 @@ export default class TokenSwapDistribution extends Component {
       */
 
       sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5];
-      sumTwo = parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
-      sumThree = parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
-      sumFour = parts[18] + parts[19] + parts[20] + parts[21] + parts[22] + parts[23];
-      sumFive = parts[24] + parts[25] + parts[26] + parts[27] + parts[28] + parts[29];
+      sumTwo =
+        parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
+      sumThree =
+        parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
+      sumFour =
+        parts[18] + parts[19] + parts[20] + parts[21] + parts[22] + parts[23];
+      sumFive =
+        parts[24] + parts[25] + parts[26] + parts[27] + parts[28] + parts[29];
       totalParts = sumOne + sumTwo + sumThree + sumFour + sumFive;
 
       pools = [
@@ -153,7 +157,7 @@ export default class TokenSwapDistribution extends Component {
           size: sumFive / totalParts,
         },
       ];
-    } else if (network.chainId === '43114') {
+    } else if (network?.chainId === '43114') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0];
 
       /*
@@ -190,7 +194,7 @@ export default class TokenSwapDistribution extends Component {
           size: sumThree / totalParts,
         },
       ];
-    } else if (network.chainId === '100') {
+    } else if (network?.chainId === '100') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       /*
@@ -199,8 +203,24 @@ export default class TokenSwapDistribution extends Component {
         For example, the distribution [0,0,0,0,0,0,0,6,0,0,0,0,6,0,0,6]
         means 1/3 of the swap amount will route to Honeyswap and 2/3 will route to Sushiswap..
       */
-      sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5] + parts[6] + parts[7];
-      sumTwo = parts[8] + parts[9] + parts[10] + parts[11] + parts[12] + parts[13] + parts[14] + parts[15];
+      sumOne =
+        parts[0] +
+        parts[1] +
+        parts[2] +
+        parts[3] +
+        parts[4] +
+        parts[5] +
+        parts[6] +
+        parts[7];
+      sumTwo =
+        parts[8] +
+        parts[9] +
+        parts[10] +
+        parts[11] +
+        parts[12] +
+        parts[13] +
+        parts[14] +
+        parts[15];
       totalParts = sumOne + sumTwo;
       pools = [
         {
@@ -216,7 +236,7 @@ export default class TokenSwapDistribution extends Component {
           size: sumTwo / totalParts,
         },
       ];
-    } else if (network.chainId === '250') {
+    } else if (network?.chainId === '250') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       /*
@@ -251,8 +271,10 @@ export default class TokenSwapDistribution extends Component {
           size: sumThree / totalParts,
         },
       ];
-    } else if (network.chainId === '1285') {
-      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    } else if (network?.chainId === '1285') {
+      parts = this.props.parts || [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ];
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
         There are 18 pools: pool 0 - 5 are Solarbeam pools, pool 6-11 are Sushiswap pools, pool 12-17 are Moonswap pools.
@@ -261,8 +283,10 @@ export default class TokenSwapDistribution extends Component {
         ["0","0","0","0","0","0","3","0","0","0","0","0","6","0","6","0","3",0] means 1/6 of amount will route to Sushiswap and 5/6 will route to Moonswap.
       */
       sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5];
-      sumTwo = parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
-      sumThree = parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
+      sumTwo =
+        parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
+      sumThree =
+        parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
       totalParts = sumOne + sumTwo + sumThree;
       pools = [
         {
@@ -283,7 +307,7 @@ export default class TokenSwapDistribution extends Component {
           size: sumThree / totalParts,
         },
       ];
-    } else if (network.chainId === '1666600000') {
+    } else if (network?.chainId === '1666600000') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
@@ -314,16 +338,16 @@ export default class TokenSwapDistribution extends Component {
           size: sumThree / totalParts,
         },
       ];
-    } else if (network.chainId === '1313161554') {
-      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
         There are 18 pools: pool 0 - 5 are Trisolaris pools, pool 6 - 11 are Wannaswap pools, pool 12 - 17 are auroraswap pools.
         For example, the distribution [6,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0] means 2/3 of the swap amount will route to Trisolaris and 1/3 will route to Wannaswap.
       */
       sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5];
-      sumTwo = parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
-      sumThree = parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
+      sumTwo =
+        parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
+      sumThree =
+        parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
       totalParts = sumOne + sumTwo + sumThree;
       pools = [
         {

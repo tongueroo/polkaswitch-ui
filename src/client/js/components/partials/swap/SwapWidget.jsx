@@ -21,14 +21,18 @@ export default class SwapWidget extends Component {
     this.box = React.createRef();
     this.orderPage = React.createRef();
     const network = TokenListManager.getCurrentNetworkConfig();
-    const swapConfig = GlobalStateManager.getSwapConfig()
+    const swapConfig = GlobalStateManager.getSwapConfig();
 
     var mergeState = {};
     mergeState = _.extend(mergeState, {
       toChain: network,
       fromChain: network,
-      to: TokenListManager.findTokenById(swapConfig?.to?.address || network.defaultPair.to),
-      from: TokenListManager.findTokenById(swapConfig?.from?.address || network.defaultPair.from),
+      to: TokenListManager.findTokenById(
+        swapConfig?.to?.address || network?.defaultPair.to,
+      ),
+      from: TokenListManager.findTokenById(
+        swapConfig?.from?.address || network?.defaultPair.from,
+      ),
     });
 
     this.state = _.extend(mergeState, {
@@ -105,12 +109,14 @@ export default class SwapWidget extends Component {
   handleNetworkChange(e) {
     const network = TokenListManager.getCurrentNetworkConfig();
     const defaultTo = TokenListManager.findTokenById(network.defaultPair.to);
-    const defaultFrom = TokenListManager.findTokenById(network.defaultPair.from);
+    const defaultFrom = TokenListManager.findTokenById(
+      network.defaultPair.from,
+    );
     GlobalStateManager.updateSwapConfig({
       to: defaultTo,
       from: defaultFrom,
       toChain: network.name,
-      fromChain: network.name
+      fromChain: network.name,
     });
     this.setState({
       loading: false,
@@ -297,7 +303,11 @@ export default class SwapWidget extends Component {
   handleTokenChange(token) {
     var alt = this.state.searchTarget === 'from' ? 'to' : 'from';
     // if you select the same token pair, do a swap instead
-    if (this.state[alt] && this.state[alt].address && this.state[alt].address === token.address) {
+    if (
+      this.state[alt] &&
+      this.state[alt].address &&
+      this.state[alt].address === token.address
+    ) {
       return this.onSwapTokens();
     }
 
