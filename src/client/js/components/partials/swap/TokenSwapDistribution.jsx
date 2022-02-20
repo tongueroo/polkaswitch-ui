@@ -1,28 +1,27 @@
 import React, { Component } from 'react';
 import _ from 'underscore';
-import classnames from 'classnames';
 import TokenIconImg from './../TokenIconImg';
-import Wallet from '../../../utils/wallet';
 import TokenListManager from '../../../utils/tokenList';
+import PathFinder from '../../../utils/pathfinder';
 
 export default class TokenSwapDistribution extends Component {
-  constructor(props) {
-    super(props);
-  }
+  state = {
+    pools: [],
+  };
 
-  renderPool(key, name, icon, poolWidth) {
+  renderPool(key, icon, poolWidth) {
     return (
-      <div
-        key={key}
-        className="token-dist-pool-wrapper"
-        style={{ width: `${poolWidth * 100.0}%` }}
-      >
+      <div key={key} className="token-dist-pool-wrapper" style={{ width: `${poolWidth * 100.0}%` }}>
         <div className="token-dist-pool">
           <TokenIconImg token={icon} size={25} />
           <span>{Math.round(poolWidth * 100.0)}%</span>
         </div>
       </div>
     );
+  }
+
+  componentDidMount() {
+    PathFinder.getPools(1).then((pools) => this.setState({ pools }));
   }
 
   render() {
@@ -44,28 +43,13 @@ export default class TokenSwapDistribution extends Component {
         will route to Uniswap and 2/3 will route to Balancer.
       */
 
-      sumOne = parts[0] + parts[1];
-      sumTwo = parts[2] + parts[3];
-      sumThree = parts[4] + parts[5] + parts[6];
-      totalParts = sumOne + sumTwo + sumThree
+      totalParts = parts.reduce((prev, next) => next + prev, 0);
 
-      var pools = [
-        {
-          name: 'Uniswap',
-          icon: TokenListManager.findTokenById('UNI'),
-          size: sumOne / totalParts,
-        },
-        {
-          name: 'Sushiswap',
-          icon: TokenListManager.findTokenById('SUSHI'),
-          size: sumTwo / totalParts,
-        },
-        {
-          name: 'Balancer',
-          icon: TokenListManager.findTokenById('BAL'),
-          size: sumThree / totalParts,
-        },
-      ];
+      pools = parts.map((v, i) => ({
+        name: this.state.pools[i],
+        icon: this.state.pools[i] ? TokenListManager.findTokenById(this.state.pools[i]) : {},
+        size: totalParts === 0 ? 0 : v / totalParts,
+      }));
     } else if (network.chainId === '137') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -84,29 +68,37 @@ export default class TokenSwapDistribution extends Component {
       sumFive = parts[16] + parts[17] + parts[18] + parts[19]; // Apeswap
       totalParts = sumOne + sumTwo + sumThree + sumFour + sumFive;
 
-      pools = [{
-        name: 'Quickswap',
-        icon: TokenListManager.findTokenById('QUICK'),
-        size: sumOne / totalParts
-      }, {
-        name: 'Sushiswap',
-        icon: TokenListManager.findTokenById('SUSHI'),
-        size: sumTwo / totalParts
-      }, {
-        name: 'Dfyn',
-        icon: TokenListManager.findTokenById('Dfyn'),
-        size: sumThree / totalParts
-      }, {
-        name: 'Dinoswap',
-        icon: { logoURI: 'https://dinoswap.exchange/images/dino.png' },
-        size: sumFour / totalParts
-      }, {
-        name: 'Apeswap',
-        icon: { logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/8497.png' },
-        size: sumFive / totalParts
-      }];
+      pools = [
+        {
+          name: 'Quickswap',
+          icon: TokenListManager.findTokenById('QUICK'),
+          size: sumOne / totalParts,
+        },
+        {
+          name: 'Sushiswap',
+          icon: TokenListManager.findTokenById('SUSHI'),
+          size: sumTwo / totalParts,
+        },
+        {
+          name: 'Dfyn',
+          icon: TokenListManager.findTokenById('Dfyn'),
+          size: sumThree / totalParts,
+        },
+        {
+          name: 'Dinoswap',
+          icon: { logoURI: 'https://dinoswap.exchange/images/dino.png' },
+          size: sumFour / totalParts,
+        },
+        {
+          name: 'Apeswap',
+          icon: { logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/8497.png' },
+          size: sumFive / totalParts,
+        },
+      ];
     } else if (network.chainId === '56') {
-      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      parts = this.props.parts || [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ];
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
         There are 30 pools: pool 0 - 5 are Pancakeswap pools,
@@ -135,32 +127,28 @@ export default class TokenSwapDistribution extends Component {
         {
           name: 'Sushiswap',
           icon: {
-            logoURI:
-              'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688',
+            logoURI: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688',
           },
           size: sumTwo / totalParts,
         },
         {
           name: 'Mdex',
           icon: {
-            logoURI:
-              'https://assets.coingecko.com/coins/images/13775/small/mdex.png?1611739676',
+            logoURI: 'https://assets.coingecko.com/coins/images/13775/small/mdex.png?1611739676',
           },
           size: sumThree / totalParts,
         },
         {
           name: 'Biswap',
           icon: {
-            logoURI:
-              'https://assets.coingecko.com/coins/images/16845/small/biswap.png?1625388985',
+            logoURI: 'https://assets.coingecko.com/coins/images/16845/small/biswap.png?1625388985',
           },
           size: sumFour / totalParts,
         },
         {
           name: 'Apeswap',
           icon: {
-            logoURI:
-              'https://assets.coingecko.com/coins/images/14870/small/banana.png?1638884287',
+            logoURI: 'https://assets.coingecko.com/coins/images/14870/small/banana.png?1638884287',
           },
           size: sumFive / totalParts,
         },
@@ -203,7 +191,7 @@ export default class TokenSwapDistribution extends Component {
         },
       ];
     } else if (network.chainId === '100') {
-      parts = this.props.parts || [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
@@ -218,8 +206,7 @@ export default class TokenSwapDistribution extends Component {
         {
           name: 'Honeyswap',
           icon: {
-            logoURI:
-              'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1190.png',
+            logoURI: 'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1190.png',
           },
           size: sumOne / totalParts,
         },
@@ -247,8 +234,7 @@ export default class TokenSwapDistribution extends Component {
         {
           name: 'Spookyswap',
           icon: {
-            logoURI:
-                'https://s2.coinmarketcap.com/static/img/coins/64x64/9608.png',
+            logoURI: 'https://s2.coinmarketcap.com/static/img/coins/64x64/9608.png',
           },
           size: sumOne / totalParts,
         },
@@ -260,8 +246,7 @@ export default class TokenSwapDistribution extends Component {
         {
           name: 'Spiritswap',
           icon: {
-            logoURI:
-                'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1359.png',
+            logoURI: 'https://s2.coinmarketcap.com/static/img/exchanges/64x64/1359.png',
           },
           size: sumThree / totalParts,
         },
@@ -283,18 +268,20 @@ export default class TokenSwapDistribution extends Component {
         {
           name: 'Solarbeam',
           icon: TokenListManager.findTokenById('SOLAR'),
-          size: sumOne / totalParts
+          size: sumOne / totalParts,
         },
         {
           name: 'Sushiswap',
-          icon: { logoURI: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688' },
-          size: sumTwo / totalParts
+          icon: {
+            logoURI: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688',
+          },
+          size: sumTwo / totalParts,
         },
         {
           name: 'Moonswap',
           icon: { logoURI: 'https://d2kfoba0ei9gzz.cloudfront.net/img/51fee159c3456c1168ccfa3f67bd0cad.png' },
-          size: sumThree / totalParts
-        }
+          size: sumThree / totalParts,
+        },
       ];
     } else if (network.chainId === '1666600000') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -311,19 +298,21 @@ export default class TokenSwapDistribution extends Component {
       pools = [
         {
           name: 'Mochiswap',
-          icon: { logoURI: 'https://assets.coingecko.com/coins/images/14565/small/mochi.png?1617030087'},
-          size: sumOne / totalParts
+          icon: { logoURI: 'https://assets.coingecko.com/coins/images/14565/small/mochi.png?1617030087' },
+          size: sumOne / totalParts,
         },
         {
           name: 'Sushiswap',
-          icon: { logoURI: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688' },
-          size: sumTwo / totalParts
+          icon: {
+            logoURI: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png?1606986688',
+          },
+          size: sumTwo / totalParts,
         },
         {
           name: 'Viper Exchange',
           icon: TokenListManager.findTokenById('VIPER'),
-          size: sumThree / totalParts
-        }
+          size: sumThree / totalParts,
+        },
       ];
     } else if (network.chainId === '1313161554') {
       parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -339,31 +328,31 @@ export default class TokenSwapDistribution extends Component {
       pools = [
         {
           name: 'Trisolaris',
-          icon: { logoURI: 'https://assets.coingecko.com/coins/images/20607/small/logo_-_2021-11-19T104946.772.png?1637290197' },
-          size: sumOne / totalParts
+          icon: {
+            logoURI:
+              'https://assets.coingecko.com/coins/images/20607/small/logo_-_2021-11-19T104946.772.png?1637290197',
+          },
+          size: sumOne / totalParts,
         },
         {
           name: 'Wannaswap',
           icon: { logoURI: 'https://assets.coingecko.com/coins/images/21955/small/wannaswap.PNG?1640337839' },
-          size: sumTwo / totalParts
+          size: sumTwo / totalParts,
         },
         {
           name: 'Auroraswap',
           icon: { logoURI: 'https://assets.coingecko.com/markets/images/758/small/auroraswap.png?1640773986' },
-          size: sumThree / totalParts
-        }
+          size: sumThree / totalParts,
+        },
       ];
     }
 
     return (
-      <div
-        className="token-dist-wrapper"
-        aria-label="Routing distribution for the swap"
-      >
+      <div className="token-dist-wrapper" aria-label="Routing distribution for the swap">
         {_.map(
           pools,
           function (v, i) {
-            return this.renderPool(i, v.name, v.icon, v.size);
+            return this.renderPool(i, v.icon, v.size);
           }.bind(this),
         )}
       </div>

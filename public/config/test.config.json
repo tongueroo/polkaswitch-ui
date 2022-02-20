@@ -32,7 +32,7 @@
     "coingecko": {
       "platform": "ethereum"
     },
-    "singleChainSupported": false,
+    "singleChainSupported": true,
     "crossChainSupported": true,
     "supportedCrossChainTokens": [
       "USDT",
