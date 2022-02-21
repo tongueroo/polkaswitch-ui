@@ -114,6 +114,11 @@ window.TokenListManager = {
   },
 
   findTokenById: function (tid, optionalNetwork) {
+    if (!tid) {
+      console.log('WARN: TokenListManager: Provided Token ID is blank');
+      return undefined;
+    }
+
     let tokenList = window.TOKEN_LIST;
     if (optionalNetwork) {
       tokenList = this.getTokenListForNetwork(optionalNetwork);

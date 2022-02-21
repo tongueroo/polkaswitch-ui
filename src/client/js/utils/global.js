@@ -46,9 +46,11 @@ window.GlobalStateManager = {
     );
 
     const defaultBridgeConfig = {
-      from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0]),
+      from: TokenListManager.findTokenById(
+        network.supportedCrossChainTokens[0] || network.defaultPair.from
+      ),
       to: TokenListManager.findTokenById(
-        toChain.supportedCrossChainTokens[0],
+        toChain.supportedCrossChainTokens[0] || toChain.defaultPair.to,
         toChain,
       ),
       fromChain: network.name,
