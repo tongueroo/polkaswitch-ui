@@ -14,7 +14,6 @@ var Sentry = require('@sentry/node');
 var Tracing = require('@sentry/tracing');
 
 var passport = require('./middleware/auth');
-// var redis = require('./middleware/redis');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const app = express();
