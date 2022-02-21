@@ -63,7 +63,7 @@ export default class AlphaOnboardingCard extends Component {
   render() {
     var network = TokenListManager.getCurrentNetworkConfig();
 
-    if (+network.chainId === 1287) {
+    if (+network?.chainId === 1287) {
       return (
         <div className="alpha-banner notification is-warning is-light">
           <div className="content">

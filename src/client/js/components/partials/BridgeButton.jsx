@@ -42,7 +42,7 @@ export default class BridgeButton extends Component {
         })}
       >
         <img src="/images/bridge-white.png" />
-        <a href={network.bridgeURI} className="is-white is-medium connected">
+        <a href={network?.bridgeURI} className="is-white is-medium connected">
           <span>Bridge Assets</span>
         </a>
       </div>

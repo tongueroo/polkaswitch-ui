@@ -99,10 +99,10 @@ export default class NetworkDropdown extends Component {
             <span className="level">
               <span className="level-left is-flex">
                 <span className="level-item">
-                  <TokenIconImg size={30} imgSrc={selected.logoURI} />
+                  <TokenIconImg size={30} imgSrc={selected?.logoURI} />
                 </span>
                 <div className="network-wrapper item-level">
-                  <div className="platform">{selected.name}</div>
+                  <div className="platform">{selected?.name}</div>
                   <div className="name">Blockchain</div>
                 </div>
               </span>
