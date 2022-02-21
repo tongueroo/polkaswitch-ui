@@ -1,8 +1,8 @@
 import React from 'react';
 import TokenIconImg from '../TokenIconImg';
 
-export default function TokenNetworkRouteBox(props) {
-  const info = props.info;
+const TokenNetworkRouteBox = ({ info }) => {
+  const limitDecimalNumbers = (value) => Number.parseFloat(value).toFixed(6);
 
   return (
     <div className="token-network-route-box">
@@ -12,7 +12,7 @@ export default function TokenNetworkRouteBox(props) {
             <TokenIconImg size={16} mr={7} token={info.token} />
             <div>
               <div className="symbol">{info.token.symbol}</div>
-              <div className="amount">{info.amount}</div>
+              <div className="amount">{limitDecimalNumbers(info.amount)}</div>
             </div>
           </div>
           <div className="network-name" style={{ backgroundColor: info.network.color }}>
@@ -20,7 +20,8 @@ export default function TokenNetworkRouteBox(props) {
           </div>
         </div>
       )}
-
     </div>
   );
-}
+};
+
+export default TokenNetworkRouteBox;
