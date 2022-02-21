@@ -74,3 +74,4 @@ if (Wallet.isMetamaskSupported()) {
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
+
