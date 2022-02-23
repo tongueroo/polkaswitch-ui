@@ -34,6 +34,7 @@ cd polkaswitch-ui
 
 # Install dependencies
 yarn (or npm install)
+yarn patch-google-proto
 
 # Start development server
 yarn start (or npm run start)
@@ -51,4 +52,3 @@ All the source code will be inside **src** directory. Inside src, there is clien
 ### ESLint
 
 [I am using Airbnb's Javascript Style Guide](https://github.com/airbnb/javascript) which is used by many JavaScript developers worldwide. Since we are going to write both client (browser) and server side (Node.js) code, I am setting the **env** to browser and node. Optionally, we can override the Airbnb's configurations to suit our needs. I have turned off [**no-console**](https://eslint.org/docs/rules/no-console), [**comma-dangle**](https://eslint.org/docs/rules/comma-dangle) and [**react/jsx-filename-extension**](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-filename-extension.md) rules.
-
