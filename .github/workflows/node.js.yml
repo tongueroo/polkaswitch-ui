@@ -27,5 +27,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: npm-shrinkwrap.json
       - run: npm install
+      - run: npm run patch-google-proto
       - run: npm run test
       - run: npm run ci-build --if-present

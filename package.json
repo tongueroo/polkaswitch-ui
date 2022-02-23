@@ -8,7 +8,7 @@
   "description": "",
   "main": "src/server/index.js",
   "scripts": {
-    "build": "webpack --mode production --env production --env main",
+    "build": "npm run patch-google-proto && webpack --mode production --env production --env main",
     "ci-build": "webpack --mode production --env development",
     "watch": "webpack --watch --mode development --env development",
     "profile": "webpack --profile --json=stats.$(date +'%Y_%m_%d_%I_%M_%p').json",
@@ -16,7 +16,8 @@
     "server": "nodemon -r dotenv/config src/server/index.js",
     "format": "prettier --write \"src/**/*.js*\"",
     "lint": "eslint \"src/**/*.js*\" --fix",
-    "test": "NODE_OPTIONS=--unhandled-rejections=warn jest"
+    "test": "NODE_OPTIONS=--unhandled-rejections=warn jest",
+    "patch-google-proto": "replace goog.DEBUG=!0 goog.DEBUG=!1 node_modules/google-protobuf/google-protobuf.js"
   },
   "author": "polkaswitch",
   "dependencies": {
@@ -32,6 +33,8 @@
     "ethers": "5.1.0",
     "express": "4.16.3",
     "express-basic-auth": "1.2.0",
+    "google-protobuf": "^3.19.4",
+    "grpc-web": "^1.3.1",
     "helmet": "4.4.1",
     "ionicons": "5.4.0",
     "lightweight-charts": "^3.5.0",
@@ -90,6 +93,7 @@
     "node-polyfill-webpack-plugin": "^1.1.3",
     "nodemon": "2.0.7",
     "prettier": "^2.5.1",
+    "replace": "^1.1.1",
     "rxjs": "^6.6.7",
     "sass": "1.32.8",
     "sass-loader": "11.0.1",

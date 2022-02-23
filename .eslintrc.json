@@ -17,5 +17,8 @@
     "react/prop-types": "off",
     "react/button-has-type": "off",
     "react/jsx-one-expression-per-line": "off"
+    "implicit-arrow-linebreak": "off",
+    "react/jsx-curly-newline": "off",
+    "no-underscore-dangle": "off"
   }
 }

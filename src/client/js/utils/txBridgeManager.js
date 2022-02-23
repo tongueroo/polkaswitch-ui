@@ -1,7 +1,11 @@
 import _ from 'underscore';
 import { BigNumber, constants, providers, Signer, utils } from 'ethers';
-
 import { getRandomBytes32 } from '@connext/nxtp-utils';
+import {
+  mappingToGenerateConnextArray,
+  mappingToGenerateArrayAnyBridge,
+} from './bridgeManagerMappings';
+
 import HopUtils from './hop';
 import CBridgeUtils from './cbridge';
 import Nxtp from './nxtp';
@@ -48,6 +52,7 @@ export default {
   _queue: {},
   _routes: {},
   _genericTxHistory: [],
+  _activeTxHistory: [],
 
   async initialize() {},
 
@@ -287,47 +292,15 @@ export default {
     // TODO: Implement Hop TxHistory
 
     if (bridge === 'connext') {
-      const genericTxHistoryNxtp = bridgeTxHistory.map((tx) => ({
-        receivingAssetTokenAddr: tx.crosschainTx.invariant.receivingAssetId,
-        sendingAssetTokenAddr: tx.crosschainTx.invariant.sendingAssetId,
-        receivingChainId: tx.crosschainTx.invariant.receivingChainId,
-        sendingChainId: tx.crosschainTx.invariant.sendingChainId,
-        receiving: {
-          amount: tx.crosschainTx?.receiving?.amount,
-        },
-        fulfilledTxHash: tx?.fulfilledTxHash,
-        preparedTimestamp: tx.preparedTimestamp,
-        sending: {
-          amount: tx.crosschainTx.sending.amount,
-        },
-        bridge,
-        status: tx.status,
-        src_api_resp: tx,
-      }));
+      const genericTxHistoryNxtp = mappingToGenerateConnextArray({
+        array: bridgeTxHistory,
+      });
 
       this._genericTxHistory = genericTxHistoryNxtp;
     } else {
-      const genericTxHistoryCbridge = bridgeTxHistory.map((tx) => {
-        const hash = tx.dst_block_tx_link.split('tx/');
-        const timeStampInSeconds = Math.round(parseInt(tx.ts, 10) / 1000);
-
-        return {
-          receivingAssetTokenAddr: tx.dst_received_info.token.address,
-          receivingChainId: tx.dst_received_info.chain.id,
-          sendingAssetTokenAddr: tx.src_send_info.token.address,
-          sendingChainId: tx.src_send_info.chain.id,
-          fulfilledTxHash: hash[1],
-          preparedTimestamp: timeStampInSeconds.toString(),
-          receiving: {
-            amount: tx.dst_received_info.amount,
-          },
-          sending: {
-            amount: tx.src_send_info.amount,
-          },
-          bridge,
-          status: this.buildTxGenericStatus(tx.status),
-          src_api_resp: tx,
-        };
+      const genericTxHistoryCbridge = mappingToGenerateArrayAnyBridge({
+        array: bridgeTxHistory,
+        bridge,
       });
 
       this._genericTxHistory = [
@@ -337,21 +310,37 @@ export default {
     }
   },
 
-  buildTxGenericStatus(status) {
-    // building generic tx status msg to our react component
-    // cBridge status ref: https://cbridge-docs.celer.network/developer/api-reference/gateway-gettransferstatus#transferhistorystatus-enum
+  async getAllActiveTxs() {
+    const NON_ACTIVE_STATUS_CBRIDGE = [0, 2, 5, 10];
 
-    switch (status) {
-      case 4:
-        return 'PENDING';
-      case 5:
-        return 'FULFILLED';
-      case 10:
-        return 'REFUNDED';
-      case 2:
-        return 'CANCELLED';
-      default:
-        return status;
-    }
+    const nxtpActiveTxs = mappingToGenerateConnextArray({
+      array: Nxtp.getAllActiveTxs(),
+    });
+
+    const cbridgeAllTxs = await CBridgeUtils.getTxHistory();
+
+    const cbridgeActiveTxs = cbridgeAllTxs.filter(
+      (tx) => !NON_ACTIVE_STATUS_CBRIDGE.includes(tx.status),
+    );
+
+    const cbridgeActiveTxsFormatted = mappingToGenerateArrayAnyBridge({
+      array: cbridgeActiveTxs,
+      bridge: 'cbridge',
+    });
+
+    return [...cbridgeActiveTxsFormatted, ...nxtpActiveTxs];
   },
 };
+
+const handleFinishActionOfActiveTx = {
+  cbridge: {
+    handleFinishAction: async (txId, estimated, sendingChainId) => {
+      await CBridgeUtils.withdrawLiquidity(txId, estimated, sendingChainId);
+    },
+  },
+  connext: {
+    handleFinishAction: (txId) => Nxtp.transferStepTwo(txId),
+  },
+};
+
+export { handleFinishActionOfActiveTx };
