@@ -38,33 +38,17 @@ export default class BridgeWidget extends Component {
       )[0]
     );
     */
+    const localStorageBridgeConfig = GlobalStateManager.bridge;
 
-    const network = TokenListManager.getCurrentNetworkConfig();
-    let mergeState = {};
-    const bridgeConfig = GlobalStateManager.getBridgeConfig();
-    const toChain = bridgeConfig?.toChain || this.CROSS_CHAIN_NETWORKS.find(
-      (v) => v.chainId !== network.chainId,
-    );
-    
-    const updatedConfig = {
-      fromChain: network,
-      toChain,
-      to: TokenListManager.findTokenById(bridgeConfig.to.symbol)  ||  TokenListManager.findTokenById(
-        toChain.supportedCrossChainTokens[0],
-        toChain,
-      ),
-      from: TokenListManager.findTokenById(bridgeConfig.from.symbol) || TokenListManager.findTokenById(network.supportedCrossChainTokens[0])
-    }
+    const { from, to, fromChain, toChain } = localStorageBridgeConfig;
 
-    GlobalStateManager.updateBridgeConfig(updatedConfig);
-
-    mergeState = _.extend(mergeState, {
-      ...updatedConfig
-    });
-
-    this.state = _.extend(mergeState, {
+    this.state = {
       fromAmount: undefined,
       toAmount: undefined,
+      from,
+      to,
+      fromChain,
+      toChain,
       availableBalance: undefined,
       swapDistribution: undefined,
       approveStatus: approvalState.UNKNOWN,
@@ -77,7 +61,7 @@ export default class BridgeWidget extends Component {
       transactionHash: '',
       crossChainTransactionId: false,
       refresh: Date.now(),
-    });
+    };
 
     this.subscribers = [];
     this.onSwapTokens = this.onSwapTokens.bind(this);
@@ -151,12 +135,13 @@ export default class BridgeWidget extends Component {
     const from = TokenListManager.findTokenById(
       network.supportedCrossChainTokens[0],
     )
+
     GlobalStateManager.updateBridgeConfig({
       toChain,
       fromChain,
       to,
       from,
-    })
+    });
     const defaultTo = TokenListManager.findTokenById(network.defaultPair.to);
     const defaultFrom = TokenListManager.findTokenById(network.defaultPair.from);
     GlobalStateManager.updateSwapConfig({
@@ -425,7 +410,6 @@ export default class BridgeWidget extends Component {
     if (this.state.searchTarget === 'from') {
       _s.fromAmount = SwapFn.validateEthValue(token, this.state.fromAmount);
     }
-
     GlobalStateManager.updateBridgeConfig({ ...bridgeConfig });
     this.setState(_s, () => {
       Metrics.track('swap-token-changed', {
