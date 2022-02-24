@@ -16,7 +16,7 @@ window.GlobalStateManager = {
     from: {},
     to: {},
     fromChain: '',
-    toChain: ''
+    toChain: '',
   },
 
   initialize: async function () {  
@@ -45,20 +45,18 @@ window.GlobalStateManager = {
       (v) => v.chainId !== network.chainId,
     );
 
-    const defaultBridgeConfig = {
-      from: TokenListManager.findTokenById(
-        network.supportedCrossChainTokens[0] || network.defaultPair.from
-      ),
-      to: TokenListManager.findTokenById(
-        toChain.supportedCrossChainTokens[0] || toChain.defaultPair.to,
-        toChain,
-      ),
-      fromChain: network.name,
-      toChain
-    };
-    const bridge = bridgeConfig ? bridgeConfig : defaultBridgeConfig;
+    const fromChain = crossChainNetworks.find((v) => {
+      return v.chainId === network.chainId;
+    });
 
-    this.updateBridgeConfig(bridge);
+    const defaultBridgeConfig = {
+      from: TokenListManager.findTokenById(network.supportedCrossChainTokens[0] || network.defaultPair.from),
+      to: TokenListManager.findTokenById(toChain.supportedCrossChainTokens[0] || toChain.defaultPair.to, toChain),
+      fromChain,
+      toChain,
+    };
+
+    this.updateBridgeConfig(defaultBridgeConfig);
   },
 
   updateSwapConfig: function (swap) {

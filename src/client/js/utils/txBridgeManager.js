@@ -1,10 +1,7 @@
 import _ from 'underscore';
 import { BigNumber, constants, providers, Signer, utils } from 'ethers';
 import { getRandomBytes32 } from '@connext/nxtp-utils';
-import {
-  mappingToGenerateConnextArray,
-  mappingToGenerateArrayAnyBridge,
-} from './bridgeManagerMappings';
+import { mappingToGenerateConnextArray, mappingToGenerateArrayAnyBridge } from './bridgeManagerMappings';
 
 import HopUtils from './hop';
 import CBridgeUtils from './cbridge';
@@ -116,67 +113,6 @@ export default {
     }
 
     return bridges;
-  },
-
-  // TODO this is deprecated
-  async getEstimate(
-    sendingChainId,
-    sendingAssetId,
-    receivingChainId,
-    receivingAssetId,
-    amountBN,
-    receivingAddress,
-    sendingAssetDecimals,
-  ) {
-    const transactionId = getRandomBytes32();
-    const { bridgeOption } = Storage.swapSettings;
-
-    if (bridgeOption === 'cbridge') {
-      const estimate = await this.getBridgeInterface().getEstimate(
-        transactionId,
-        sendingChainId,
-        sendingAssetId,
-        receivingChainId,
-        receivingAssetId,
-        amountBN,
-        receivingAddress,
-        sendingAssetDecimals,
-      );
-
-      const { maxSlippage } = estimate;
-      this._queue[transactionId] = {
-        bridge: bridgeOption,
-        sendingChainId,
-        sendingAssetId,
-        receivingChainId,
-        receivingAssetId,
-        amountBN,
-        receivingAddress,
-        maxSlippage,
-      };
-
-      return estimate;
-    }
-
-    this._queue[transactionId] = {
-      bridge: bridgeOption,
-      sendingChainId,
-      sendingAssetId,
-      receivingChainId,
-      receivingAssetId,
-      amountBN,
-      receivingAddress,
-    };
-
-    return this.getBridgeInterface().getEstimate(
-      transactionId,
-      sendingChainId,
-      sendingAssetId,
-      receivingChainId,
-      receivingAssetId,
-      amountBN,
-      receivingAddress,
-    );
   },
 
   getAllEstimates(to, toChain, from, fromChain, amountBN, receivingAddress) {
