@@ -25,12 +25,17 @@ export default class TokenSwapDistribution extends Component {
   }
 
   render() {
-    var pools;
+    var pools = [];
     var network = TokenListManager.getCurrentNetworkConfig();
     var sumOne, sumTwo, sumThree, sumFour, sumFive, parts, totalParts;
 
-    if (network?.chainId === '1') {
-      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0];
+    if (this.props.parts) {
+      // need to convert to integers
+      parts = this.props.parts.map(p => +p);
+    }
+
+    if (+network?.chainId === 1) {
+      parts = parts || Array(7).fill(0);
 
       /*
         This returns the destToken output amount and the optimized
@@ -50,8 +55,10 @@ export default class TokenSwapDistribution extends Component {
         icon: this.state.pools[i] ? TokenListManager.findTokenById(this.state.pools[i]) : {},
         size: totalParts === 0 ? 0 : v / totalParts,
       }));
-    } else if (network?.chainId === '137') {
-      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    }
+
+    else if (+network?.chainId === 137) {
+      parts = parts || Array(20).fill(0);
 
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
@@ -95,10 +102,10 @@ export default class TokenSwapDistribution extends Component {
           size: sumFive / totalParts,
         },
       ];
-    } else if (network?.chainId === '56') {
-      parts = this.props.parts || [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      ];
+    }
+
+    else if (+network?.chainId === 56) {
+      parts = parts || Array(30).fill(0);
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
         There are 30 pools: pool 0 - 5 are Pancakeswap pools,
@@ -157,8 +164,10 @@ export default class TokenSwapDistribution extends Component {
           size: sumFive / totalParts,
         },
       ];
-    } else if (network?.chainId === '43114') {
-      parts = this.props.parts || [0, 0, 0, 0, 0, 0];
+    }
+
+    else if (+network?.chainId === 43114) {
+      parts = parts || Array(6).fill(0);
 
       /*
         This returns the destToken output amount and the optimized
@@ -194,8 +203,10 @@ export default class TokenSwapDistribution extends Component {
           size: sumThree / totalParts,
         },
       ];
-    } else if (network?.chainId === '100') {
-      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    }
+
+    else if (+network?.chainId === 100) {
+      parts = parts || Array(16).fill(0);
 
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
@@ -236,8 +247,10 @@ export default class TokenSwapDistribution extends Component {
           size: sumTwo / totalParts,
         },
       ];
-    } else if (network?.chainId === '250') {
-      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    }
+
+    else if (+network?.chainId === 250) {
+      parts = parts || Array(12).fill(0);
 
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
@@ -271,10 +284,10 @@ export default class TokenSwapDistribution extends Component {
           size: sumThree / totalParts,
         },
       ];
-    } else if (network?.chainId === '1285') {
-      parts = this.props.parts || [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      ];
+    }
+
+    else if (+network?.chainId === 1285) {
+      parts = parts || Array(18).fill(0);
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
         There are 18 pools: pool 0 - 5 are Solarbeam pools, pool 6-11 are Sushiswap pools, pool 12-17 are Moonswap pools.
@@ -307,8 +320,10 @@ export default class TokenSwapDistribution extends Component {
           size: sumThree / totalParts,
         },
       ];
-    } else if (network?.chainId === '1666600000') {
-      parts = this.props.parts || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    }
+
+    else if (+network?.chainId === 1666600000) {
+      parts = parts || Array(12).fill(0);
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
         There are 12 pools: pool 0 - 3 are Mochiswap pools, pool 4-7 are Sushiswap pools, pool 8-11 are Viper Exchange pools.
@@ -338,6 +353,10 @@ export default class TokenSwapDistribution extends Component {
           size: sumThree / totalParts,
         },
       ];
+    }
+
+    else if (+network?.chainId === 1313161554) {
+      parts = parts || Array(18).fill(0);
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
         There are 18 pools: pool 0 - 5 are Trisolaris pools, pool 6 - 11 are Wannaswap pools, pool 12 - 17 are auroraswap pools.
