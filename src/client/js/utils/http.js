@@ -51,25 +51,27 @@ window.HttpUtils = {
     // Handle global app errors
     // We can handle generic app errors depending on the status code
     handleError(error) {
-        const { status } = error;
+        if (error) {
+          const { status } = error;
 
-        switch (status) {
+          switch (status) {
             case StatusCode.InternalServerError: {
-                // Handle InternalServerError
-                break;
+              // Handle InternalServerError
+              break;
             }
             case StatusCode.Forbidden: {
-                // Handle Forbidden
-                break;
+              // Handle Forbidden
+              break;
             }
             case StatusCode.Unauthorized: {
-                // Handle Unauthorized
-                break;
+              // Handle Unauthorized
+              break;
             }
             case StatusCode.TooManyRequests: {
-                // Handle TooManyRequests
-                break;
+              // Handle TooManyRequests
+              break;
             }
+          }
         }
 
         return Promise.reject(error);
