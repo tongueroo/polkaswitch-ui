@@ -318,7 +318,7 @@ window.WalletJS = {
     this._cachedStrategy = strategy;
     this._cachedWeb3Provider = provider;
 
-    Sentry.setUser({ id: address });
+    Sentry.setUser({ id: this._cachedCurrentAddress });
 
     EventManager.emitEvent('walletUpdated', 1);
   },
