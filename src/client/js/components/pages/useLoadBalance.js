@@ -19,7 +19,7 @@ const INITIAL_STATE = {
 const useLoadBalances = () => {
   const [myApplicationState, setMyApplicationState] = useState(INITIAL_STATE);
 
-  const loadBalances = () => {
+  const loadBalances = (onlyNodeCheck) => {
     _.defer(async () => {
       const promises = [];
       const localRefresh = myApplicationState.refresh;
@@ -51,11 +51,15 @@ const useLoadBalances = () => {
                 console.error(e);
 
                 isRPCNodeActive = false;
-                resolve(true);
-                return; // go next network, if the provider is not working
               }
 
               networkShallowClone.push({ ...network, isRPCNodeActive });
+
+              if (!isRPCNodeActive || onlyNodeCheck) {
+                // if we already know the RPC node is down, let's exit early, instead of fetching all token balances
+                resolve(true);
+                return;
+              }
 
               for (let j = 0; j < tokenList.length; j += 1) {
                 const token = tokenList[j];

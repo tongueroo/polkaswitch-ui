@@ -27,7 +27,7 @@ const StatusHome = () => {
       loading: true,
     }));
 
-    loadBalances();
+    loadBalances(true);
   }, []);
 
   const handleWalletChange = () => {
@@ -38,7 +38,7 @@ const StatusHome = () => {
       loading: true,
     }));
 
-    loadBalances();
+    loadBalances(true);
   };
 
   useEffect(() => {
