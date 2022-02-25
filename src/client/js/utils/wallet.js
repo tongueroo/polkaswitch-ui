@@ -384,6 +384,10 @@ window.WalletJS = {
         }.bind(this);
 
         try {
+          if (!window.ethereum) {
+            reject('Metamask not installed');
+          }
+
           await window.ethereum
             .request({
               method: 'wallet_switchEthereumChain',
