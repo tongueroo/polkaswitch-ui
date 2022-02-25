@@ -7,12 +7,6 @@ let store = require('store');
 const Utils = ethers.utils;
 
 window.TokenListManager = {
-  // TODO - not a great place to store this state
-  swap: {
-    from: {},
-    to: {},
-  },
-
   _tokenLists: {},
   initialize: async function () {},
 
@@ -117,35 +111,14 @@ window.TokenListManager = {
 
     window.TOKEN_LIST = tokenList;
     window.NATIVE_TOKEN = _.findWhere(tokenList, { native: true });
-    // update swap token configuration
-
-    // TODO need to refactor this
-    if (false) {
-      // TODO this.isCrossChainEnabled()) {
-      // TODO crossChain not supported in TradingView
-    } else {
-      const swap = {
-        from: this.findTokenById(network.defaultPair.from),
-        to: this.findTokenById(network.defaultPair.to),
-        fromChain: network.name,
-        toChain: network.name,
-      };
-      this.updateSwapConfig(swap);
-    }
-  },
-
-  // TODO need to refactor this
-  updateSwapConfig: function (swap) {
-    this.swap = _.extend(this.getSwapConfig(), swap);
-    store.set('swap', this.swap);
-    EventManager.emitEvent('swapConfigUpdated', 1);
-  },
-
-  getSwapConfig: function () {
-    return this.swap;
   },
 
   findTokenById: function (tid, optionalNetwork) {
+    if (!tid) {
+      console.log('WARN: TokenListManager: Provided Token ID is blank');
+      return undefined;
+    }
+
     let tokenList = window.TOKEN_LIST;
     if (optionalNetwork) {
       tokenList = this.getTokenListForNetwork(optionalNetwork);

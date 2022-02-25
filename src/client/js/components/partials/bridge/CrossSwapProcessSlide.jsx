@@ -14,7 +14,6 @@ export default class CrossSwapProcessSlide extends Component {
     super(props);
     this.state = {
       loading: false,
-      errored: false,
       finishable: false,
       complete: false,
     };
@@ -37,7 +36,6 @@ export default class CrossSwapProcessSlide extends Component {
     ) {
       this.setState({
         loading: false,
-        errored: false,
         finishable: false,
         complete: false,
       });
@@ -59,6 +57,49 @@ export default class CrossSwapProcessSlide extends Component {
     if (!this.state.loading) {
       this.props.handleBackOnConfirm();
     }
+  }
+
+  async handleCbridgeEvent(transferId) {
+    if (this.state.complete) {
+      return;
+    }
+
+    TxBridgeManager.transferStepTwo(
+      this.props.crossChainTransactionId,
+      transferId,
+    ).then((resp) => {
+      console.log('cBridge getTransferStatus polling', resp);
+
+      const { data } = resp;
+
+      if (data.src_block_tx_link) {
+        this.setState({
+          finishable: true,
+        });
+      }
+
+      if (data.dst_block_tx_link) {
+        const dstChainTxHash = data.dst_block_tx_link.split('tx/');
+
+        this.completeProcess(dstChainTxHash[1]);
+
+        this.stopPollingCbridge();
+      }
+
+      if (data.status === 6 || data.status === 2) {
+        this.stopPollingCbridge();
+
+        this.props.handleTransactionComplete(false, undefined);
+
+        this.setState({
+          loading: false,
+        });
+      }
+    });
+  }
+
+  async stopPollingCbridge() {
+    window.clearInterval(this.cbridgePolling);
   }
 
   handleNxtpEvent(status) {
@@ -113,6 +154,12 @@ export default class CrossSwapProcessSlide extends Component {
                 this.props.crossChainTransactionId,
               )
             ) {
+              if (data.cbridge) {
+                this.cbridgePolling = window.setInterval(
+                  () => this.handleCbridgeEvent(data.transferId),
+                  60000,
+                );
+              }
               // do nothing.
               // Waiting for events to indicate ready for Step2
             } else {
@@ -126,7 +173,6 @@ export default class CrossSwapProcessSlide extends Component {
 
             this.setState({
               loading: false,
-              errored: true,
             });
           });
       },
@@ -160,7 +206,6 @@ export default class CrossSwapProcessSlide extends Component {
 
             this.setState({
               loading: false,
-              errored: true,
             });
           });
       },

@@ -132,6 +132,13 @@
       font-weight: bold;
     }
   }
+
+  .is-warning {
+    .detail-value {
+      color: $warning;
+      font-weight: bold;
+    }
+  }
 }
 
 $swap-widget-anim-timing: 300ms;

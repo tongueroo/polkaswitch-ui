@@ -1,5 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
+import _ from 'underscore';
+
 export default function ChartRangeSelector(props) {
   const handleTimeRangeChange = (range) => {
     props.handleTimeRangeChange(range);

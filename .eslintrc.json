@@ -3,7 +3,9 @@
   "extends": ["airbnb"],
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "jest": true,
+    "jsx": "react-jsx"
   },
   "rules": {
     "no-console": "off",
@@ -15,6 +17,8 @@
     "react/prop-types": "off",
     "react/button-has-type": "off",
     "react/jsx-one-expression-per-line": "off"
-
+    "implicit-arrow-linebreak": "off",
+    "react/jsx-curly-newline": "off",
+    "no-underscore-dangle": "off"
   }
 }

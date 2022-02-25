@@ -8,3 +8,4 @@ yarn.lock
 .env
 .idea
 dotenv
+.DS_Store

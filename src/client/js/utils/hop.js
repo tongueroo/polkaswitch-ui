@@ -6,9 +6,6 @@ import { Hop, Chain } from '@hop-protocol/sdk';
 import EventManager from './events';
 import Wallet from './wallet';
 import TokenListManager from './tokenList';
-import Storage from './storage';
-import swapFn from './swapFn';
-import { ApprovalState } from '../constants/Status';
 
 // never exponent
 BN.config({ EXPONENTIAL_AT: 1e9 });
@@ -144,6 +141,7 @@ window.HopUtils = {
     console.log(amountOut, bonderFee);
 
     return {
+      hasMinBridgeAmount: true,
       id: transactionId,
       transactionFee: bonderFee,
       returnAmount: amountOut,

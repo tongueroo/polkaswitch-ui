@@ -102,7 +102,7 @@ export default class TokenSearchBar extends Component {
     if (!this.props.tokenList) {
       var network =
         this.props.network || TokenListManager.getCurrentNetworkConfig();
-      topTokens = _.map(network.topTokens, function (v) {
+      topTokens = _.map(network?.topTokens, function (v) {
         return TokenListManager.findTokenById(v, network);
       });
     } else {

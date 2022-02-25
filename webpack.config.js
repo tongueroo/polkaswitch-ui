@@ -47,7 +47,7 @@ module.exports = (env) => {
     plugins.push(
       new SentryWebpackPlugin({
         authToken: process.env.SENTRY_AUTH_TOKEN,
-        org: "polkaswitch",
+        org: "swing-xyz",
         project: "frontend",
         release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
         deploy: {

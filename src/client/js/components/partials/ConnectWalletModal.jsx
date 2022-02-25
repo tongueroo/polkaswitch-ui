@@ -74,7 +74,7 @@ export default class ConnectWalletModal extends Component {
 
   render() {
     var currentNetworkName =
-      TokenListManager.getCurrentNetworkConfig().chain.chainName;
+      TokenListManager?.getCurrentNetworkConfig()?.chain.chainName;
 
     return (
       <BasicModal

@@ -1,8 +1,6 @@
 import React from 'react';
 
-export default function AdditionalInfoItem(props) {
-  const info = props.info;
-
+const AdditionalInfoItem = ({ info }) => {
   return (
     <div className="additional-info">
       <div className="fee-wrapper">
@@ -15,4 +13,6 @@ export default function AdditionalInfoItem(props) {
       </div>
     </div>
   );
-}
+};
+
+export default AdditionalInfoItem;

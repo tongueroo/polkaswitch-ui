@@ -4,6 +4,7 @@ import {
   ResponsiveContainer, AreaChart, Area, Tooltip, XAxis, YAxis
 } from 'recharts';
 import BN from 'bignumber.js';
+import dayjs from 'dayjs';
 import TokenPairSelector from './TokenPairSelector';
 import ChartPriceDetails from './ChartPriceDetails';
 import ChartViewOption from './ChartViewOption';
@@ -11,8 +12,7 @@ import ChartRangeSelector from './ChartRangeSelector';
 import EventManager from '../../../utils/events';
 import TokenListManager from '../../../utils/tokenList';
 import CoingeckoManager from '../../../utils/coingecko';
-import dayjs from 'dayjs';
-
+import { wrapTokens } from '../../../constants';
 
 export default function TradingViewChart() {
   const DECIMAL_PLACES = 4;
@@ -31,19 +31,12 @@ export default function TradingViewChart() {
       { name: '1Y', from: 'Past year' },
     ],
   };
-  const wrapTokens = {
-    BNB: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-    AVAX: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
-    xDai: '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d',
-    FTM: '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83',
-    MOVR: '0x98878B06940aE243284CA214f92Bb71a2b032B8A',
-    ETH: '0xc9bdeed33cd01541e1eed10f90519d2c06fe3feb'
-  };
+
   const viewModes = ['candlestick', 'line'];
   const candleChartContainerRef = useRef();
   const chart = useRef();
   const createTokenPairList = () => {
-    const swapConfig = TokenListManager.getSwapConfig();
+    const swapConfig = GlobalStateManager.getSwapConfig();
     const list = [];
     const fromSymbol = swapConfig.from.symbol;
     const fromAddress = swapConfig.from.address;
@@ -152,9 +145,9 @@ export default function TradingViewChart() {
     return timestampSec - (timestampSec % 60);
   };
 
-  const getContractAddress = async (contract, symbol, platform) => {
+  const getContractAddress = async (contract, symbol, platform, chainId) => {
     if (wrapTokens.hasOwnProperty(symbol)) {
-      return wrapTokens[symbol];
+      return wrapTokens[symbol][chainId];
     }
     const coin = await TokenListManager.findTokenBySymbolFromCoinGecko(
       symbol.toLowerCase(),
@@ -355,18 +348,22 @@ export default function TradingViewChart() {
     if (viewMode === 'line') {
       const { fromTimestamp, toTimestamp } = getTimestamps(timeRange);
       const platformOfFromChain = fromChain.coingecko.platform;
+      const chainIdOfFromChain = fromChain.chainId;
 
       if (pair.fromSymbol && pair.toSymbol) {
         const platformOfToChain = toChain.coingecko.platform;
+        const chainIdOfToChain = toChain.chainId;
         const fromAddress = await getContractAddress(
           pair.fromAddress,
           pair.fromSymbol,
           platformOfFromChain,
+          chainIdOfFromChain
         );
         const toAddress = await getContractAddress(
           pair.toAddress,
           pair.toSymbol,
           platformOfToChain,
+          chainIdOfToChain
         );
 
         fromTokenPrices = await fetchLinePrices(
@@ -389,6 +386,7 @@ export default function TradingViewChart() {
           pair.fromAddress,
           pair.fromSymbol,
           platformOfFromChain,
+          chainIdOfFromChain
         );
 
         fromTokenPrices = await fetchLinePrices(

@@ -1,13 +1,10 @@
 import React from 'react';
 import TokenNetworkRouteBox from './TokenNetworkRouteBox';
-import BridgeRouteBox from './BridgeRouteBox';
 import SwapRouteBox from './SwapRouteBox';
 import AdditionalInfoItem from './AdditionalInfoItem';
 import DashedDivider from './DashedDivider';
 
-export default function RouteItemView(props) {
-  const data = props.data;
-
+const RouteItemView = ({ data }) => {
   return (
     <div className="bridge-route-item">
       {data.length > 0 &&
@@ -15,30 +12,21 @@ export default function RouteItemView(props) {
           switch (item.type) {
             case 'token-network':
               return (
-                <div
-                  key={index}
-                  className="is-flex is-flex-direction-row is-align-items-center"
-                >
+                <div key={index} className="is-flex is-flex-direction-row is-align-items-center">
                   <TokenNetworkRouteBox info={item} />
                   {data.length - 2 !== index && <DashedDivider />}
                 </div>
               );
             case 'swap':
               return (
-                <div
-                  key={index}
-                  className="is-flex is-flex-direction-row is-align-items-center"
-                >
+                <div key={index} className="is-flex is-flex-direction-row is-align-items-center">
                   <SwapRouteBox info={item} />
                   {data.length - 2 !== index && <DashedDivider />}
                 </div>
               );
             case 'bridge':
               return (
-                <div
-                  key={index}
-                  className="is-flex is-flex-direction-row is-align-items-center"
-                >
+                <div key={index} className="is-flex is-flex-direction-row is-align-items-center">
                   <SwapRouteBox info={item} />
                   {data.length - 2 !== index && <DashedDivider />}
                 </div>
@@ -51,4 +39,6 @@ export default function RouteItemView(props) {
         })}
     </div>
   );
-}
+};
+
+export default RouteItemView;
