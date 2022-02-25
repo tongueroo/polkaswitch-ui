@@ -340,7 +340,7 @@
     "bridgeURI": "https://app.solarbeam.io/bridge",
     "tokenList": "/tokens/1285.list.json",
     "chainId": "1285",
-    "nodeProviders": ["https://rpc.moonriver.moonbeam.network"],
+    "nodeProviders": ["https://rpc.api.moonriver.moonbeam.network"],
     "explorerBaseUrl": "https://moonriver.moonscan.io/tx/",
     "gasApi": false,
     "desiredParts": 18,
@@ -348,7 +348,7 @@
     "abi": "moonriverAbi",
     "chain": {
       "chainId": "0x505",
-      "rpcUrls": ["https://rpc.moonriver.moonbeam.network"],
+      "rpcUrls": ["https://rpc.api.moonriver.moonbeam.network"],
       "chainName": "Moonriver",
       "nativeCurrency": {
         "name": "Moonriver",
