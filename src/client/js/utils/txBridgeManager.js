@@ -266,6 +266,11 @@ export default {
 
     return [...cbridgeActiveTxsFormatted, ...nxtpActiveTxs];
   },
+
+  async getNumOfActiveBridgeTxs() {
+    const numOfTxs = await this.getAllActiveTxs();
+    return numOfTxs || [];
+  },
 };
 
 const handleFinishActionOfActiveTx = {
