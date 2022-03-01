@@ -91,7 +91,6 @@ const TxHistoryModal = () => {
 
   const singleChainQueue = TxQueue.getQueue();
 
-  // implement active to cbridge as well
   const xActiveQueue = txAllBridgesActiveQueue.sort(
     (first, second) => second.preparedTimestamp - first.preparedTimestamp,
   );
@@ -125,7 +124,7 @@ const TxHistoryModal = () => {
     const resp = await txBridgeManager.getAllActiveTxs();
 
     setTxAllBridgesActiveQueue(resp);
-  }, [loading]);
+  }, [refresh, loading]);
 
   console.log('active', xActiveQueue);
   return (
