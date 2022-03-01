@@ -495,19 +495,18 @@ window.NxtpUtils = {
       txData: receivingTxData,
     });
 
-    console.log('finish: ', finish);
+    console.log('finished ->: ', finish);
 
-    if (
-      finish.metaTxResponse?.transactionHash ||
-      finish.metaTxResponse?.transactionHash === ''
-    ) {
+    if (finish) {
       this.removeActiveTx(receivingTxData.transactionId);
+      await this.fetchActiveTxs();
     }
 
     return true;
   },
 
-  getAllActiveTxs() {
+  async getAllActiveTxs() {
+    await this.fetchActiveTxs();
     return this._activeTxs;
   },
 

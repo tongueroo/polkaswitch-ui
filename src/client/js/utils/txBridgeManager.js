@@ -250,7 +250,7 @@ export default {
     const NON_ACTIVE_STATUS_CBRIDGE = [0, 2, 5, 10];
 
     const nxtpActiveTxs = mappingToGenerateConnextArray({
-      array: Nxtp.getAllActiveTxs(),
+      array: await Nxtp.getAllActiveTxs(),
     });
 
     const cbridgeAllTxs = await CBridgeUtils.getTxHistory();
