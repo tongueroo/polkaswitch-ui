@@ -236,7 +236,7 @@
   },
   {
     "enabled": true,
-    "name": "xDai",
+    "name": "Gnosis",
     "aggregatorAddress": "0xD64FA6080D6C480d5B7146CeC239641B92Bf7cbd",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/xdai/info/logo.png",
     "bridgeURI": "https://bridge.xdaichain.com/",
