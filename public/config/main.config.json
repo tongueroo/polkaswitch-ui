@@ -137,8 +137,8 @@
   {
     "enabled": true,
     "name": "Smart Chain",
-    "aggregatorAddress": "0x5b7B3aD0881d0c97642c1319F4E8e91852576044",
-    "crossChainAggregatorAddress": "0x5b7B3aD0881d0c97642c1319F4E8e91852576044",
+    "aggregatorAddress": "0xcF1c8377b44c889fA12702e4C18C64F928d05b97",
+    "crossChainAggregatorAddress": "0xcF1c8377b44c889fA12702e4C18C64F928d05b97",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/smartchain/info/logo.png",
     "bridgeURI": "https://app.nerve.fi/bridge",
     "tokenList": "/tokens/56.list.json",

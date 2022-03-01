@@ -286,13 +286,23 @@ window.SwapFn = {
         Wallet.getReadOnlyProvider(chainId),
       );
 
-      const expectReturnResult = await contract.getExpectedReturn(
-        fromToken.address,
-        toToken.address,
-        amount, // uint256 in wei
-        network.desiredParts, // desired parts of splits accross pools(3 is recommended)
-        0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
-      );
+      let expectReturnResult = null;
+      if (chainId === '56') {
+        expectReturnResult = await contract.getExpectedReturn(
+          fromToken.address,
+          toToken.address,
+          amount, // uint256 in wei
+          network.desiredParts // desired parts of splits accross pools(3 is recommended)
+        );
+      } else {
+        expectReturnResult = await contract.getExpectedReturn(
+          fromToken.address,
+          toToken.address,
+          amount, // uint256 in wei
+          network.desiredParts, // desired parts of splits accross pools(3 is recommended)
+          0 // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
+        );
+      }
 
       const result = _.extend({}, expectReturnResult);
       result.cacheTimestamp = new Date();
@@ -395,7 +405,6 @@ window.SwapFn = {
         Utils.parseUnits(minReturn, toToken.decimals), // minReturn
         recipient,
         distribution,
-        0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
         this.getGasParams(fromToken, amountBN),
       )
       .then((transaction) => this.returnSwapResult(transaction, fromToken, toToken, amountBN));
