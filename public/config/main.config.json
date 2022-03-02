@@ -136,7 +136,7 @@
   },
   {
     "enabled": true,
-    "name": "Smart Chain",
+    "name": "BNB Chain",
     "aggregatorAddress": "0xcF1c8377b44c889fA12702e4C18C64F928d05b97",
     "crossChainAggregatorAddress": "0xcF1c8377b44c889fA12702e4C18C64F928d05b97",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/smartchain/info/logo.png",
