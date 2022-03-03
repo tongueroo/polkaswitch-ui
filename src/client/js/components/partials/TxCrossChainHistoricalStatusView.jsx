@@ -43,7 +43,7 @@ const TxCrossChainHistoricalStatusView = ({ data: txData }) => {
   let lang;
   let clazz;
 
-  if (txData.receiving?.amount) {
+  if (txData.receiving?.amount && receivingAsset) {
     output = numeral(
       Utils.formatUnits(txData.receiving.amount, receivingAsset.decimals),
     ).format('0.0000a');

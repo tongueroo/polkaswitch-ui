@@ -105,25 +105,21 @@ export default class TokenSwapDistribution extends Component {
     }
 
     else if (+network?.chainId === 56) {
-      parts = parts || Array(30).fill(0);
+      parts = parts || Array(15).fill(0);
       /*
         This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
-        There are 30 pools: pool 0 - 5 are Pancakeswap pools,
-        pool 6 - 11 are Sushiswap pools, pool 12 - 17 are Mdex exchange pools,
-        pool 18 - 23 are Biswap pools, and pool 24 - 29 are Apeswap pools.
-        For example, the distribution [0,0,10,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,0,0,0] means
+        There are 15 pools: pool 0 - 2 are Pancakeswap pools,
+        pool 3 - 5 are Sushiswap pools, pool 6 - 8 are Mdex exchange pools,
+        pool 9 - 11 are Biswap pools, and pool 12 - 14 are Apeswap pools.
+        For example, the distribution [10,10,0,0,0,0,0,0,0,0,0,0,0,0,10] means
         1/3 of the swap amount will route to Pancakeswap and 2/3 will route to Apeswap.
       */
 
-      sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5];
-      sumTwo =
-        parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
-      sumThree =
-        parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
-      sumFour =
-        parts[18] + parts[19] + parts[20] + parts[21] + parts[22] + parts[23];
-      sumFive =
-        parts[24] + parts[25] + parts[26] + parts[27] + parts[28] + parts[29];
+      sumOne = parts[0] + parts[1] + parts[2];
+      sumTwo = parts[3] + parts[4] + parts[5];
+      sumThree = parts[6] + parts[7] + parts[8];
+      sumFour = parts[9] + parts[10] + parts[11];
+      sumFive = parts[12] + parts[13] + parts[14];
       totalParts = sumOne + sumTwo + sumThree + sumFour + sumFive;
 
       pools = [
@@ -296,10 +292,8 @@ export default class TokenSwapDistribution extends Component {
         ["0","0","0","0","0","0","3","0","0","0","0","0","6","0","6","0","3",0] means 1/6 of amount will route to Sushiswap and 5/6 will route to Moonswap.
       */
       sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5];
-      sumTwo =
-        parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
-      sumThree =
-        parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
+      sumTwo = parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
+      sumThree = parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
       totalParts = sumOne + sumTwo + sumThree;
       pools = [
         {
@@ -363,10 +357,8 @@ export default class TokenSwapDistribution extends Component {
         For example, the distribution [6,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0] means 2/3 of the swap amount will route to Trisolaris and 1/3 will route to Wannaswap.
       */
       sumOne = parts[0] + parts[1] + parts[2] + parts[3] + parts[4] + parts[5];
-      sumTwo =
-        parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
-      sumThree =
-        parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
+      sumTwo = parts[6] + parts[7] + parts[8] + parts[9] + parts[10] + parts[11];
+      sumThree = parts[12] + parts[13] + parts[14] + parts[15] + parts[16] + parts[17];
       totalParts = sumOne + sumTwo + sumThree;
       pools = [
         {

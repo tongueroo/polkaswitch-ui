@@ -130,6 +130,8 @@ export default class SwapWidget extends Component {
       showSearch: false,
       showResults: false,
       availableBalance: undefined,
+    }, () => {
+      this.updateBoxHeight();
     });
   }
 

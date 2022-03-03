@@ -9,8 +9,7 @@
   .notification {
     background: white !important;
     padding: 10px 5px;
-    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%),
-      0 0px 0 1px rgb(10 10 10 / 2%);
+    box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0px 0 1px rgb(10 10 10 / 2%);
   }
 
   .level,
@@ -45,7 +44,7 @@
 .notification-button {
   position: relative;
   cursor: pointer;
-  margin-right: 20px;
+  margin-right: 10px;
 
   .button {
     padding: 0 16px;
@@ -53,6 +52,11 @@
 
   .bubble {
     margin-left: 10px;
+    background-color: rgb(255 0 0 / 70%);
+    color: #fff;
+    border-radius: 15px;
+    transform: translateY(-2px);
+    font-weight: 400;
   }
 }
 

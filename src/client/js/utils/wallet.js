@@ -129,7 +129,8 @@ window.WalletJS = {
     // if network specified, as long as we connected to any network is fine,
     // if it's not provided, we need to be on the right network to get the right balance
     if ((!!optionalNetwork && this.isConnectedToAnyNetwork()) || this.isConnected()) {
-      if (token.native) {
+      // if token not provided, assume the native token
+      if (!token || token.native) {
         return this.getDefaultBalance(optionalNetwork);
       } else if (token.address) {
         return this.getERC20Balance(token.address, optionalNetwork);
@@ -317,7 +318,7 @@ window.WalletJS = {
     this._cachedStrategy = strategy;
     this._cachedWeb3Provider = provider;
 
-    Sentry.setUser({ id: address });
+    Sentry.setUser({ id: this._cachedCurrentAddress });
 
     EventManager.emitEvent('walletUpdated', 1);
   },
@@ -383,6 +384,10 @@ window.WalletJS = {
         }.bind(this);
 
         try {
+          if (!window.ethereum) {
+            reject('Metamask not installed');
+          }
+
           await window.ethereum
             .request({
               method: 'wallet_switchEthereumChain',
