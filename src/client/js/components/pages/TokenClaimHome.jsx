@@ -124,109 +124,79 @@ const TokenClaimHome = () => {
         return <EmptyBalances />;
       }
       return (
-        <>
-          {/* <div className="columns is-centered">
-            <div className="column card-container">
-              <div className="card wallets-page-card">
-                <div className="portfolio-balance level is-mobile">
-                  <div className="is-hidden level-right">
-                    <NetworkDropdown
-                      handleDropdownClick={handleNetworkChange}
-                      selected={currentNetwork}
-                    />
-                  </div>
-                </div>
+        <div className="columns is-centered">
+          <div className='column token-claim-column'>
+            <div className="page page-view-order">
+              <div className="page-inner">
+                <div className="card token-claim-card">
+                  <div className="tokens-table-title-container">
+                    <div className='token-claim-container'>
+                      <div className='token-claim-detail-section token-claim-section'>
+                        <div className='token-claim-info'>
+                          <p className='token-claim-info-title'>Claim Your Swing</p>
+                          <p className='token-claim-info-token'>Token symbol: $SWING</p>
+                        </div>
+                        <div className="solid"></div>
+                        <div className='token-claim-detail'>
+                          <div className='token-claim-detail-text'>
+                            <p className='token-claim-detail-label'>Unlocked</p>
+                            <p className='token-claim-detail-amount'>140,000</p>
+                          </div>
+                          <div className='token-claim-detail-text'>
+                            <p className='token-claim-detail-label'>Claimed</p>
+                            <p className='token-claim-detail-amount'>60,000</p>
+                          </div>
+                          <div className='token-claim-detail-text'>
+                            <p className='token-claim-detail-label'>Locked</p>
+                            <p className='token-claim-detail-amount'>1,150,000</p>
+                          </div>
+                        </div>
+                        <div className="solid"></div>
+                        <div className='token-claim-action-container'>
+                          <button
+                            className="button token-claim-btn outlined-btn"
+                          >
+                            View Contract
+                          </button>
+                          <button
+                            className="button is-success token-claim-btn"
+                          >
+                            Claim Tokens
+                          </button>
+                        </div>
+                        <div className='token-claim-detail-contact'>
+                          <p>Having issues claiming your Swing Tokens?</p>
+                          <p className='token-claim-contact-us'>Contact us on Telegram</p>
+                        </div>
+                      </div>
 
-                <div className="is-hidden columns total-balance">
-                  <div className="column">
-                    <h6 className="total-balance__sub-heading">
-                      Total Balance
-                    </h6>
-                    <h2 className="total-balance__main-heading">
-                      {balances
-                        .reduce((p, t) => (p += t.price * t.balance), 0)
-                        .toLocaleString('en-US', {
-                          style: 'currency',
-                          currency: 'USD',
-                        })}
-                    </h2>
-                  </div>
-                </div>
-
-                <div className="is-hidden">{renderPortfolioMakeUp()}</div>
-              </div>
-            </div>
-          </div> */}
-          <div className="columns is-centered">
-            <div className="column card-container">
-              <div className="card token-claim-card">
-                <div className="tokens-table-title-container">
-                  <div className='token-claim-container'>
-                    <div className='token-claim-detail-section token-claim-section'>
-                      <div className='token-claim-info'>
-                        <p className='token-claim-info-title'>Claim Your Swing</p>
-                        <p className='token-claim-info-token'>Token symbol: $SWING</p>
-                      </div>
-                      <div className="solid"></div>
-                      <div className='token-claim-detail'>
-                        <div className='token-claim-detail-text'>
-                          <p className='token-claim-detail-label'>Unlocked</p>
-                          <p className='token-claim-detail-amount'>140,000</p>
+                      <div className='token-claim-chart-section token-claim-section'>
+                        <div className='token-claim-pie-chart'>
+                          <PieChart
+                            data={[
+                              { title: 'Claimed', value: 10, color: '#4064D0' },
+                              { title: 'Unlocked', value: 18, color: '#22BA79' },
+                              { title: 'Locked', value: 72, color: '#64586A' },
+                            ]}
+                            lineWidth={40}
+                          />
                         </div>
-                        <div className='token-claim-detail-text'>
-                          <p className='token-claim-detail-label'>Claimed</p>
-                          <p className='token-claim-detail-amount'>60,000</p>
-                        </div>
-                        <div className='token-claim-detail-text'>
-                          <p className='token-claim-detail-label'>Locked</p>
-                          <p className='token-claim-detail-amount'>1,150,000</p>
-                        </div>
-                      </div>
-                      <div className="solid"></div>
-                      <div className='token-claim-action-container'>
-                        <button
-                          className="button token-claim-btn outlined-btn"
-                        >
-                          View Contract
-                        </button>
-                        <button
-                          className="button is-success token-claim-btn"
-                        >
-                          Claim Tokens
-                        </button>
-                      </div>
-                      <div className='token-claim-detail-contact'>
-                        <p>Having issues claiming your Swing Tokens?</p>
-                        <p className='token-claim-contact-us'>Contact us on Telegram</p>
-                      </div>
-                    </div>
-
-                    <div className='token-claim-chart-section token-claim-section'>
-                      <div className='token-claim-pie-chart'>
-                        <PieChart
-                          data={[
-                            { title: 'Claimed', value: 10, color: '#4064D0' },
-                            { title: 'Unlocked', value: 18, color: '#22BA79' },
-                            { title: 'Locked', value: 72, color: '#64586A' },
-                          ]}
-                          lineWidth={40}
-                        />
-                      </div>
-                      <div className="token-claim-chart-info">
-                        <div className="chart-info-section">
-                          <img src="/images/token_claimed.svg" alt="Connect Wallet" />
-                          <p className='chart-label'>Claimed</p>
-                          <p className='chart-percentage claimed-percentage'>10%</p>
-                        </div>
-                        <div className="chart-info-section">
-                          <img src="/images/token_unlocked.svg" alt="Connect Wallet" />
-                          <p className='chart-label'>Unlocked</p>
-                          <p className='chart-percentage unlocked-percentage'>18%</p>
-                        </div>
-                        <div className="chart-info-section">
-                          <img src="/images/token_locked.svg" alt="Connect Wallet" />
-                          <p className='chart-label'>Locked</p>
-                          <p className='chart-percentage locked-percentage'>72%</p>
+                        <div className="token-claim-chart-info">
+                          <div className="chart-info-section">
+                            <img src="/images/token_claimed.svg" alt="Connect Wallet" />
+                            <p className='chart-label'>Claimed</p>
+                            <p className='chart-percentage claimed-percentage'>10%</p>
+                          </div>
+                          <div className="chart-info-section">
+                            <img src="/images/token_unlocked.svg" alt="Connect Wallet" />
+                            <p className='chart-label'>Unlocked</p>
+                            <p className='chart-percentage unlocked-percentage'>18%</p>
+                          </div>
+                          <div className="chart-info-section">
+                            <img src="/images/token_locked.svg" alt="Connect Wallet" />
+                            <p className='chart-label'>Locked</p>
+                            <p className='chart-percentage locked-percentage'>72%</p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -235,7 +205,7 @@ const TokenClaimHome = () => {
               </div>
             </div>
           </div>
-        </>
+        </div>
       );
     }
     return <TokenClaimDisconnectedWallet onClick={handleConnect} />;
