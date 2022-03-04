@@ -268,7 +268,7 @@ window.SwapFn = {
       }
     }
 
-    if (chainId === '1') {
+    if (chainId === '1' || chainId === '42161' || chainId === '10') {
       const { destAmount, route, distribution } = (await PathFinder.getQuote(fromToken.symbol, toToken.symbol, amount, chainId)) || {};
       if (destAmount) {
         const returnAmount = new BN(destAmount).times(10 ** toToken.decimals).toFixed(0);
@@ -315,7 +315,6 @@ window.SwapFn = {
     console.log(`Calling SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
     const { chainId, contract, recipient } = this.getContract();
     const pathRoute = localStorage.getItem('route');
-
     if (['oneinch', 'paraswap'].includes(pathRoute)) {
       const originAmount = new BN(amountBN.toString()).dividedBy(10 ** fromToken.decimals);
       return PathFinder.getSwap(fromToken.symbol, toToken.symbol, originAmount, pathRoute, chainId);
