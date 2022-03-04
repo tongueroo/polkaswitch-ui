@@ -9,5 +9,4 @@ yarn.lock
 .idea
 dotenv
 .DS_Store
-.ufo
-Dockerfile
+Dockerfile*

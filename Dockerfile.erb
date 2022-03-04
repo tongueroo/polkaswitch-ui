@@ -1,0 +1,7 @@
+FROM <%= @base_image %>
+COPY . .
+RUN npm install
+RUN npm run build # for production
+# EXPOSE and CMD set also below for clarity, even though they are defined in Dockerfile.base
+EXPOSE 5000
+CMD ["npm", "run", "start"]
