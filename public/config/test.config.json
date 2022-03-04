@@ -42,7 +42,7 @@
   },
   {
     "enabled": true,
-    "name": "Arbitrum Testnet",
+    "name": "Arbitrum",
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/info/logo.png",
     "bridgeURI": "https://bridge.arbitrum.io/",
@@ -82,7 +82,7 @@
   },
   {
     "enabled": true,
-    "name": "Optimism Testnet",
+    "name": "Optimism",
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/optimism/info/logo.png",
     "bridgeURI": "https://gateway.optimism.io",
