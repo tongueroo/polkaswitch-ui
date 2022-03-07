@@ -1,4 +1,5 @@
 import React, { useEffect, useContext } from 'react';
+import { ethers } from "ethers";
 import { PieChart } from 'react-minimal-pie-chart';
 import Navbar from '../partials/navbar/Navbar';
 import ConnectWalletModal from '../partials/ConnectWalletModal';
@@ -6,12 +7,11 @@ import TxHistoryModal from '../partials/TxHistoryModal';
 import NotificationSystem from '../partials/NotificationSystem';
 import MobileMenu from '../partials/navbar/MobileMenu';
 import NetworkPrice from '../partials/wallet/NetworkPrice';
-import NetworkDropdown from '../partials/NetworkDropdown';
-import AssetsTable from '../partials/wallet/AssetsTable';
 import TokenClaimDisconnectedWallet from '../partials/wallet/TokenClaimDisconnectedWallet';
 import EmptyBalances from '../partials/wallet/EmptyBalances';
 import { balanceContext } from '../../context/balance';
 
+import TokenClaim from '../../utils/tokenClaim';
 import Wallet from '../../utils/wallet';
 import TokenListManager from '../../utils/tokenList';
 import EventManager from '../../utils/events';
@@ -63,60 +63,14 @@ const TokenClaimHome = () => {
     EventManager.emitEvent('promptWalletConnect', 1);
   };
 
-  const handleNetworkChange = (network) => {
-    setMyApplicationState((prevState) => ({
-      ...prevState,
-      refresh: Date.now(),
-      balances: [],
-      currentNetwork: network,
-      loading: true,
-    }));
-
-    loadBalances();
-  };
-
-  const renderBalancesAccrossNetworks = () => {
-    const bMap = balances.reduce((_map, cv) => {
-      let balance = 0;
-      if (_map[cv.chainId]) {
-        balance += _map[cv.chainId];
-      }
-      balance += cv.balance * cv.price;
-      return { ..._map, [cv.chainId]: balance };
-    }, {});
-
-    return Object.keys(bMap).map((netId) => {
-      const network = TokenListManager.getNetworkById(netId);
-      return (
-        <NetworkPrice
-          key={netId}
-          logoURI={network.logoURI}
-          name={network.name}
-          value={bMap[netId]}
-          change={0}
-        />
-      );
-    });
-  };
-
-  const renderPortfolioMakeUp = () => {
-    if (Wallet.isConnectedToAnyNetwork() && balances.length) {
-      return (
-        <>
-          <div className="columns is-hidden-mobile">
-            <div className="column">
-              <div className="portfolio-makeup__heading">Portfolio Makeup</div>
-            </div>
-          </div>
-
-          <div className="columns is-hidden-mobile portfolio-makeup">
-            {renderBalancesAccrossNetworks()}
-          </div>
-        </>
-      );
+  const claimTokens = async () => {
+    try {
+      const result = await TokenClaim.claimTokens();
+      console.log("token claim", result)
+    } catch (err) {
+      console.log(err);
     }
-    return null;
-  };
+  }
 
   const renderTokenClaimHome = () => {
     if (Wallet.isConnectedToAnyNetwork()) {
@@ -160,6 +114,7 @@ const TokenClaimHome = () => {
                           </button>
                           <button
                             className="button is-success token-claim-btn"
+                            onClick={claimTokens}
                           >
                             Claim Tokens
                           </button>
