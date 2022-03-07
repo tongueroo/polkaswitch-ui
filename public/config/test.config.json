@@ -185,7 +185,7 @@
     "tokenList": "/tokens/56.list.json",
     "chainId": "56",
     "nodeProviders": [
-      "https://api-smart-chain.polkaswitch.com/fff0dd6bf467085a65f5e23ea585adfa5da745e1/"
+      "https://api-smart-chain.swing.xyz/fff0dd6bf467085a65f5e23ea585adfa5da745e1/"
     ],
     "explorerBaseUrl": "https://bscscan.com/tx/",
     "gasApi": false,
