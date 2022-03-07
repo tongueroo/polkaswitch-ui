@@ -58,19 +58,21 @@ export default class TokenSwapDistribution extends Component {
     }
 
     else if (+network?.chainId === 137) {
-      parts = parts || Array(15).fill(0);
+      parts = parts || Array(20).fill(0);
 
       /*
-        Supported dexes: Quickswap, Sushiswap, Dyfn, Dinoswap and Apeswap.
-        getExpectedReturn funcition returns a list with length of 15,
-        evenly distributed among the dexes above.(0-2 are Quickswap, 3-5 are Sushiswap, etc.).
-        For example, [10,10,0,0,0,0,0,0,0,0,0,0,0,0,10] means 2/3 to Quickswap and 1/3 to Apeswap.
+        This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
+        There are 20 pools: pool 0 - 3 are Quickswap pools, pool 4 - 7 are Sushiswap pools,
+        pool 8 - 11 are Dfyn exchange pools, pool 12 - 15 are Dinoswap pools, 16 - 19 are Apeswap pools.
+        For example, the distribution [5,"0","0","0","5","0","0","0","10","0","0","0","0","0","0","0","0","0","0",0]
+        means 1/4 of the swap amount will route to Quickswap and 1/4 will route to Sushiswap and 1/2 will route to Dyfn.
       */
-      sumOne = parts[0] + parts[1] + parts[2]; // Quickswap
-      sumTwo = parts[3] + parts[4] + parts[5]; // Sushiswap
-      sumThree = parts[6] + parts[7] + parts[8]; // Dfyn
-      sumFour = parts[9] + parts[10] + parts[11]; // Dinoswap
-      sumFive = parts[12] + parts[13] + parts[14]; // Apeswap
+
+      sumOne = parts[0] + parts[1] + parts[2] + parts[3]; // Quickswap
+      sumTwo = parts[4] + parts[5] + parts[6] + parts[7]; // Sushiswap
+      sumThree = parts[8] + parts[9] + parts[10] + parts[11]; // Dfyn
+      sumFour = parts[12] + parts[13] + parts[14] + parts[15]; // Dinoswap
+      sumFive = parts[16] + parts[17] + parts[18] + parts[19]; // Apeswap
       totalParts = sumOne + sumTwo + sumThree + sumFour + sumFive;
 
       pools = [
@@ -105,10 +107,12 @@ export default class TokenSwapDistribution extends Component {
     else if (+network?.chainId === 56) {
       parts = parts || Array(15).fill(0);
       /*
-        Supported dexes: Pancakeswap, Sushiswap, MDEX, Biswap and Apeswap.
-        getExpectedReturn funcition returns a list with length of 15,
-        evenly distributed among the dexes above.(0-2 are Pancakeswap, 3-5 are Sushiswap, etc.).
-        For example, [10,10,0,0,0,0,0,0,0,0,0,0,0,0,10] means 2/3 to Pancakeswap and 1/3 to Apeswap.
+        This returns the destToken output amount and the optimized list of distributions accross different liquidity pools.
+        There are 15 pools: pool 0 - 2 are Pancakeswap pools,
+        pool 3 - 5 are Sushiswap pools, pool 6 - 8 are Mdex exchange pools,
+        pool 9 - 11 are Biswap pools, and pool 12 - 14 are Apeswap pools.
+        For example, the distribution [10,10,0,0,0,0,0,0,0,0,0,0,0,0,10] means
+        1/3 of the swap amount will route to Pancakeswap and 2/3 will route to Apeswap.
       */
 
       sumOne = parts[0] + parts[1] + parts[2];
