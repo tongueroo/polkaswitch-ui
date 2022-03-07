@@ -75,9 +75,11 @@
       "platform": "ethereum"
     },
     "singleChainSupported": true,
-    "crossChainSupported": false,
+    "crossChainSupported": true,
     "supportedCrossChainTokens": [
-     
+      "USDT",
+      "USDC",
+      "DAI"
     ]
   },
   {
@@ -117,7 +119,9 @@
     "singleChainSupported": true,
     "crossChainSupported": false,
     "supportedCrossChainTokens": [
-   
+      "USDT",
+      "USDC",
+      "DAI"
     ]
   },
   {

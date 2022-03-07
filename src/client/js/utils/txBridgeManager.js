@@ -11,11 +11,11 @@ import Storage from './storage';
 const BRIDGES = ['hop', 'cbridge', 'connext'];
 
 // hard-code for now, the HopSDK has "supportedChains", but let's integrate later.
-const HOP_SUPPORTED_CHAINS = [1, 137, 100, 10, 42161];
+const HOP_SUPPORTED_CHAINS = [1, 10, 100, 137, 42161];
 
 const CBRIDGE_SUPPORTED_CHAINS = [1, 10, 56, 137, 250, 42161, 43114];
 
-const CONNEXT_SUPPORTED_CHAINS = [1, 56, 137, 100, 250, 42161, 43114];
+const CONNEXT_SUPPORTED_CHAINS = [1, 10, 56, 137, 100, 250, 42161, 43114];
 
 const CONNEXT_SUPPORTED_BRIDGE_TOKENS = [
   'USDC',
@@ -125,7 +125,7 @@ export default {
       from,
       fromChain,
     );
-
+   
     return supportedBridges.map((bridgeType) => {
       const txData = {
         bridge: bridgeType,
@@ -152,6 +152,7 @@ export default {
           receivingAddress,
         )
         .then((estimate) => {
+          
           this._routes[parentTransactionId][bridgeType].estimate = estimate;
           this._queue[childTransactionId].estimate = estimate;
 
