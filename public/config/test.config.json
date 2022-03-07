@@ -127,8 +127,8 @@
   {
     "enabled": true,
     "name": "Polygon",
-    "aggregatorAddress": "0xad44915C24a74d97489810274C368c0DD311236E",
-    "crossChainAggregatorAddress": "0xA6d27b5B051F2C24E768C7859b2468CbE356ABCd",
+    "aggregatorAddress": "0xB9187E6dA901eAEB4EDB45326FDb7673f4bC69ae",
+    "crossChainAggregatorAddress": "0xB9187E6dA901eAEB4EDB45326FDb7673f4bC69ae",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
     "bridgeURI": "https://wallet.matic.network/",
     "tokenList": "/tokens/137.list.json",
@@ -139,7 +139,7 @@
     ],
     "explorerBaseUrl": "https://polygonscan.com/tx/",
     "gasApi": "https://gasstation-mainnet.matic.network",
-    "desiredParts": 20,
+    "desiredParts": 30,
     "color": "#725BDF",
     "abi": "polygonAbi",
     "chain": {

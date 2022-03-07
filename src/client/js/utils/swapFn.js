@@ -287,7 +287,7 @@ window.SwapFn = {
       );
 
       let expectReturnResult = null;
-      if (chainId === '56') {
+      if (chainId === '56' || chainId === '137') {
         expectReturnResult = await contract.getExpectedReturn(
           fromToken.address,
           toToken.address,
@@ -346,6 +346,7 @@ window.SwapFn = {
             amountBN,
             expectedAmount,
             minReturn,
+            recipient,
             distribution,
           );
         case '1285':
