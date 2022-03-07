@@ -121,7 +121,7 @@ export default class BridgeOrderSlide extends Component {
           _cb,
         );
       }.bind(this, timeNow, attempt, cb),
-    );
+    ); 
   }
 
   fetchCrossChainEstimate(
@@ -154,6 +154,7 @@ export default class BridgeOrderSlide extends Component {
       fromAmountBN,
       Wallet.currentAddress(),
     );
+  
 
     Promise.allSettled(allEstimatesFn)
       .then(
@@ -161,18 +162,18 @@ export default class BridgeOrderSlide extends Component {
           if (this.calculatingSwapTimestamp !== _timeNow3) {
             return;
           }
-
+         
           const successfulEstimates = _.map(
             _.where(results, { status: 'fulfilled' }),
             (v) => v.value,
           );
 
           const successfulEstimatesValid = successfulEstimates.filter(Boolean);
-
+        
           const response = successfulEstimatesValid.find(
-            (item) => item?.bridge === 'connext' || item?.bridge === 'cbridge',
+            (item) => item?.bridge === 'connext' || item?.bridge === 'cbridge' || item?.bridge === 'hop',
           ).estimate;
-
+       
           Wallet.getBalance(this.props.from)
             .then((bal) => {
               this.props.onSwapEstimateComplete(
