@@ -1,671 +1,112 @@
 [
   {
+    "constant": false,
     "inputs": [
       {
-        "internalType": "contract ISwitchView",
-        "name": "_switchView",
+        "name": "fromToken",
         "type": "address"
+      },
+      {
+        "name": "destToken",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "name": "expectedReturn",
+        "type": "uint256"
+      },
+      {
+        "name": "minReturn",
+        "type": "uint256"
+      },
+      {
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "name": "distribution",
+        "type": "uint256[]"
       }
     ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
+    "name": "swap",
+    "outputs": [
+      {
+        "name": "returnAmount",
+        "type": "uint256"
+      }
+    ],
     "payable": true,
     "stateMutability": "payable",
-    "type": "fallback"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnApeswap",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
+        "name": "newOwner",
         "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
       }
     ],
-    "name": "_swapOnApeswapETH",
+    "name": "setOwner",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnApeswapInternal",
+    "constant": true,
+    "inputs": [],
+    "name": "reward",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "returnAmount",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "midToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnApeswapOverMid",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnDinoswap",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnDinoswapETH",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
-    "name": "_swapOnDinoswapInternal",
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "switchView",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "returnAmount",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "midToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnDinoswapOverMid",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnDyfn",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnDyfnETH",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
-    "name": "_swapOnDyfnInternal",
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "switchEvent",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "returnAmount",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "midToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnDyfnOverMid",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnSushiswap",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnSushiswapETH",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnSushiswapInternal",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "returnAmount",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "payable": false,
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
+        "name": "newSwitchEvent",
         "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "midToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
       }
     ],
-    "name": "_swapOnSushiswapOverMid",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnUniswapV2",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnUniswapV2ETH",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnUniswapV2Internal",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "returnAmount",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "midToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "_swapOnUniswapV2OverMid",
+    "name": "setSwitchEvent",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -675,40 +116,29 @@
     "constant": true,
     "inputs": [
       {
-        "internalType": "contract IERC20",
         "name": "fromToken",
         "type": "address"
       },
       {
-        "internalType": "contract IERC20",
         "name": "destToken",
         "type": "address"
       },
       {
-        "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
         "name": "parts",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
         "type": "uint256"
       }
     ],
     "name": "getExpectedReturn",
     "outputs": [
       {
-        "internalType": "uint256",
         "name": "returnAmount",
         "type": "uint256"
       },
       {
-        "internalType": "uint256[]",
         "name": "distribution",
         "type": "uint256[]"
       }
@@ -721,52 +151,15 @@
     "constant": true,
     "inputs": [
       {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "parts",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "destTokenEthPriceTimesGasPrice",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "getExpectedReturnWithGas",
+    "name": "factories",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "returnAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "estimateGasAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "distribution",
-        "type": "uint256[]"
+        "name": "",
+        "type": "address"
       }
     ],
     "payable": false,
@@ -779,22 +172,6 @@
     "name": "owner",
     "outputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "reward",
-    "outputs": [
-      {
-        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -807,22 +184,6 @@
     "constant": false,
     "inputs": [
       {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "setOwner",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "newReward",
         "type": "address"
       }
@@ -834,69 +195,23 @@
     "type": "function"
   },
   {
-    "constant": false,
     "inputs": [
       {
-        "internalType": "contract IERC20",
-        "name": "fromToken",
+        "name": "_switchView",
         "type": "address"
       },
       {
-        "internalType": "contract IERC20",
-        "name": "destToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "expectedReturn",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "minReturn",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "distribution",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256",
-        "name": "flags",
-        "type": "uint256"
-      }
-    ],
-    "name": "swap",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "returnAmount",
-        "type": "uint256"
-      }
-    ],
-    "payable": true,
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "switchView",
-    "outputs": [
-      {
-        "internalType": "contract ISwitchView",
-        "name": "",
+        "name": "_switchEvent",
         "type": "address"
       }
     ],
     "payable": false,
-    "stateMutability": "view",
-    "type": "function"
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "fallback"
   }
 ]

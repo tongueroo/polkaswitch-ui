@@ -102,7 +102,7 @@ window.SwapFn = {
       case '56':
         return this.estimateGasWithBscAbi(contract, fromToken, toToken, amountBN, recipient, distribution);
       case '137':
-        return this.estimateGasWithPolygonAbi(contract, fromToken, toToken, amountBN, distribution);
+        return this.estimateGasWithPolygonAbi(contract, fromToken, toToken, amountBN, recipient, distribution);
       case '1285':
         return this.estimateGasWithMoonriverAbi(contract, fromToken, toToken, amountBN, recipient, distribution);
       case '100':
@@ -287,7 +287,7 @@ window.SwapFn = {
       );
 
       let expectReturnResult = null;
-      if (chainId === '56') {
+      if (chainId === '56' || chainId === '137') {
         expectReturnResult = await contract.getExpectedReturn(
           fromToken.address,
           toToken.address,
@@ -346,6 +346,7 @@ window.SwapFn = {
             amountBN,
             expectedAmount,
             minReturn,
+            recipient,
             distribution,
           );
         case '1285':
@@ -409,7 +410,7 @@ window.SwapFn = {
       .then((transaction) => this.returnSwapResult(transaction, fromToken, toToken, amountBN));
   },
 
-  swapWithPolygonAbi(contract, fromToken, toToken, amountBN, expectedAmount, minReturn, distribution) {
+  swapWithPolygonAbi(contract, fromToken, toToken, amountBN, expectedAmount, minReturn, recipient, distribution) {
     return contract
       .swap(
         fromToken.address,
@@ -417,8 +418,8 @@ window.SwapFn = {
         amountBN, // uint256 in wei
         Utils.parseUnits(expectedAmount, toToken.decimals), // expectedReturn
         Utils.parseUnits(minReturn, toToken.decimals), // minReturn
+        recipient,
         distribution,
-        0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
         this.getGasParams(fromToken, amountBN),
       )
       .then((transaction) => this.returnSwapResult(transaction, fromToken, toToken, amountBN));
@@ -569,7 +570,7 @@ window.SwapFn = {
       .then((gasUnitsEstimated) => this.returnEstimatedGasResult(gasUnitsEstimated));
   },
 
-  estimateGasWithPolygonAbi(contract, fromToken, toToken, amountBN, distribution) {
+  estimateGasWithPolygonAbi(contract, fromToken, toToken, amountBN, recipient, distribution) {
     return contract.estimateGas
       .swap(
         fromToken.address,
@@ -577,8 +578,8 @@ window.SwapFn = {
         amountBN, // uint256 in wei
         BigNumber.from(0), // expectedReturn
         BigNumber.from(0), // minReturn
+        recipient,
         distribution,
-        0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
         this.getGasParams(fromToken, amountBN),
       )
       .then((gasUnitsEstimated) => this.returnEstimatedGasResult(gasUnitsEstimated));
