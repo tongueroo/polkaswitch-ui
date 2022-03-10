@@ -196,7 +196,7 @@ window.SwapFn = {
     const pathRoute = localStorage.getItem('route');
     const { chainId } = TokenListManager.getCurrentNetworkConfig();
 
-    if (['oneinch', 'paraswap'].includes(pathRoute)) {
+    if (['1inch', 'paraswap'].includes(pathRoute)) {
       return PathFinder.getApproveTx(tokenContractAddress, amountBN, pathRoute, chainId);
     }
 
@@ -227,7 +227,7 @@ window.SwapFn = {
     const pathRoute = localStorage.getItem('route');
     const { chainId } = TokenListManager.getCurrentNetworkConfig();
 
-    if (['oneinch', 'paraswap'].includes(pathRoute)) {
+    if (['1inch', 'paraswap'].includes(pathRoute)) {
       return PathFinder.getAllowance(userAddress, token.address, pathRoute, chainId)
         .then(({ allowance }) => BigNumber.from(allowance))
         .catch(() => new BN(0));
@@ -315,7 +315,7 @@ window.SwapFn = {
     console.log(`Calling SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
     const { chainId, contract, recipient } = this.getContract();
     const pathRoute = localStorage.getItem('route');
-    if (['oneinch', 'paraswap'].includes(pathRoute)) {
+    if (['1inch', 'paraswap'].includes(pathRoute)) {
       const originAmount = new BN(amountBN.toString()).dividedBy(10 ** fromToken.decimals);
       return PathFinder.getSwap(fromToken.symbol, toToken.symbol, originAmount, pathRoute, chainId);
     }
