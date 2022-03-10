@@ -8,7 +8,7 @@
   "description": "",
   "main": "src/server/index.js",
   "scripts": {
-    "build": "npm run patch-google-proto && webpack --mode production --env production --env main",
+    "build": "npm run patch-google-proto && webpack --mode production --env production",
     "ci-build": "webpack --mode production --env development",
     "watch": "webpack --watch --mode development --env development",
     "profile": "webpack --profile --json=stats.$(date +'%Y_%m_%d_%I_%M_%p').json",
