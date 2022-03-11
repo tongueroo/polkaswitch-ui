@@ -194,8 +194,10 @@ export default class SwapOrderSlide extends Component {
       this.props.to &&
       this.props.fromAmount &&
       this.props.fromAmount.length > 0 &&
+      +this.props.fromAmount > 0 &&
       this.props.toAmount &&
       this.props.toAmount.length > 0 &&
+      +this.props.toAmount > 0 &&
       !this.state.calculatingSwap
     );
   }
