@@ -69,11 +69,57 @@ window.TokenClaim = {
         this.abi,
         signer
       );
-      await contract.release();
+      await contract.release(signer.getAddress());
 
       return Promise.resolve(1);
     } else {
       return Promise.resolve(-1);
+    }
+  },
+
+  // total unlocked amount
+  unlocked: async function () {
+    if (this.isConnectedToAnyNetwork()) {
+      const signer = this.provider.getSigner();
+
+      const contract = new Contract(
+        this.addr,
+        this.abi,
+        signer
+      );
+      return await contract.unlocked(signer.getAddress());
+    } else {
+      return Promise.resolve(0);
+    }
+  },
+  // total locked amount
+  locked: async function () {
+    if (this.isConnectedToAnyNetwork()) {
+      const signer = this.provider.getSigner();
+
+      const contract = new Contract(
+        this.addr,
+        this.abi,
+        signer
+      );
+      return await contract.locked(signer.getAddress());
+    } else {
+      return Promise.resolve(0);
+    }
+  },
+  // total claimed amount
+  claimed: async function () {
+    if (this.isConnectedToAnyNetwork()) {
+      const signer = this.provider.getSigner();
+
+      const contract = new Contract(
+        this.addr,
+        this.abi,
+        signer
+      );
+      return await contract.released(signer.getAddress());
+    } else {
+      return Promise.resolve(0);
     }
   },
 
