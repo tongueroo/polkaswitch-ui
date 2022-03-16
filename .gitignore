@@ -10,3 +10,4 @@ yarn.lock
 dotenv
 .DS_Store
 .ufo
+Dockerfile
