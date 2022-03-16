@@ -9,4 +9,4 @@ yarn.lock
 .idea
 dotenv
 .DS_Store
-Dockerfile
+Dockerfile*
