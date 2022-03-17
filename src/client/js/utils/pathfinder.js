@@ -2,6 +2,7 @@ import Wallet from './wallet';
 
 export default {
   baseUrl: 'https://api.swing.xyz',
+  SupportedChainIds: ['1', '42161', '10'],
 
   async sendGet(url, params = {}) {
     let result = null;

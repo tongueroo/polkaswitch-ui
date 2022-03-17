@@ -22,7 +22,9 @@ export default class TokenSwapDistribution extends Component {
 
   componentDidMount() {
     const { chainId = 1 } = TokenListManager.getCurrentNetworkConfig() || {};
-    PathFinder.getPools(chainId).then((pools) => this.setState({ pools }));
+    if (PathFinder.SupportedChainIds.includes(`${chainId}`)) {
+      PathFinder.getPools(chainId).then((pools) => this.setState({ pools }));
+    }
   }
 
   render() {
