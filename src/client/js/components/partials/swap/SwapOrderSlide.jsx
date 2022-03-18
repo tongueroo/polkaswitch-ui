@@ -327,6 +327,19 @@ export default class SwapOrderSlide extends Component {
     );
   }
 
+  getCTAButtonMessage() {
+    // this performs the check that the selected network matches the network by the
+    // wallet provider
+    if (Wallet.isConnected()) {
+      return "Review Order";
+    // prompt the user to switch networks, if the network does not match
+    } else if (Wallet.isConnectedToAnyNetwork()) {
+      return "Switch Network";
+    } else {
+      return "Connect Wallet";
+    }
+  }
+
   render() {
     return (
       <div className="page page-view-order">
@@ -386,7 +399,7 @@ export default class SwapOrderSlide extends Component {
               className="button is-primary is-fullwidth is-medium"
               onClick={this.handleSubmit}
             >
-              {Wallet.isConnected() ? 'Review Order' : 'Connect Wallet'}
+              {this.getCTAButtonMessage()}
             </button>
           </div>
         </div>
