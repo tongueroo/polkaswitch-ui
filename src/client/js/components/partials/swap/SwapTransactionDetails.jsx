@@ -88,7 +88,6 @@ export default class SwapTransactionDetails extends Component {
       )
         .then(
           function (priceImpact) {
-            console.log('priceImpact', priceImpact);
             _.defer(
               function () {
                 this.setState({

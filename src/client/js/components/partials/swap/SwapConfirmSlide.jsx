@@ -44,7 +44,6 @@ export default class SwapConfirmSlide extends Component {
         loading: true,
       },
       () => {
-        console.log('Debug Crash: ', this.props.fromAmount, this.props.from);
         const fromAmountBN = window.ethers.utils.parseUnits(
           this.props.fromAmount,
           this.props.from.decimals,
