@@ -29,7 +29,9 @@ const TxHistoryModal = () => {
   const [txAllBridgesActiveQueue, setTxAllBridgesActiveQueue] = useState([]);
 
   const handleUpdate = () => {
-    setRefresh(Date.now());
+    if (this.isMounted()) {
+      setRefresh(Date.now());
+    }
   };
 
   const handleClose = (e) => {

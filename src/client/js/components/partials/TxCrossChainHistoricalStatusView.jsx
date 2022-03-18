@@ -67,11 +67,11 @@ const TxCrossChainHistoricalStatusView = ({ data: txData }) => {
       <div className="level-item tx-content">
         <div>
           <div>
-            {lang} {input} {sendingAsset.symbol} for {output}{' '}
-            {receivingAsset.symbol}
+            {lang} {input} {sendingAsset?.symbol} for {output}{' '}
+            {receivingAsset?.symbol}
           </div>
           <div>
-            {sendingChain.name} &gt; {receivingChain.name}
+            {sendingChain?.name} &gt; {receivingChain?.name}
           </div>
           <div>
             <TxExplorerLink
