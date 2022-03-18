@@ -17,6 +17,7 @@ export default class SwapOrderSlide extends Component {
       calculatingSwap: false,
       errored: false,
       errorMsg: false,
+      errorDetails: false
     };
 
     this.calculatingSwapTimestamp = Date.now();

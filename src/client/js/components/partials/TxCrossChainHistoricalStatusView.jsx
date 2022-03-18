@@ -34,9 +34,13 @@ const TxCrossChainHistoricalStatusView = ({ data: txData }) => {
     receivingChain,
   );
 
-  const input = numeral(
-    Utils.formatUnits(txData.sending.amount, sendingAsset.decimals),
-  ).format('0.0000a');
+  let input;
+
+  if (txData.sending?.amount && sendingAsset) {
+    input = numeral(
+      Utils.formatUnits(txData.sending.amount, sendingAsset.decimals),
+    ).format('0.0000a');
+  }
 
   let output;
   let icon;
