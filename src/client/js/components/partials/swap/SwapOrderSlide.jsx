@@ -140,9 +140,6 @@ export default class SwapOrderSlide extends Component {
                 );
               });
             })
-            .catch((e) => {
-              console.error('Failed to get swap estimate: ', e);
-            });
         }.bind(this, _timeNow2, _cb2),
       )
       .catch(
