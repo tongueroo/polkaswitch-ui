@@ -95,7 +95,7 @@ window.CBridgeUtils = {
     }
 
     const transferConfig = await this._client.get(
-      '/v1/getTransferConfigs',
+      '/v2/getTransferConfigs',
       null,
     );
     return transferConfig.data;
@@ -150,7 +150,7 @@ window.CBridgeUtils = {
       },
     };
 
-    const response = await this._client.get('/v1/estimateAmt', config);
+    const response = await this._client.get('/v2/estimateAmt', config);
 
     console.log(response.data);
     const { data } = response;
