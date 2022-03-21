@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import EventManager from './events';
 import * as ethers from 'ethers';
-import TokenListManager from './tokenList';
+import Wallet from './wallet';
 import BN from 'bignumber.js';
 import * as Sentry from '@sentry/react';
 
@@ -14,20 +14,18 @@ const Contract = ethers.Contract;
 window.TokenClaim = {
   abi: undefined,
   addr: undefined,
-  network: undefined,
-  provider: undefined,
 
   initialize: async function () {
-    // initialize MetaMask if already connected
-    if (window.ethereum) {
-      this.initListeners(window.ethereum);
+    // // initialize MetaMask if already connected
+    // if (window.ethereum) {
+    //   this.initListeners(window.ethereum);
 
-      if (window.ethereum.selectedAddress) {
-        this.provider = new ethers.providers.Web3Provider(window.ethereum);
-      }
-    } else if (false) {
-      // TODO init WalletConnect
-    }
+    //   if (window.ethereum.selectedAddress) {
+    //     this.provider = new ethers.providers.Web3Provider(window.ethereum);
+    //   }
+    // } else if (false) {
+    //   // TODO init WalletConnect
+    // }
 
     this.initializeAddr();
   },
@@ -47,7 +45,7 @@ window.TokenClaim = {
   },
   // init contract address
   initializeAddr: function() {
-    this.addr = "0x170446f2dAa16F7f8279a184821c841b6908647c";
+    this.addr = "0xB1B56B750C2C84E9caf0DA75daCf431fb4Dfc115";
   },
   
   initListeners: function (provider) {
@@ -62,7 +60,7 @@ window.TokenClaim = {
   // release vested tokens
   claimTokens: async function () {
     if (this.isConnectedToAnyNetwork()) {
-      const signer = this.provider.getSigner();
+      const signer = this.getProvider().getSigner();
 
       const contract = new Contract(
         this.addr,
@@ -80,7 +78,7 @@ window.TokenClaim = {
   // total unlocked amount
   unlocked: async function () {
     if (this.isConnectedToAnyNetwork()) {
-      const signer = this.provider.getSigner();
+      const signer = this.getProvider().getSigner();
 
       const contract = new Contract(
         this.addr,
@@ -95,7 +93,7 @@ window.TokenClaim = {
   // total locked amount
   locked: async function () {
     if (this.isConnectedToAnyNetwork()) {
-      const signer = this.provider.getSigner();
+      const signer = this.getProvider().getSigner();
 
       const contract = new Contract(
         this.addr,
@@ -110,7 +108,7 @@ window.TokenClaim = {
   // total claimed amount
   claimed: async function () {
     if (this.isConnectedToAnyNetwork()) {
-      const signer = this.provider.getSigner();
+      const signer = this.getProvider().getSigner();
 
       const contract = new Contract(
         this.addr,
@@ -122,9 +120,11 @@ window.TokenClaim = {
       return Promise.resolve(0);
     }
   },
-
   isConnectedToAnyNetwork: function () {
-    return !!this.provider;
+    return window.WalletJS.isConnectedToAnyNetwork();
+  },
+  getProvider: function () {
+    return window.WalletJS.getProvider();
   },
 };
 
