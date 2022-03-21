@@ -17,6 +17,7 @@ export default class SwapOrderSlide extends Component {
       calculatingSwap: false,
       errored: false,
       errorMsg: false,
+      errorDetails: false
     };
 
     this.calculatingSwapTimestamp = Date.now();
@@ -140,9 +141,6 @@ export default class SwapOrderSlide extends Component {
                 );
               });
             })
-            .catch((e) => {
-              console.error('Failed to get swap estimate: ', e);
-            });
         }.bind(this, _timeNow2, _cb2),
       )
       .catch(
@@ -194,8 +192,10 @@ export default class SwapOrderSlide extends Component {
       this.props.to &&
       this.props.fromAmount &&
       this.props.fromAmount.length > 0 &&
+      +this.props.fromAmount > 0 &&
       this.props.toAmount &&
       this.props.toAmount.length > 0 &&
+      +this.props.toAmount > 0 &&
       !this.state.calculatingSwap
     );
   }
@@ -327,6 +327,19 @@ export default class SwapOrderSlide extends Component {
     );
   }
 
+  getCTAButtonMessage() {
+    // this performs the check that the selected network matches the network by the
+    // wallet provider
+    if (Wallet.isConnected()) {
+      return "Review Order";
+    // prompt the user to switch networks, if the network does not match
+    } else if (Wallet.isConnectedToAnyNetwork()) {
+      return "Switch Network";
+    } else {
+      return "Connect Wallet";
+    }
+  }
+
   render() {
     return (
       <div className="page page-view-order">
@@ -386,7 +399,7 @@ export default class SwapOrderSlide extends Component {
               className="button is-primary is-fullwidth is-medium"
               onClick={this.handleSubmit}
             >
-              {Wallet.isConnected() ? 'Review Order' : 'Connect Wallet'}
+              {this.getCTAButtonMessage()}
             </button>
           </div>
         </div>

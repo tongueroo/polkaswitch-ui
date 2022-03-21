@@ -34,9 +34,13 @@ const TxCrossChainHistoricalStatusView = ({ data: txData }) => {
     receivingChain,
   );
 
-  const input = numeral(
-    Utils.formatUnits(txData.sending.amount, sendingAsset.decimals),
-  ).format('0.0000a');
+  let input;
+
+  if (txData.sending?.amount && sendingAsset) {
+    input = numeral(
+      Utils.formatUnits(txData.sending.amount, sendingAsset.decimals),
+    ).format('0.0000a');
+  }
 
   let output;
   let icon;
@@ -67,11 +71,11 @@ const TxCrossChainHistoricalStatusView = ({ data: txData }) => {
       <div className="level-item tx-content">
         <div>
           <div>
-            {lang} {input} {sendingAsset.symbol} for {output}{' '}
-            {receivingAsset.symbol}
+            {lang} {input} {sendingAsset?.symbol} for {output}{' '}
+            {receivingAsset?.symbol}
           </div>
           <div>
-            {sendingChain.name} &gt; {receivingChain.name}
+            {sendingChain?.name} &gt; {receivingChain?.name}
           </div>
           <div>
             <TxExplorerLink
