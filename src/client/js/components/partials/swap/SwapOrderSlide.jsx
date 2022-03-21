@@ -109,7 +109,7 @@ export default class SwapOrderSlide extends Component {
 
           const dist = _.map(result.distribution, (e) => (Number.isNaN(e) ? e.toNumber() : e));
 
-          Wallet.getBalance(this.props.from)
+          return Wallet.getBalance(this.props.from)
             .then((bal) => {
               return SwapFn.getApproveStatus(this.props.from, fromAmountBN).then((status) => {
                 console.log('Approval Status', status);
@@ -145,7 +145,7 @@ export default class SwapOrderSlide extends Component {
       )
       .catch(
         function (_timeNow3, _attempt3, _cb3, e) {
-          console.error('Failed to get swap estimate: ', e);
+          console.error('SWAP ESTIMATE FAILED: ', e);
           if (this.calculatingSwapTimestamp !== _timeNow3) {
             return;
           }
