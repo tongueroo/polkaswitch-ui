@@ -125,9 +125,13 @@ window.TokenListManager = {
     }
 
     const foundToken = _.find(tokenList, function (v) {
+      if (!v.address || !v.symbol) {
+        return false;
+      }
+
       return (
-        v.address.toLowerCase() === tid.toLowerCase() ||
-        v.symbol.toLowerCase() === tid.toLowerCase()
+        v.address?.toLowerCase() === tid.toLowerCase() ||
+        v.symbol?.toLowerCase() === tid.toLowerCase()
       );
     });
 
