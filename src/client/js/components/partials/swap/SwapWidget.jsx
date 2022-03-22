@@ -23,15 +23,20 @@ export default class SwapWidget extends Component {
     const network = TokenListManager.getCurrentNetworkConfig();
     const swapConfig = GlobalStateManager.getSwapConfig();
 
+    const useCustomConfigPair = (!!swapConfig?.to?.address &&
+      +swapConfig?.to?.chainId === +network.chainId &&
+      !!swapConfig?.from?.address &&
+      +swapConfig?.from?.chainId === +network.chainId);
+
     var mergeState = {};
     mergeState = _.extend(mergeState, {
       toChain: network,
       fromChain: network,
       to: TokenListManager.findTokenById(
-        swapConfig?.to?.address || network?.defaultPair.to,
+        useCustomConfigPair ? swapConfig?.to?.address : network?.defaultPair.to
       ),
       from: TokenListManager.findTokenById(
-        swapConfig?.from?.address || network?.defaultPair.from,
+        useCustomConfigPair ? swapConfig?.from?.address : network?.defaultPair.from
       ),
     });
 
@@ -51,7 +56,7 @@ export default class SwapWidget extends Component {
       refresh: Date.now(),
     });
 
-    this.subscribers = [];
+    this.subscribers = [];/f
     this.onSwapTokens = this.onSwapTokens.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
     this.handleSearchToggle = this.handleSearchToggle.bind(this);
