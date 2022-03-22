@@ -6,14 +6,15 @@ import BN from 'bignumber.js';
 import * as Sentry from '@sentry/react';
 
 import WalletConnectProvider from '@walletconnect/web3-provider';
+import wallet from './wallet';
 
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
 const Contract = ethers.Contract;
 
 window.TokenClaim = {
-  abi: undefined,
-  addr: undefined,
+  abi: {},
+  addressInfo: {},
 
   initialize: async function () {
     // // initialize MetaMask if already connected
@@ -31,10 +32,8 @@ window.TokenClaim = {
   },
   // init abi
   initializeAbi: function() {
-    window.ABIS = {};
-
     return Promise.all([
-      ['vestingAbi', '/abi/vesting.json']
+      ['vestingAbi', '/abi/vesting/vestingABI.json']
     ].map((data) => {
       fetch(data[1]).then((resp) => {
         return resp.json();
@@ -45,7 +44,16 @@ window.TokenClaim = {
   },
   // init contract address
   initializeAddr: function() {
-    this.addr = "0xB1B56B750C2C84E9caf0DA75daCf431fb4Dfc115";
+    return Promise.all([
+      ['vestingAbi', '/abi/vesting/vestingAddress.json']
+    ].map((data) => {
+      fetch(data[1]).then((resp) => {
+        return resp.json();
+      }).then((json) => {
+        this.addressInfo = json;
+        console.log("vesting contract address", json)
+      });
+    }));
   },
   
   initListeners: function (provider) {
@@ -61,9 +69,10 @@ window.TokenClaim = {
   claimTokens: async function () {
     if (this.isConnectedToAnyNetwork()) {
       const signer = this.getProvider().getSigner();
+      const contractAddress = this.addressInfo['vesting'][window.WalletJS._cachedNetworkId];
 
       const contract = new Contract(
-        this.addr,
+        contractAddress,
         this.abi,
         signer
       );
@@ -79,9 +88,10 @@ window.TokenClaim = {
   unlocked: async function () {
     if (this.isConnectedToAnyNetwork()) {
       const signer = this.getProvider().getSigner();
+      const contractAddress = this.addressInfo['vesting'][window.WalletJS._cachedNetworkId];
 
       const contract = new Contract(
-        this.addr,
+        contractAddress,
         this.abi,
         signer
       );
@@ -94,9 +104,10 @@ window.TokenClaim = {
   locked: async function () {
     if (this.isConnectedToAnyNetwork()) {
       const signer = this.getProvider().getSigner();
+      const contractAddress = this.addressInfo['vesting'][window.WalletJS._cachedNetworkId];
 
       const contract = new Contract(
-        this.addr,
+        contractAddress,
         this.abi,
         signer
       );
@@ -109,9 +120,10 @@ window.TokenClaim = {
   claimed: async function () {
     if (this.isConnectedToAnyNetwork()) {
       const signer = this.getProvider().getSigner();
+      const contractAddress = this.addressInfo['vesting'][window.WalletJS._cachedNetworkId];
 
       const contract = new Contract(
-        this.addr,
+        contractAddress,
         this.abi,
         signer
       );

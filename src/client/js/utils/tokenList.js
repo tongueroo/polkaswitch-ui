@@ -119,6 +119,7 @@ window.TokenListManager = {
       return undefined;
     }
 
+    console.log("tid", tid)
     let tokenList = window.TOKEN_LIST;
     if (optionalNetwork) {
       tokenList = this.getTokenListForNetwork(optionalNetwork);
