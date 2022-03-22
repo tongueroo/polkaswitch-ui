@@ -268,7 +268,7 @@ window.SwapFn = {
       }
     }
 
-    if (chainId === '1' || chainId === '42161' || chainId === '10') {
+    if (PathFinder.SupportedChainIds.includes(`${chainId}`)) {
       const { destAmount, route, distribution } = (await PathFinder.getQuote(fromToken.symbol, toToken.symbol, amount, chainId)) || {};
       if (destAmount) {
         const returnAmount = new BN(destAmount).times(10 ** toToken.decimals).toFixed(0);

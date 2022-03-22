@@ -21,7 +21,10 @@ export default class TokenSwapDistribution extends Component {
   }
 
   componentDidMount() {
-    PathFinder.getPools(1).then((pools) => this.setState({ pools }));
+    const { chainId = 1 } = TokenListManager.getCurrentNetworkConfig() || {};
+    if (PathFinder.SupportedChainIds.includes(`${chainId}`)) {
+      PathFinder.getPools(chainId).then((pools) => this.setState({ pools }));
+    }
   }
 
   render() {
@@ -50,11 +53,13 @@ export default class TokenSwapDistribution extends Component {
 
       totalParts = parts.reduce((prev, next) => next + prev, 0);
 
-      pools = parts.map((v, i) => ({
-        name: this.state.pools[i],
-        icon: this.state.pools[i] ? TokenListManager.findTokenById(this.state.pools[i]) : {},
-        size: totalParts === 0 ? 0 : v / totalParts,
-      }));
+      if (this.state.pools.length === parts.length) {
+        pools = parts.map((v, i) => ({
+          name: this.state.pools[i].name,
+          icon: { logoURI: this.state.pools[i].icon },
+          size: totalParts === 0 ? 0 : v / totalParts,
+        }));
+      }
     }
 
     else if (+network?.chainId === 137) {
