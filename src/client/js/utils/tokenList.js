@@ -114,7 +114,7 @@ window.TokenListManager = {
   },
 
   findTokenById: function (tid, optionalNetwork) {
-    if (!tid) {
+    if (!tid?.toLowerCase) {
       console.log('WARN: TokenListManager: Provided Token ID is blank');
       return undefined;
     }
@@ -125,9 +125,13 @@ window.TokenListManager = {
     }
 
     const foundToken = _.find(tokenList, function (v) {
+      if (!v.address?.toLowerCase || !v.symbol?.toLowerCase) {
+        return false;
+      }
+
       return (
-        v.address.toLowerCase() === tid.toLowerCase() ||
-        v.symbol.toLowerCase() === tid.toLowerCase()
+        v.address?.toLowerCase() === tid.toLowerCase() ||
+        v.symbol?.toLowerCase() === tid.toLowerCase()
       );
     });
 
