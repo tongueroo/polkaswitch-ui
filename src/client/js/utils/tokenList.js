@@ -125,7 +125,7 @@ window.TokenListManager = {
     }
 
     const foundToken = _.find(tokenList, function (v) {
-      if (!v.address || !v.symbol) {
+      if (!v.address?.toLowerCase || !v.symbol?.toLowerCase) {
         return false;
       }
 
