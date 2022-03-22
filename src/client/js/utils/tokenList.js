@@ -114,7 +114,7 @@ window.TokenListManager = {
   },
 
   findTokenById: function (tid, optionalNetwork) {
-    if (!tid) {
+    if (!tid?.toLowerCase) {
       console.log('WARN: TokenListManager: Provided Token ID is blank');
       return undefined;
     }
