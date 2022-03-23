@@ -159,3 +159,30 @@
         }
     }    
 }
+
+.success-modal {
+    
+    .modal-body {
+        background: var(--secondary-background) !important;
+
+        .success-modal-body {
+            text-align: center;
+        
+            p {
+                color: var(--primary-text-color);
+            }
+            .success-text {
+                font-size: 20px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+            .token-claim-contact-us {
+                color: #4064D0;
+            }
+        
+            .button {
+                margin-top: 10px;
+            }
+        }
+    }
+}

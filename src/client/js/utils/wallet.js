@@ -96,9 +96,9 @@ window.WalletJS = {
         // if chain changes due to manual user change, not via connect change:
         // just wipe clean, too hard to manage otherwise
         this._cachedNetworkId = chainId;
-        if (!this.isMatchingConnectedNetwork()) {
-          this.disconnect();
-        }
+        // if (!this.isMatchingConnectedNetwork()) {
+        //   this.disconnect();
+        // }
 
         EventManager.emitEvent('walletUpdated', 1);
       }.bind(this),
@@ -350,6 +350,7 @@ window.WalletJS = {
   },
 
   _connectProviderMetamask: function () {
+    console.log("connect metamask")
     return new Promise(
       async function (resolve, reject) {
         let network = TokenListManager.getCurrentNetworkConfig();
@@ -365,7 +366,8 @@ window.WalletJS = {
                     const account = accounts[0];
 
                     var web3Provider = new ethers.providers.Web3Provider(
-                      window.ethereum,
+                      // window.ethereum,
+                      ethers.getDefaultProvider('ropsten')
                     );
                     return this._saveConnection(web3Provider, 'metamask').then(
                       function () {

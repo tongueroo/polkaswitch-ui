@@ -1,190 +1,9 @@
-// import React, { useEffect, useContext } from 'react';
-// import { ethers } from "ethers";
-// import { PieChart } from 'react-minimal-pie-chart';
-// import Navbar from '../partials/navbar/Navbar';
-// import ConnectWalletModal from '../partials/ConnectWalletModal';
-// import TxHistoryModal from '../partials/TxHistoryModal';
-// import NotificationSystem from '../partials/NotificationSystem';
-// import MobileMenu from '../partials/navbar/MobileMenu';
-// import NetworkPrice from '../partials/wallet/NetworkPrice';
-// import TokenClaimDisconnectedWallet from '../partials/wallet/TokenClaimDisconnectedWallet';
-// import EmptyBalances from '../partials/wallet/EmptyBalances';
-// import { balanceContext } from '../../context/balance';
-
-// import TokenClaim from '../../utils/tokenClaim';
-// import Wallet from '../../utils/wallet';
-// import TokenListManager from '../../utils/tokenList';
-// import EventManager from '../../utils/events';
-
-// const TokenClaimHome = () => {
-//   const {
-//     currentNetwork,
-//     balances,
-//     loading,
-//     setMyApplicationState,
-//     loadBalances,
-//   } = useContext(balanceContext);
-
-//   let subWalletChange;
-
-//   useEffect(() => {
-//     setMyApplicationState((prevState) => ({
-//       ...prevState,
-//       currentNetwork: TokenListManager.getCurrentNetworkConfig(),
-//       refresh: Date.now(),
-//       balances: [],
-//       loading: true,
-//     }));
-
-//     loadBalances();
-//   }, []);
-
-//   const handleWalletChange = () => {
-//     setMyApplicationState((prevState) => ({
-//       ...prevState,
-//       refresh: Date.now(),
-//       balances: [],
-//       loading: true,
-//     }));
-
-//     loadBalances();
-//   };
-
-//   useEffect(() => {
-//     subWalletChange = EventManager.listenFor(
-//       'walletUpdated',
-//       handleWalletChange,
-//     );
-
-//     return () => subWalletChange.unsubscribe();
-//   }, []);
-
-//   const handleConnect = () => {
-//     EventManager.emitEvent('promptWalletConnect', 1);
-//   };
-
-//   const claimTokens = async () => {
-//     try {
-//       const result = await TokenClaim.claimTokens();
-//       console.log("token claim", result)
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   }
-
-//   const renderTokenClaimHome = () => {
-//     if (Wallet.isConnectedToAnyNetwork()) {
-//       if (!balances.length && currentNetwork === undefined) {
-//         return <EmptyBalances />;
-//       }
-//       return (
-//         <div className="columns is-centered">
-//           <div className='column token-claim-column'>
-//             <div className="page page-view-order">
-//               <div className="page-inner">
-//                 <div className="card token-claim-card">
-//                   <div className="tokens-table-title-container">
-//                     <div className='token-claim-container'>
-//                       <div className='token-claim-detail-section token-claim-section'>
-//                         <div className='token-claim-info'>
-//                           <p className='token-claim-info-title'>Claim Your Swing</p>
-//                           <p className='token-claim-info-token'>Token symbol: $SWING</p>
-//                         </div>
-//                         <div className="solid"></div>
-//                         <div className='token-claim-detail'>
-//                           <div className='token-claim-detail-text'>
-//                             <p className='token-claim-detail-label'>Unlocked</p>
-//                             <p className='token-claim-detail-amount'>{TokenClaim.unlocked()}</p>
-//                           </div>
-//                           <div className='token-claim-detail-text'>
-//                             <p className='token-claim-detail-label'>Claimed</p>
-//                             <p className='token-claim-detail-amount'>{TokenClaim.claimed()}</p>
-//                           </div>
-//                           <div className='token-claim-detail-text'>
-//                             <p className='token-claim-detail-label'>Locked</p>
-//                             <p className='token-claim-detail-amount'>{TokenClaim.locked()}</p>
-//                           </div>
-//                         </div>
-//                         <div className="solid"></div>
-//                         <div className='token-claim-action-container'>
-//                           <button
-//                             className="button token-claim-btn outlined-btn"
-//                           >
-//                             View Contract
-//                           </button>
-//                           <button
-//                             className="button is-success token-claim-btn"
-//                             onClick={claimTokens}
-//                           >
-//                             Claim Tokens
-//                           </button>
-//                         </div>
-//                         <div className='token-claim-detail-contact'>
-//                           <p>Having issues claiming your Swing Tokens?</p>
-//                           <p className='token-claim-contact-us'>Contact us on Telegram</p>
-//                         </div>
-//                       </div>
-
-//                       <div className='token-claim-chart-section token-claim-section'>
-//                         <div className='token-claim-pie-chart'>
-//                           <PieChart
-//                             data={[
-//                               { title: 'Claimed', value: 10, color: '#4064D0' },
-//                               { title: 'Unlocked', value: 18, color: '#22BA79' },
-//                               { title: 'Locked', value: 72, color: '#64586A' },
-//                             ]}
-//                             lineWidth={40}
-//                           />
-//                         </div>
-//                         <div className="token-claim-chart-info">
-//                           <div className="chart-info-section">
-//                             <img src="/images/token_claimed.svg" alt="Connect Wallet" />
-//                             <p className='chart-label'>Claimed</p>
-//                             <p className='chart-percentage claimed-percentage'>{TokenClaim.claimed() / (TokenClaim.locked() + TokenClaim.unlocked()) * 100}%</p>
-//                           </div>
-//                           <div className="chart-info-section">
-//                             <img src="/images/token_unlocked.svg" alt="Connect Wallet" />
-//                             <p className='chart-label'>Unlocked</p>
-//                             <p className='chart-percentage unlocked-percentage'>{TokenClaim.unlocked() / (TokenClaim.locked() + TokenClaim.unlocked()) * 100}%</p>
-//                           </div>
-//                           <div className="chart-info-section">
-//                             <img src="/images/token_locked.svg" alt="Connect Wallet" />
-//                             <p className='chart-label'>Locked</p>
-//                             <p className='chart-percentage locked-percentage'>{TokenClaim.locked() / (TokenClaim.locked() + TokenClaim.unlocked()) * 100}%</p>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       );
-//     }
-//     return <TokenClaimDisconnectedWallet onClick={handleConnect} />;
-//   };
-
-//   return (
-//     <div className="container">
-//       <Navbar />
-//       <MobileMenu />
-//       <NotificationSystem />
-//       <ConnectWalletModal />
-//       <TxHistoryModal />
-
-//       {renderTokenClaimHome()}
-//     </div>
-//   );
-// };
-
-// export default TokenClaimHome;
-import React, { useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ethers } from "ethers";
 import { PieChart } from 'react-minimal-pie-chart';
 import Navbar from '../partials/navbar/Navbar';
 import ConnectWalletModal from '../partials/ConnectWalletModal';
+import SuccessModal from '../partials/SuccessModal';
 import TxHistoryModal from '../partials/TxHistoryModal';
 import NotificationSystem from '../partials/NotificationSystem';
 import MobileMenu from '../partials/navbar/MobileMenu';
@@ -206,6 +25,18 @@ const TokenClaimHome = () => {
     setMyApplicationState,
     loadBalances,
   } = useContext(balanceContext);
+  const [tokenInfo, setTokenInfo] = useState({
+    claimed: 0,
+    locked: 0,
+    unlocked: 0,
+    claimedPercentage: 0,
+    unlockedPercentage: 0,
+    lockedPercentage: 0
+  });
+  const [claimInfo, setClaimInfo] = useState({
+    openSuccessModal: false,
+    claimSuccess: false
+  })
 
   let subWalletChange;
 
@@ -219,6 +50,16 @@ const TokenClaimHome = () => {
     }));
 
     loadBalances();
+    loadTokenInfo();
+  }, []);
+
+  useEffect(() => {
+    subWalletChange = EventManager.listenFor(
+      'walletUpdated',
+      handleWalletChange,
+    );
+
+    return () => subWalletChange.unsubscribe();
   }, []);
 
   const handleWalletChange = () => {
@@ -230,16 +71,28 @@ const TokenClaimHome = () => {
     }));
 
     loadBalances();
+    // loadTokenInfo();
   };
 
-  useEffect(() => {
-    subWalletChange = EventManager.listenFor(
-      'walletUpdated',
-      handleWalletChange,
-    );
+  const loadTokenInfo = async () => {
+    const claimed = await TokenClaim.claimed();
+    const unlocked = await TokenClaim.unlocked();
+    const locked = await TokenClaim.locked();
+    const total = locked + unlocked + claimed;
 
-    return () => subWalletChange.unsubscribe();
-  }, []);
+    const claimedPercentage = total !== 0 ? claimed / total * 100 : 0;
+    const unlockedPercentage = total !== 0  ? unlocked / total  * 100 : 0;
+    const lockedPercentage = total !== 0 ? locked / total * 100 : 0;
+
+    setTokenInfo({
+      claimed,
+      unlocked,
+      locked,
+      claimedPercentage,
+      unlockedPercentage,
+      lockedPercentage
+    })
+  }
 
   const handleConnect = () => {
     EventManager.emitEvent('promptWalletConnect', 1);
@@ -248,10 +101,23 @@ const TokenClaimHome = () => {
   const claimTokens = async () => {
     try {
       const result = await TokenClaim.claimTokens();
-      console.log("token claim", result)
+
+      setClaimInfo({
+        openSuccessModal: true,
+        claimSuccess: result === 1
+      });
     } catch (err) {
-      console.log(err);
+      setClaimInfo({
+        openSuccessModal: true,
+        claimSuccess: false
+      });
     }
+  }
+  
+  const closeSuccessModal = () => {
+    setClaimInfo({
+      openSuccessModal: false
+    });
   }
 
   const renderTokenClaimHome = () => {
@@ -276,15 +142,15 @@ const TokenClaimHome = () => {
                         <div className='token-claim-detail'>
                           <div className='token-claim-detail-text'>
                             <p className='token-claim-detail-label'>Unlocked</p>
-                            <p className='token-claim-detail-amount'>140,000</p>
+                            <p className='token-claim-detail-amount'>{tokenInfo.unlocked}</p>
                           </div>
                           <div className='token-claim-detail-text'>
                             <p className='token-claim-detail-label'>Claimed</p>
-                            <p className='token-claim-detail-amount'>60,000</p>
+                            <p className='token-claim-detail-amount'>{tokenInfo.claimed}</p>
                           </div>
                           <div className='token-claim-detail-text'>
                             <p className='token-claim-detail-label'>Locked</p>
-                            <p className='token-claim-detail-amount'>1,150,000</p>
+                            <p className='token-claim-detail-amount'>{tokenInfo.locked}</p>
                           </div>
                         </div>
                         <div className="solid"></div>
@@ -311,28 +177,28 @@ const TokenClaimHome = () => {
                         <div className='token-claim-pie-chart'>
                           <PieChart
                             data={[
-                              { title: 'Claimed', value: 10, color: '#4064D0' },
-                              { title: 'Unlocked', value: 18, color: '#22BA79' },
-                              { title: 'Locked', value: 72, color: '#64586A' },
+                              { title: 'Claimed', value: tokenInfo.claimedPercentage , color: '#4064D0' },
+                              { title: 'Unlocked', value: tokenInfo.unlockedPercentage, color: '#22BA79' },
+                              { title: 'Locked', value: tokenInfo.lockedPercentage, color: '#64586A' },
                             ]}
                             lineWidth={40}
                           />
                         </div>
                         <div className="token-claim-chart-info">
                           <div className="chart-info-section">
-                            <img src="/images/token_claimed.svg" alt="Connect Wallet" />
+                            <img src="/images/token_claimed.svg" alt="Claimed Token" />
                             <p className='chart-label'>Claimed</p>
-                            <p className='chart-percentage claimed-percentage'>10%</p>
+                            <p className='chart-percentage claimed-percentage'>{tokenInfo.claimedPercentage}%</p>
                           </div>
                           <div className="chart-info-section">
-                            <img src="/images/token_unlocked.svg" alt="Connect Wallet" />
+                            <img src="/images/token_unlocked.svg" alt="Unlocked Token" />
                             <p className='chart-label'>Unlocked</p>
-                            <p className='chart-percentage unlocked-percentage'>18%</p>
+                            <p className='chart-percentage unlocked-percentage'>{tokenInfo.unlockedPercentage}%</p>
                           </div>
                           <div className="chart-info-section">
-                            <img src="/images/token_locked.svg" alt="Connect Wallet" />
+                            <img src="/images/token_locked.svg" alt="Locked Token" />
                             <p className='chart-label'>Locked</p>
-                            <p className='chart-percentage locked-percentage'>72%</p>
+                            <p className='chart-percentage locked-percentage'>{tokenInfo.lockedPercentage}%</p>
                           </div>
                         </div>
                       </div>
@@ -355,6 +221,7 @@ const TokenClaimHome = () => {
       <NotificationSystem />
       <ConnectWalletModal />
       <TxHistoryModal />
+      <SuccessModal open={claimInfo.openSuccessModal} handleClose={closeSuccessModal} success={claimInfo.claimSuccess}/>
 
       {renderTokenClaimHome()}
     </div>

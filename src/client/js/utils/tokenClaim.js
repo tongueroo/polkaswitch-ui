@@ -2,11 +2,6 @@ import _ from 'underscore';
 import EventManager from './events';
 import * as ethers from 'ethers';
 import Wallet from './wallet';
-import BN from 'bignumber.js';
-import * as Sentry from '@sentry/react';
-
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import wallet from './wallet';
 
 const BigNumber = ethers.BigNumber;
 const Utils = ethers.utils;
@@ -51,7 +46,6 @@ window.TokenClaim = {
         return resp.json();
       }).then((json) => {
         this.addressInfo = json;
-        console.log("vesting contract address", json)
       });
     }));
   },
@@ -68,19 +62,14 @@ window.TokenClaim = {
   // release vested tokens
   claimTokens: async function () {
     if (this.isConnectedToAnyNetwork()) {
-      const signer = this.getProvider().getSigner();
-      const contractAddress = this.addressInfo['vesting'][window.WalletJS._cachedNetworkId]['address'];
+      const contract = this.getContract();
 
-      console.log("vesting address", contractAddress)
-
-      const contract = new Contract(
-        contractAddress,
-        this.abi,
-        signer
-      );
-      await contract.release(signer.getAddress());
-
-      return Promise.resolve(1);
+      try {
+        await contract.release();
+        return Promise.resolve(1);
+      } catch(err) {
+        return Promise.resolve(-1);
+      }
     } else {
       return Promise.resolve(-1);
     }
@@ -89,15 +78,11 @@ window.TokenClaim = {
   // total unlocked amount
   unlocked: async function () {
     if (this.isConnectedToAnyNetwork()) {
-      const signer = this.getProvider().getSigner();
-      const contractAddress = this.addressInfo['vesting'][window.WalletJS._cachedNetworkId]['address'];
+      const contract = this.getContract();
+      const address = Wallet._cachedCurrentAddress;
 
-      const contract = new Contract(
-        contractAddress,
-        this.abi,
-        signer
-      );
-      return await contract.unlocked(signer.getAddress());
+      const result = await contract.unlocked(address);
+      return parseInt(ethers.utils.formatEther(result));
     } else {
       return Promise.resolve(0);
     }
@@ -105,15 +90,11 @@ window.TokenClaim = {
   // total locked amount
   locked: async function () {
     if (this.isConnectedToAnyNetwork()) {
-      const signer = this.getProvider().getSigner();
-      const contractAddress = this.addressInfo['vesting'][window.WalletJS._cachedNetworkId]['address'];
+      const contract = this.getContract();
+      const address = Wallet._cachedCurrentAddress;
 
-      const contract = new Contract(
-        contractAddress,
-        this.abi,
-        signer
-      );
-      return await contract.locked(signer.getAddress());
+      const result = await contract.locked(address);
+      return parseInt(ethers.utils.formatEther(result));
     } else {
       return Promise.resolve(0);
     }
@@ -121,24 +102,30 @@ window.TokenClaim = {
   // total claimed amount
   claimed: async function () {
     if (this.isConnectedToAnyNetwork()) {
-      const signer = this.getProvider().getSigner();
-      const contractAddress = this.addressInfo['vesting'][window.WalletJS._cachedNetworkId]['address'];
+      const contract = this.getContract();
+      const address = Wallet._cachedCurrentAddress;
 
-      const contract = new Contract(
-        contractAddress,
-        this.abi,
-        signer
-      );
-      return await contract.released(signer.getAddress());
+      const result = await contract.released(address);
+      return parseInt(ethers.utils.formatEther(result));
     } else {
       return Promise.resolve(0);
     }
   },
+  getContract: function() {
+    const signer = this.getProvider().getSigner();
+    const contractAddress = this.addressInfo['vesting'][Wallet._cachedNetworkId]['address'];
+
+    return new Contract(
+      contractAddress,
+      this.abi,
+      signer
+    );
+  },
   isConnectedToAnyNetwork: function () {
-    return window.WalletJS.isConnectedToAnyNetwork();
+    return Wallet.isConnectedToAnyNetwork();
   },
   getProvider: function () {
-    return window.WalletJS.getProvider();
+    return Wallet.getProvider();
   },
 };
 
