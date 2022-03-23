@@ -1,15 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import _ from 'underscore';
 import classnames from 'classnames';
 
-import Wallet from '../../utils/wallet';
-import Metrics from '../../utils/metrics';
-import EventManager from '../../utils/events';
-import TokenListManager from '../../utils/tokenList';
-
-import BasicModal from './BasicModal';
-
-const SuccessModal = (props) => {
+const TokenClaimResultModal = (props) => {
 
   return (
     <div className={classnames('modal success-modal', { 'is-active': props.open })}>
@@ -46,4 +39,4 @@ const SuccessModal = (props) => {
   
 }
 
-export default SuccessModal;
+export default TokenClaimResultModal;

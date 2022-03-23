@@ -3,7 +3,8 @@ import { ethers } from "ethers";
 import { PieChart } from 'react-minimal-pie-chart';
 import Navbar from '../partials/navbar/Navbar';
 import ConnectWalletModal from '../partials/ConnectWalletModal';
-import SuccessModal from '../partials/SuccessModal';
+import TokenClaimResultModal from '../partials/TokenClaimResultModal';
+import ErrorModal from '../partials/ErrorModal';
 import TxHistoryModal from '../partials/TxHistoryModal';
 import NotificationSystem from '../partials/NotificationSystem';
 import MobileMenu from '../partials/navbar/MobileMenu';
@@ -34,9 +35,11 @@ const TokenClaimHome = () => {
     lockedPercentage: 0
   });
   const [claimInfo, setClaimInfo] = useState({
-    openSuccessModal: false,
+    openTokenClaimResultModal: false,
     claimSuccess: false
   })
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   let subWalletChange;
 
@@ -71,27 +74,33 @@ const TokenClaimHome = () => {
     }));
 
     loadBalances();
-    // loadTokenInfo();
+    loadTokenInfo();
   };
 
   const loadTokenInfo = async () => {
-    const claimed = await TokenClaim.claimed();
-    const unlocked = await TokenClaim.unlocked();
-    const locked = await TokenClaim.locked();
-    const total = locked + unlocked + claimed;
-
-    const claimedPercentage = total !== 0 ? claimed / total * 100 : 0;
-    const unlockedPercentage = total !== 0  ? unlocked / total  * 100 : 0;
-    const lockedPercentage = total !== 0 ? locked / total * 100 : 0;
-
-    setTokenInfo({
-      claimed,
-      unlocked,
-      locked,
-      claimedPercentage,
-      unlockedPercentage,
-      lockedPercentage
-    })
+    setIsLoading(true);
+    try {
+      const claimed = await TokenClaim.claimed();
+      const unlocked = await TokenClaim.unlocked();
+      const locked = await TokenClaim.locked();
+      const total = locked + unlocked + claimed;
+  
+      const claimedPercentage = total !== 0 ? claimed / total * 100 : 0;
+      const unlockedPercentage = total !== 0  ? unlocked / total  * 100 : 0;
+      const lockedPercentage = total !== 0 ? locked / total * 100 : 0;
+  
+      setTokenInfo({
+        claimed,
+        unlocked,
+        locked,
+        claimedPercentage,
+        unlockedPercentage,
+        lockedPercentage
+      })
+    } catch(err) {
+      setHasError(true);
+    }
+    setIsLoading(false);
   }
 
   const handleConnect = () => {
@@ -103,21 +112,25 @@ const TokenClaimHome = () => {
       const result = await TokenClaim.claimTokens();
 
       setClaimInfo({
-        openSuccessModal: true,
+        openTokenClaimResultModal: true,
         claimSuccess: result === 1
       });
     } catch (err) {
       setClaimInfo({
-        openSuccessModal: true,
+        openTokenClaimResultModal: true,
         claimSuccess: false
       });
     }
   }
   
-  const closeSuccessModal = () => {
+  const closeTokenClaimResultModal = () => {
     setClaimInfo({
-      openSuccessModal: false
+      openTokenClaimResultModal: false
     });
+  }
+
+  const closeErrorModal = () => {
+    setHasError(false);
   }
 
   const renderTokenClaimHome = () => {
@@ -142,15 +155,15 @@ const TokenClaimHome = () => {
                         <div className='token-claim-detail'>
                           <div className='token-claim-detail-text'>
                             <p className='token-claim-detail-label'>Unlocked</p>
-                            <p className='token-claim-detail-amount'>{tokenInfo.unlocked}</p>
+                            <p className='token-claim-detail-amount'>{isLoading ? <div className="loader"></div> : tokenInfo.unlocked}</p>
                           </div>
                           <div className='token-claim-detail-text'>
                             <p className='token-claim-detail-label'>Claimed</p>
-                            <p className='token-claim-detail-amount'>{tokenInfo.claimed}</p>
+                            <p className='token-claim-detail-amount'>{isLoading ? <div className="loader"></div> : tokenInfo.claimed}</p>
                           </div>
                           <div className='token-claim-detail-text'>
                             <p className='token-claim-detail-label'>Locked</p>
-                            <p className='token-claim-detail-amount'>{tokenInfo.locked}</p>
+                            <p className='token-claim-detail-amount'>{isLoading ? <div className="loader"></div> : tokenInfo.locked}</p>
                           </div>
                         </div>
                         <div className="solid"></div>
@@ -188,17 +201,17 @@ const TokenClaimHome = () => {
                           <div className="chart-info-section">
                             <img src="/images/token_claimed.svg" alt="Claimed Token" />
                             <p className='chart-label'>Claimed</p>
-                            <p className='chart-percentage claimed-percentage'>{tokenInfo.claimedPercentage}%</p>
+                            <p className='chart-percentage claimed-percentage'>{isLoading ? <div className="loader"></div> : `${tokenInfo.claimedPercentage}%`}</p>
                           </div>
                           <div className="chart-info-section">
                             <img src="/images/token_unlocked.svg" alt="Unlocked Token" />
                             <p className='chart-label'>Unlocked</p>
-                            <p className='chart-percentage unlocked-percentage'>{tokenInfo.unlockedPercentage}%</p>
+                            <p className='chart-percentage unlocked-percentage'>{isLoading ? <div className="loader"></div> : `${tokenInfo.unlockedPercentage}%`}</p>
                           </div>
                           <div className="chart-info-section">
                             <img src="/images/token_locked.svg" alt="Locked Token" />
                             <p className='chart-label'>Locked</p>
-                            <p className='chart-percentage locked-percentage'>{tokenInfo.lockedPercentage}%</p>
+                            <p className='chart-percentage locked-percentage'>{isLoading ? <div className="loader"></div> : `${tokenInfo.lockedPercentage}%`}</p>
                           </div>
                         </div>
                       </div>
@@ -221,7 +234,8 @@ const TokenClaimHome = () => {
       <NotificationSystem />
       <ConnectWalletModal />
       <TxHistoryModal />
-      <SuccessModal open={claimInfo.openSuccessModal} handleClose={closeSuccessModal} success={claimInfo.claimSuccess}/>
+      <TokenClaimResultModal open={claimInfo.openTokenClaimResultModal} handleClose={closeTokenClaimResultModal} success={claimInfo.claimSuccess}/>
+      <ErrorModal open={hasError} handleClose={closeErrorModal} />
 
       {renderTokenClaimHome()}
     </div>
