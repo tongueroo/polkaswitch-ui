@@ -119,8 +119,6 @@ window.TokenListManager = {
       return undefined;
     }
 
-    const tokenId = typeof tid === 'string' ? tid : tid?.name || "";
-
     let tokenList = window.TOKEN_LIST;
     if (optionalNetwork) {
       tokenList = this.getTokenListForNetwork(optionalNetwork);
@@ -128,15 +126,15 @@ window.TokenListManager = {
 
     const foundToken = _.find(tokenList, function (v) {
       return (
-        v.address.toLowerCase() === tokenId.toLowerCase() ||
-        v.symbol.toLowerCase() === tokenId.toLowerCase()
+        v.address.toLowerCase() === tid.toLowerCase() ||
+        v.symbol.toLowerCase() === tid.toLowerCase()
       );
     });
 
     if (!foundToken) {
       console.log(
         'WARN: TokenListManager: Token ID Not Found:',
-        tokenId,
+        tid,
         optionalNetwork?.name,
       );
     }
