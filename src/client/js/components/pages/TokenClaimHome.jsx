@@ -141,25 +141,25 @@ const TokenClaimHome = () => {
               <div className="page-inner">
                 <div className="card token-claim-card">
                   <div className="tokens-table-title-container">
-                    <div className='token-claim-container'>
-                      <div className='token-claim-detail-section token-claim-section'>
-                        <div className='token-claim-info'>
-                          <p className='token-claim-info-title'>Claim Your Swing</p>
-                          <p className='token-claim-info-token'>Token symbol: $SWING</p>
+                    <div className="token-claim-container">
+                      <div className="token-claim-detail-section token-claim-section">
+                        <div className="token-claim-info">
+                          <p className="token-claim-info-title">Claim Your Swing</p>
+                          <p className="token-claim-info-token">Token symbol: $SWING</p>
                         </div>
                         <div className="solid"></div>
-                        <div className='token-claim-detail'>
-                          <div className='token-claim-detail-text'>
-                            <p className='token-claim-detail-label'>Unlocked</p>
-                            <p className='token-claim-detail-amount'>{isLoading ? <div className="loader"></div> : tokenInfo.unlocked}</p>
+                        <div className="token-claim-detail">
+                          <div className="token-claim-detail-text">
+                            <p className="token-claim-detail-label">Unlocked</p>
+                            {isLoading ? <div className="loader"></div> : <p className="token-claim-detail-amount">{tokenInfo.unlocked}</p>}
                           </div>
-                          <div className='token-claim-detail-text'>
-                            <p className='token-claim-detail-label'>Claimed</p>
-                            <p className='token-claim-detail-amount'>{isLoading ? <div className="loader"></div> : tokenInfo.claimed}</p>
+                          <div className="token-claim-detail-text">
+                            <p className="token-claim-detail-label">Claimed</p>
+                            {isLoading ? <div className="loader"></div> : <p className="token-claim-detail-amount">{tokenInfo.claimed}</p>}
                           </div>
-                          <div className='token-claim-detail-text'>
-                            <p className='token-claim-detail-label'>Locked</p>
-                            <p className='token-claim-detail-amount'>{isLoading ? <div className="loader"></div> : tokenInfo.locked}</p>
+                          <div className="token-claim-detail-text">
+                            <p className="token-claim-detail-label">Locked</p>
+                            {isLoading ? <div className="loader"></div> : <p className="token-claim-detail-amount">{tokenInfo.locked}</p>}
                           </div>
                         </div>
                         <div className="solid"></div>
@@ -176,14 +176,14 @@ const TokenClaimHome = () => {
                             Claim Tokens
                           </button>
                         </div>
-                        <div className='token-claim-detail-contact'>
+                        <div className="token-claim-detail-contact">
                           <p>Having issues claiming your Swing Tokens?</p>
-                          <a className='token-claim-contact-us' href='https://discord.gg/jQ9Xhdbb'>Contact us on Discord</a>
+                          <a className="token-claim-contact-us" href="https://discord.gg/jQ9Xhdbb" target="_blank">Contact us on Discord</a>
                         </div>
                       </div>
 
-                      <div className='token-claim-chart-section token-claim-section'>
-                        <div className='token-claim-pie-chart'>
+                      <div className="token-claim-chart-section token-claim-section">
+                        <div className="token-claim-pie-chart">
                           <PieChart
                             data={[
                               { title: 'Claimed', value: tokenInfo.claimedPercentage , color: '#4064D0' },
@@ -196,18 +196,18 @@ const TokenClaimHome = () => {
                         <div className="token-claim-chart-info">
                           <div className="chart-info-section">
                             <img src="/images/token_claimed.svg" alt="Claimed Token" />
-                            <p className='chart-label'>Claimed</p>
-                            <p className='chart-percentage claimed-percentage'>{isLoading ? <div className="loader"></div> : `${tokenInfo.claimedPercentage}%`}</p>
+                            <p className="chart-label">Claimed</p>
+                            {isLoading ? <div className="loader"></div> : <p className="chart-percentage claimed-percentage">{tokenInfo.claimedPercentage}%</p>}
                           </div>
                           <div className="chart-info-section">
                             <img src="/images/token_unlocked.svg" alt="Unlocked Token" />
-                            <p className='chart-label'>Unlocked</p>
-                            <p className='chart-percentage unlocked-percentage'>{isLoading ? <div className="loader"></div> : `${tokenInfo.unlockedPercentage}%`}</p>
+                            <p className="chart-label">Unlocked</p>
+                            {isLoading ? <div className="loader"></div> : <p className="chart-percentage unlocked-percentage">{tokenInfo.unlockedPercentage}%</p>}
                           </div>
                           <div className="chart-info-section">
                             <img src="/images/token_locked.svg" alt="Locked Token" />
-                            <p className='chart-label'>Locked</p>
-                            <p className='chart-percentage locked-percentage'>{isLoading ? <div className="loader"></div> : `${tokenInfo.lockedPercentage}%`}</p>
+                            <p className="chart-label">Locked</p>
+                            {isLoading ? <div className="loader"></div> : <p className="chart-percentage locked-percentage">{tokenInfo.lockedPercentage}%</p>}
                           </div>
                         </div>
                       </div>

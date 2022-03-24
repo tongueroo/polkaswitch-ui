@@ -29,7 +29,7 @@ const TokenClaimResultModal = (props) => {
                   <img src="/images/failture_icon.svg" alt="Something went wrong" />
                   <p className="success-text">Something went wrong</p>
                   <p>Having issues claiming your Swing Tokens?</p>
-                  <a className='token-claim-contact-us' href='https://discord.gg/jQ9Xhdbb'>Contact us on Discord</a>
+                  <a className="token-claim-contact-us" href="https://discord.gg/jQ9Xhdbb" target="_blank">Contact us on Discord</a>
                 </div>}
             </div>
           </div>
