@@ -56,7 +56,7 @@ export default class SwapWidget extends Component {
       refresh: Date.now(),
     });
 
-    this.subscribers = [];/f
+    this.subscribers = [];
     this.onSwapTokens = this.onSwapTokens.bind(this);
     this.handleTokenChange = this.handleTokenChange.bind(this);
     this.handleSearchToggle = this.handleSearchToggle.bind(this);
