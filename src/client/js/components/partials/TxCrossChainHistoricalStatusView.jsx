@@ -77,14 +77,16 @@ const TxCrossChainHistoricalStatusView = ({ data: txData }) => {
           <div>
             {sendingChain?.name} &gt; {receivingChain?.name}
           </div>
-          <div>
-            <TxExplorerLink
-              chainId={receivingChain.chainId}
-              hash={txData.fulfilledTxHash}
-            >
-              View on Explorer <ion-icon name="open-outline" />
-            </TxExplorerLink>
-          </div>
+          {receivingChain && (
+            <div>
+              <TxExplorerLink
+                chainId={receivingChain.chainId}
+                hash={txData.fulfilledTxHash}
+              >
+                View on Explorer <ion-icon name="open-outline" />
+              </TxExplorerLink>
+            </div>
+          )}
           <div className="tx-meta">
             {dayjs(txData.preparedTimestamp * 1000).fromNow()}
             <span className="bridge-selected">
