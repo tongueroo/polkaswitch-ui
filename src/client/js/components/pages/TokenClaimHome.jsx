@@ -1,14 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ethers } from "ethers";
 import { PieChart } from 'react-minimal-pie-chart';
 import Navbar from '../partials/navbar/Navbar';
 import ConnectWalletModal from '../partials/ConnectWalletModal';
 import TokenClaimResultModal from '../partials/TokenClaimResultModal';
 import ErrorModal from '../partials/ErrorModal';
-import TxHistoryModal from '../partials/TxHistoryModal';
-import NotificationSystem from '../partials/NotificationSystem';
 import MobileMenu from '../partials/navbar/MobileMenu';
-import NetworkPrice from '../partials/wallet/NetworkPrice';
 import TokenClaimDisconnectedWallet from '../partials/wallet/TokenClaimDisconnectedWallet';
 import EmptyBalances from '../partials/wallet/EmptyBalances';
 import { balanceContext } from '../../context/balance';
@@ -231,9 +227,7 @@ const TokenClaimHome = () => {
     <div className="container">
       <Navbar />
       <MobileMenu />
-      <NotificationSystem />
       <ConnectWalletModal />
-      <TxHistoryModal />
       <TokenClaimResultModal open={claimInfo.openTokenClaimResultModal} handleClose={closeTokenClaimResultModal} success={claimInfo.claimSuccess}/>
       <ErrorModal open={hasError} handleClose={closeErrorModal} />
 
