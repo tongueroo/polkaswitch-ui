@@ -110,20 +110,21 @@ const TxCrossChainActiveStatusView = ({ data: txData, handleFinishAction }) => {
           <button
             className="button is-warning is-small"
             disabled={!isActionNeeded}
-            onClick={() => {
-              handleFinishAction(
+            onClick={async () => {
+              await handleFinishAction(
                 txData.transactionId,
                 txData.bridge,
                 txData.sending.amount,
                 txData.sendingChainId,
               );
-              setIsActionNeeded(false);
+
+              setTimeout(() => {
+                setIsActionNeeded(false);
+              }, 10000);
               txData.bridge === 'cbridge' && setInitiateRefund(true);
             }}
           >
-            {txData.status === 'ReceiverTransactionPrepared'
-              ? 'Finish'
-              : 'Refund'}
+            {txData.status === 'ReceiverTransactionPrepared' ? 'Finish' : 'Refund'}
           </button>
         </div>
       )}
