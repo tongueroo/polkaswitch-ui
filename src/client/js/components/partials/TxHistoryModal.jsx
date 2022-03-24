@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable wrap-iife */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import _ from 'underscore';
 import classnames from 'classnames';
 
@@ -21,6 +21,7 @@ import txBridgeManager, {
 } from '../../utils/txBridgeManager';
 
 const TxHistoryModal = () => {
+  const isMounted = useRef(false);
   const [refresh, setRefresh] = useState(Date.now());
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ const TxHistoryModal = () => {
   const [txAllBridgesActiveQueue, setTxAllBridgesActiveQueue] = useState([]);
 
   const handleUpdate = () => {
-    if (this.isMounted()) {
+    if (isMounted.current) {
       setRefresh(Date.now());
     }
   };
@@ -106,6 +107,11 @@ const TxHistoryModal = () => {
   const emptyQueue =
     (showSingleChain && _.keys(singleChainQueue).length < 1) ||
     (!showSingleChain && xActiveQueue.length < 1 && xHistQueue.length < 1);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => { isMounted.current = false }
+  }, []);
 
   useEffect(() => {
     const subUpdate = EventManager.listenFor('txQueueUpdated', handleUpdate);
