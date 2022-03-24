@@ -147,6 +147,10 @@ export default class SwapWidget extends Component {
   }
 
   updateBoxHeight() {
+    if (!this.box.current) {
+      return;
+    }
+
     this.box.current.style.height = '';
     _.defer(
       function () {
