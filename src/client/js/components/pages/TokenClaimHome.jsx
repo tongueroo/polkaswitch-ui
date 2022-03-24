@@ -178,7 +178,7 @@ const TokenClaimHome = () => {
                         </div>
                         <div className='token-claim-detail-contact'>
                           <p>Having issues claiming your Swing Tokens?</p>
-                          <p className='token-claim-contact-us'>Contact us on Telegram</p>
+                          <a className='token-claim-contact-us' href='https://discord.gg/jQ9Xhdbb'>Contact us on Discord</a>
                         </div>
                       </div>
 

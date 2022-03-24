@@ -19,7 +19,7 @@ const TokenClaimResultModal = (props) => {
               ? <div className="success-modal-body">
                   <img src="/images/success_icon.svg" alt="Success" />
                   <p className="success-text">Success</p>
-                  <p>Your $Swing tokens have been <br /> successfully added to your wallet.</p>
+                  <p>Your $SWING tokens have been <br /> successfully added to your wallet.</p>
 
                   <button onClick={props.handleClose} className="button is-success">
                     Done
@@ -29,7 +29,7 @@ const TokenClaimResultModal = (props) => {
                   <img src="/images/failture_icon.svg" alt="Something went wrong" />
                   <p className="success-text">Something went wrong</p>
                   <p>Having issues claiming your Swing Tokens?</p>
-                  <p className="token-claim-contact-us">Contact us on Telegram</p>
+                  <a className='token-claim-contact-us' href='https://discord.gg/jQ9Xhdbb'>Contact us on Discord</a>
                 </div>}
             </div>
           </div>
