@@ -350,7 +350,6 @@ window.WalletJS = {
   },
 
   _connectProviderMetamask: function () {
-    console.log("connect metamask")
     return new Promise(
       async function (resolve, reject) {
         let network = TokenListManager.getCurrentNetworkConfig();
