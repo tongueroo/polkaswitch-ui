@@ -6,22 +6,12 @@ import TokenClaimResultModal from '../partials/TokenClaimResultModal';
 import ErrorModal from '../partials/ErrorModal';
 import MobileMenu from '../partials/navbar/MobileMenu';
 import TokenClaimDisconnectedWallet from '../partials/wallet/TokenClaimDisconnectedWallet';
-import EmptyBalances from '../partials/wallet/EmptyBalances';
-import { balanceContext } from '../../context/balance';
 
 import TokenClaim from '../../utils/tokenClaim';
 import Wallet from '../../utils/wallet';
-import TokenListManager from '../../utils/tokenList';
 import EventManager from '../../utils/events';
 
 const TokenClaimHome = () => {
-  const {
-    currentNetwork,
-    balances,
-    loading,
-    setMyApplicationState,
-    loadBalances,
-  } = useContext(balanceContext);
   const [tokenInfo, setTokenInfo] = useState({
     claimed: 0,
     locked: 0,
@@ -40,15 +30,6 @@ const TokenClaimHome = () => {
   let subWalletChange;
 
   useEffect(() => {
-    setMyApplicationState((prevState) => ({
-      ...prevState,
-      currentNetwork: TokenListManager.getCurrentNetworkConfig(),
-      refresh: Date.now(),
-      balances: [],
-      loading: true,
-    }));
-
-    loadBalances();
     loadTokenInfo();
   }, []);
 
@@ -62,14 +43,6 @@ const TokenClaimHome = () => {
   }, []);
 
   const handleWalletChange = () => {
-    setMyApplicationState((prevState) => ({
-      ...prevState,
-      refresh: Date.now(),
-      balances: [],
-      loading: true,
-    }));
-
-    loadBalances();
     loadTokenInfo();
   };
 
@@ -131,9 +104,6 @@ const TokenClaimHome = () => {
 
   const renderTokenClaimHome = () => {
     if (Wallet.isConnectedToAnyNetwork()) {
-      if (!balances.length && currentNetwork === undefined) {
-        return <EmptyBalances />;
-      }
       return (
         <div className="columns is-centered">
           <div className='column token-claim-column'>
