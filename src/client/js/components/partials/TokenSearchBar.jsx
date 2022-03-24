@@ -109,6 +109,8 @@ export default class TokenSearchBar extends Component {
       topTokens = _.first(this.props.tokenList, 5);
     }
 
+    topTokens = _.compact(topTokens);
+
     this.fetchBalances(topTokens);
     return topTokens;
   }

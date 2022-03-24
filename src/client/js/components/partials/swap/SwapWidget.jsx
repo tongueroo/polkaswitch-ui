@@ -23,15 +23,20 @@ export default class SwapWidget extends Component {
     const network = TokenListManager.getCurrentNetworkConfig();
     const swapConfig = GlobalStateManager.getSwapConfig();
 
+    const useCustomConfigPair = (!!swapConfig?.to?.address &&
+      +swapConfig?.to?.chainId === +network.chainId &&
+      !!swapConfig?.from?.address &&
+      +swapConfig?.from?.chainId === +network.chainId);
+
     var mergeState = {};
     mergeState = _.extend(mergeState, {
       toChain: network,
       fromChain: network,
       to: TokenListManager.findTokenById(
-        swapConfig?.to?.address || network?.defaultPair.to,
+        useCustomConfigPair ? swapConfig?.to?.address : network?.defaultPair.to
       ),
       from: TokenListManager.findTokenById(
-        swapConfig?.from?.address || network?.defaultPair.from,
+        useCustomConfigPair ? swapConfig?.from?.address : network?.defaultPair.from
       ),
     });
 
@@ -142,20 +147,19 @@ export default class SwapWidget extends Component {
   }
 
   updateBoxHeight() {
+    if (!this.box.current) {
+      return;
+    }
+
     this.box.current.style.height = '';
     _.defer(
       function () {
-        console.log(
-          '## current offsetHeight ###',
-          this.box.current.offsetHeight,
-        );
         this.box.current.style.height = `${this.box.current.offsetHeight}px`;
       }.bind(this),
     );
   }
 
   triggerHeightResize(node, isAppearing) {
-    console.log('## offsetHeight ###', node.offsetHeight);
     this.box.current.style.height = `${node.offsetHeight}px`;
   }
 

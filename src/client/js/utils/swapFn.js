@@ -102,7 +102,7 @@ window.SwapFn = {
       case '56':
         return this.estimateGasWithBscAbi(contract, fromToken, toToken, amountBN, recipient, distribution);
       case '137':
-        return this.estimateGasWithPolygonAbi(contract, fromToken, toToken, amountBN, distribution);
+        return this.estimateGasWithPolygonAbi(contract, fromToken, toToken, amountBN, recipient, distribution);
       case '1285':
         return this.estimateGasWithMoonriverAbi(contract, fromToken, toToken, amountBN, recipient, distribution);
       case '100':
@@ -196,7 +196,7 @@ window.SwapFn = {
     const pathRoute = localStorage.getItem('route');
     const { chainId } = TokenListManager.getCurrentNetworkConfig();
 
-    if (['oneinch', 'paraswap'].includes(pathRoute)) {
+    if (['1inch', 'paraswap'].includes(pathRoute)) {
       return PathFinder.getApproveTx(tokenContractAddress, amountBN, pathRoute, chainId);
     }
 
@@ -227,7 +227,7 @@ window.SwapFn = {
     const pathRoute = localStorage.getItem('route');
     const { chainId } = TokenListManager.getCurrentNetworkConfig();
 
-    if (['oneinch', 'paraswap'].includes(pathRoute)) {
+    if (['1inch', 'paraswap'].includes(pathRoute)) {
       return PathFinder.getAllowance(userAddress, token.address, pathRoute, chainId)
         .then(({ allowance }) => BigNumber.from(allowance))
         .catch(() => new BN(0));
@@ -268,7 +268,7 @@ window.SwapFn = {
       }
     }
 
-    if (chainId === '1') {
+    if (PathFinder.SupportedChainIds.includes(`${chainId}`)) {
       const { destAmount, route, distribution } = (await PathFinder.getQuote(fromToken.symbol, toToken.symbol, amount, chainId)) || {};
       if (destAmount) {
         const returnAmount = new BN(destAmount).times(10 ** toToken.decimals).toFixed(0);
@@ -287,7 +287,7 @@ window.SwapFn = {
       );
 
       let expectReturnResult = null;
-      if (chainId === '56') {
+      if (chainId === '56' || chainId === '137') {
         expectReturnResult = await contract.getExpectedReturn(
           fromToken.address,
           toToken.address,
@@ -315,8 +315,7 @@ window.SwapFn = {
     console.log(`Calling SWAP() with ${fromToken.symbol} to ${toToken.symbol} of ${amountBN.toString()}`);
     const { chainId, contract, recipient } = this.getContract();
     const pathRoute = localStorage.getItem('route');
-
-    if (['oneinch', 'paraswap'].includes(pathRoute)) {
+    if (['1inch', 'paraswap'].includes(pathRoute)) {
       const originAmount = new BN(amountBN.toString()).dividedBy(10 ** fromToken.decimals);
       return PathFinder.getSwap(fromToken.symbol, toToken.symbol, originAmount, pathRoute, chainId);
     }
@@ -347,6 +346,7 @@ window.SwapFn = {
             amountBN,
             expectedAmount,
             minReturn,
+            recipient,
             distribution,
           );
         case '1285':
@@ -410,7 +410,7 @@ window.SwapFn = {
       .then((transaction) => this.returnSwapResult(transaction, fromToken, toToken, amountBN));
   },
 
-  swapWithPolygonAbi(contract, fromToken, toToken, amountBN, expectedAmount, minReturn, distribution) {
+  swapWithPolygonAbi(contract, fromToken, toToken, amountBN, expectedAmount, minReturn, recipient, distribution) {
     return contract
       .swap(
         fromToken.address,
@@ -418,8 +418,8 @@ window.SwapFn = {
         amountBN, // uint256 in wei
         Utils.parseUnits(expectedAmount, toToken.decimals), // expectedReturn
         Utils.parseUnits(minReturn, toToken.decimals), // minReturn
+        recipient,
         distribution,
-        0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
         this.getGasParams(fromToken, amountBN),
       )
       .then((transaction) => this.returnSwapResult(transaction, fromToken, toToken, amountBN));
@@ -570,7 +570,7 @@ window.SwapFn = {
       .then((gasUnitsEstimated) => this.returnEstimatedGasResult(gasUnitsEstimated));
   },
 
-  estimateGasWithPolygonAbi(contract, fromToken, toToken, amountBN, distribution) {
+  estimateGasWithPolygonAbi(contract, fromToken, toToken, amountBN, recipient, distribution) {
     return contract.estimateGas
       .swap(
         fromToken.address,
@@ -578,8 +578,8 @@ window.SwapFn = {
         amountBN, // uint256 in wei
         BigNumber.from(0), // expectedReturn
         BigNumber.from(0), // minReturn
+        recipient,
         distribution,
-        0, // the flag to enable to disable certain exchange(can ignore for testnet and always use 0)
         this.getGasParams(fromToken, amountBN),
       )
       .then((gasUnitsEstimated) => this.returnEstimatedGasResult(gasUnitsEstimated));

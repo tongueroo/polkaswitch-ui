@@ -155,6 +155,7 @@ export default class BridgeOrderSlide extends Component {
       Wallet.currentAddress(),
     );
 
+
     Promise.allSettled(allEstimatesFn)
       .then(
         function (_timeNow3, _cb3, results) {
@@ -170,7 +171,7 @@ export default class BridgeOrderSlide extends Component {
           const successfulEstimatesValid = successfulEstimates.filter(Boolean);
 
           const response = successfulEstimatesValid.find(
-            (item) => item?.bridge === 'connext' || item?.bridge === 'cbridge',
+            (item) => item?.bridge === 'connext' || item?.bridge === 'cbridge' || item?.bridge === 'hop',
           ).estimate;
 
           Wallet.getBalance(this.props.from)
@@ -268,8 +269,10 @@ export default class BridgeOrderSlide extends Component {
       this.props.to &&
       this.props.fromAmount &&
       this.props.fromAmount.length > 0 &&
+      +this.props.fromAmount > 0 &&
       this.props.toAmount &&
       this.props.toAmount.length > 0 &&
+      +this.props.toAmount > 0 &&
       !this.state.calculatingSwap &&
       !this.state.errored
     );

@@ -19,7 +19,7 @@ window.GlobalStateManager = {
     toChain: '',
   },
 
-  initialize: async function () {  
+  initialize: async function () {
     const network = TokenListManager.getCurrentNetworkConfig();
 
     // get swapConfig from localstorage
@@ -32,7 +32,7 @@ window.GlobalStateManager = {
     };
 
     const swap = swapConfig ? swapConfig : defaultSwapConfig;
-    
+
     this.updateSwapConfig(swap);
 
     // init bridgeConfig

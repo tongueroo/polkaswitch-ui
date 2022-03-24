@@ -150,7 +150,7 @@ export default class BridgeWidget extends Component {
       toChain: network.name,
       fromChain: network.name
     });
-    
+
     this.setState({
       loading: false,
       crossChainEnabled: true,
@@ -169,6 +169,10 @@ export default class BridgeWidget extends Component {
   }
 
   updateBoxHeight() {
+    if (!this.box.current) {
+      return;
+    }
+
     this.box.current.style.height = '';
     _.defer(() => {
       this.box.current.style.height = `${this.box.current.offsetHeight}px`;
