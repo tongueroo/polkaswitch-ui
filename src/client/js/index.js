@@ -7,6 +7,7 @@ import BN from 'bignumber.js';
 import { Integrations } from '@sentry/tracing';
 
 const IS_MAIN_NETWORK = window.IS_MAIN_NETWORK = process.env.IS_MAIN_NETWORK === 'true';
+window.IS_PRODUCTION = process.env.IS_PRODUCTION;
 
 if (process.env.IS_PRODUCTION) {
   Sentry.init({
