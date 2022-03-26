@@ -389,7 +389,7 @@ window.NxtpUtils = {
     }
 
     let callToAddr; let callData; let expectedReturn;
-    callToAddr = receivingChain.crossChainAggregatorAddress;
+    callToAddr = receivingChain.aggregatorAddress;
     const aggregator = new utils.Interface(window.ABIS.crossChainOneSplitAbi);
 
     // NXTP has a 0.05% flat fee
