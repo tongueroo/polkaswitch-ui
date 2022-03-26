@@ -1,217 +1,234 @@
 [
   {
-    "constant": false,
-    "inputs": [
+    "inputs":[
       {
-        "name": "fromToken",
-        "type": "address"
+        "internalType":"address",
+        "name":"_switchViewAddress",
+        "type":"address"
       },
       {
-        "name": "destToken",
-        "type": "address"
+        "internalType":"address",
+        "name":"_switchEventAddress",
+        "type":"address"
+      }
+    ],
+    "stateMutability":"nonpayable",
+    "type":"constructor"
+  },
+  {
+    "stateMutability":"payable",
+    "type":"fallback"
+  },
+  {
+    "inputs":[
+      {
+        "internalType":"uint256",
+        "name":"",
+        "type":"uint256"
+      }
+    ],
+    "name":"factories",
+    "outputs":[
+      {
+        "internalType":"contract IUniswapFactory",
+        "name":"",
+        "type":"address"
+      }
+    ],
+    "stateMutability":"view",
+    "type":"function"
+  },
+  {
+    "inputs":[
+      {
+        "internalType":"contract IERC20",
+        "name":"fromToken",
+        "type":"address"
       },
       {
-        "name": "amount",
-        "type": "uint256"
+        "internalType":"contract IERC20",
+        "name":"destToken",
+        "type":"address"
       },
       {
-        "name": "expectedReturn",
-        "type": "uint256"
+        "internalType":"uint256",
+        "name":"amount",
+        "type":"uint256"
       },
       {
-        "name": "minReturn",
-        "type": "uint256"
+        "internalType":"uint256",
+        "name":"parts",
+        "type":"uint256"
+      }
+    ],
+    "name":"getExpectedReturn",
+    "outputs":[
+      {
+        "internalType":"uint256",
+        "name":"returnAmount",
+        "type":"uint256"
       },
       {
-        "name": "recipient",
-        "type": "address"
+        "internalType":"uint256[]",
+        "name":"distribution",
+        "type":"uint256[]"
+      }
+    ],
+    "stateMutability":"view",
+    "type":"function"
+  },
+  {
+    "inputs":[
+
+    ],
+    "name":"owner",
+    "outputs":[
+      {
+        "internalType":"address",
+        "name":"",
+        "type":"address"
+      }
+    ],
+    "stateMutability":"view",
+    "type":"function"
+  },
+  {
+    "inputs":[
+
+    ],
+    "name":"reward",
+    "outputs":[
+      {
+        "internalType":"address",
+        "name":"",
+        "type":"address"
+      }
+    ],
+    "stateMutability":"view",
+    "type":"function"
+  },
+  {
+    "inputs":[
+      {
+        "internalType":"address",
+        "name":"newOwner",
+        "type":"address"
+      }
+    ],
+    "name":"setOwner",
+    "outputs":[
+
+    ],
+    "stateMutability":"nonpayable",
+    "type":"function"
+  },
+  {
+    "inputs":[
+      {
+        "internalType":"address",
+        "name":"newReward",
+        "type":"address"
+      }
+    ],
+    "name":"setReward",
+    "outputs":[
+
+    ],
+    "stateMutability":"nonpayable",
+    "type":"function"
+  },
+  {
+    "inputs":[
+      {
+        "internalType":"contract ISwitchEvent",
+        "name":"newSwitchEvent",
+        "type":"address"
+      }
+    ],
+    "name":"setSwitchEvent",
+    "outputs":[
+
+    ],
+    "stateMutability":"nonpayable",
+    "type":"function"
+  },
+  {
+    "inputs":[
+      {
+        "internalType":"contract IERC20",
+        "name":"fromToken",
+        "type":"address"
       },
       {
-        "name": "distribution",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "swap",
-    "outputs": [
-      {
-        "name": "returnAmount",
-        "type": "uint256"
-      }
-    ],
-    "payable": true,
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "setOwner",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "reward",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "switchView",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "switchEvent",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "newSwitchEvent",
-        "type": "address"
-      }
-    ],
-    "name": "setSwitchEvent",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "fromToken",
-        "type": "address"
+        "internalType":"contract IERC20",
+        "name":"destToken",
+        "type":"address"
       },
       {
-        "name": "destToken",
-        "type": "address"
+        "internalType":"uint256",
+        "name":"amount",
+        "type":"uint256"
       },
       {
-        "name": "amount",
-        "type": "uint256"
+        "internalType":"uint256",
+        "name":"expectedReturn",
+        "type":"uint256"
       },
       {
-        "name": "parts",
-        "type": "uint256"
-      }
-    ],
-    "name": "getExpectedReturn",
-    "outputs": [
-      {
-        "name": "returnAmount",
-        "type": "uint256"
+        "internalType":"uint256",
+        "name":"minReturn",
+        "type":"uint256"
       },
       {
-        "name": "distribution",
-        "type": "uint256[]"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "factories",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "newReward",
-        "type": "address"
-      }
-    ],
-    "name": "setReward",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "name": "_switchView",
-        "type": "address"
+        "internalType":"address",
+        "name":"recipient",
+        "type":"address"
       },
       {
-        "name": "_switchEvent",
-        "type": "address"
+        "internalType":"uint256[]",
+        "name":"distribution",
+        "type":"uint256[]"
       }
     ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    "name":"swap",
+    "outputs":[
+      {
+        "internalType":"uint256",
+        "name":"returnAmount",
+        "type":"uint256"
+      }
+    ],
+    "stateMutability":"payable",
+    "type":"function"
   },
   {
-    "payable": true,
-    "stateMutability": "payable",
-    "type": "fallback"
+    "inputs":[
+
+    ],
+    "name":"switchEvent",
+    "outputs":[
+      {
+        "internalType":"contract ISwitchEvent",
+        "name":"",
+        "type":"address"
+      }
+    ],
+    "stateMutability":"view",
+    "type":"function"
+  },
+  {
+    "inputs":[
+
+    ],
+    "name":"switchView",
+    "outputs":[
+      {
+        "internalType":"contract ISwitchView",
+        "name":"",
+        "type":"address"
+      }
+    ],
+    "stateMutability":"view",
+    "type":"function"
   }
 ]

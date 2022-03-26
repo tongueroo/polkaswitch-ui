@@ -127,7 +127,7 @@
   {
     "enabled": true,
     "name": "Polygon",
-    "aggregatorAddress": "0xB9187E6dA901eAEB4EDB45326FDb7673f4bC69ae",
+    "aggregatorAddress": "0x039086127630E9D2C363A8858e0C4A7A1C685Bd0",
     "crossChainAggregatorAddress": "0xB9187E6dA901eAEB4EDB45326FDb7673f4bC69ae",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png",
     "bridgeURI": "https://wallet.matic.network/",
