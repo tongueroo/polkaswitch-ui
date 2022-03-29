@@ -11,10 +11,12 @@ const outputDirectory = 'dist';
 module.exports = (env) => {
   console.log(env);
   console.log(`ENV: IS_MAIN_NETWORK: ${process.env.IS_MAIN_NETWORK}`);
+  console.log(`ENV: IS_CLAIM_DOMAIN: ${process.env.IS_CLAIM_DOMAIN}`);
   console.log(`ENV: ${process.env.HEROKU_APP_NAME}-${process.env.HEROKU_RELEASE_VERSION}`);
 
   const isProduction = !!env.production;
   const isMainNetwork = !!process.env.IS_MAIN_NETWORK;
+  const isClaimDomain = !!process.env.IS_CLAIM_DOMAIN;
 
   if (isProduction) {
     console.log('Using PRODUCTION config');
@@ -34,6 +36,7 @@ module.exports = (env) => {
     new webpack.EnvironmentPlugin({
       IS_PRODUCTION: !!isProduction,
       IS_MAIN_NETWORK: isMainNetwork,
+      IS_CLAIM_DOMAIN: isClaimDomain,
       SENTRY_JS_DSN: false,
       HEROKU_RELEASE_VERSION: false,
       HEROKU_APP_NAME: false

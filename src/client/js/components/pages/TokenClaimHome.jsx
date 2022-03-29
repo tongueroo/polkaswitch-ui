@@ -196,7 +196,6 @@ const TokenClaimHome = () => {
   return (
     <div className="container">
       <Navbar />
-      <MobileMenu />
       <ConnectWalletModal />
       <TokenClaimResultModal open={claimInfo.openTokenClaimResultModal} handleClose={closeTokenClaimResultModal} success={claimInfo.claimSuccess}/>
       <ErrorModal open={hasError} handleClose={closeErrorModal} />

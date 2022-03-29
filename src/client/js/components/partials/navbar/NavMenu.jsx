@@ -4,6 +4,8 @@ import _ from 'underscore';
 import TokenListManager from '../../../utils/tokenList';
 import Wallet from '../../../utils/wallet';
 
+const IS_CLAIM_DOMAIN = process.env.IS_CLAIM_DOMAIN === 'true';
+
 export default function NavMenu(props) {
   const CROSS_CHAIN_NETWORKS = _.filter(
     window.NETWORK_CONFIGS,
@@ -13,6 +15,13 @@ export default function NavMenu(props) {
   const handleClick = async (isSwap) => {
      await Wallet.changeNetworkForSwapOrBridge(isSwap);
   };
+
+  if(IS_CLAIM_DOMAIN) {
+    return (
+      <div className="nav-menu">
+      </div>
+    )
+  }
 
   return (
     <div className="nav-menu">
