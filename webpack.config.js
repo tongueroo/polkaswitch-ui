@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const SentryWebpackPlugin = require("@sentry/webpack-plugin");
+require('dotenv').config()
 
 const outputDirectory = 'dist';
 
@@ -16,7 +17,7 @@ module.exports = (env) => {
 
   const isProduction = !!env.production;
   const isMainNetwork = !!process.env.IS_MAIN_NETWORK;
-  const isClaimDomain = !!process.env.IS_CLAIM_DOMAIN;
+  const isClaimDomain = process.env.IS_CLAIM_DOMAIN === 'true';
 
   if (isProduction) {
     console.log('Using PRODUCTION config');

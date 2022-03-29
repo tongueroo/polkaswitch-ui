@@ -55,11 +55,6 @@ export default function NavMenu(props) {
       >
         Buy
       </a>
-      {!window.IS_PRODUCTION && !window.IS_MAIN_NETWORK && (
-        <NavLink exact className="nav-link" activeClassName="active" to="/claim">
-          Claim
-        </NavLink>
-      )}
     </div>
   );
 }

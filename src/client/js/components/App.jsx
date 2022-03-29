@@ -67,9 +67,6 @@ const App = () => {
                   <Route path="/bridge">
                     <BridgeHome />
                   </Route>
-                  <Route path="/claim">
-                    <TokenClaimHome />
-                  </Route>
                   <Route path="/stake">
                     <StakeHome />
                   </Route>
