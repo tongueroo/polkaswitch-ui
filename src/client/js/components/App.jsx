@@ -21,6 +21,10 @@ import useLoadBalances from './pages/useLoadBalance';
 
 require('../../css/index.scss');
 
+const IS_CLAIM_DOMAIN = process.env.IS_CLAIM_DOMAIN === 'true';
+
+console.log("process.env.IS_CLAIM_DOMAIN", process.env.IS_CLAIM_DOMAIN)
+
 const App = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -52,32 +56,41 @@ const App = () => {
       {myApplicationState && (
         <Router>
           <div className={classnames({ fullscreen: isFullScreen })}>
-            <Switch>
-              <Route exact path="/">
-                <Redirect to="/swap" />
-              </Route>
-              <Route path="/swap">
-                <SwapHome />
-              </Route>
-              <Route path="/bridge">
-                <BridgeHome />
-              </Route>
-              <Route path="/claim">
-                <TokenClaimHome />
-              </Route>
-              <Route path="/stake">
-                <StakeHome />
-              </Route>
-              <Route path="/wallet">
-                <WalletHome />
-              </Route>
-              <Route path="/status">
-                <StatusHome />
-              </Route>
-              <Route>
-                <Redirect to="/swap" />
-              </Route>
-            </Switch>
+            {!IS_CLAIM_DOMAIN 
+              ? <Switch>
+                  <Route exact path="/">
+                    <Redirect to="/swap" />
+                  </Route>
+                  <Route path="/swap">
+                    <SwapHome />
+                  </Route>
+                  <Route path="/bridge">
+                    <BridgeHome />
+                  </Route>
+                  <Route path="/stake">
+                    <StakeHome />
+                  </Route>
+                  <Route path="/wallet">
+                    <WalletHome />
+                  </Route>
+                  <Route path="/status">
+                    <StatusHome />
+                  </Route>
+                  <Route>
+                    <Redirect to="/swap" />
+                  </Route>
+                </Switch>
+              : <Switch>
+                  <Route exact path="/">
+                    <Redirect to="/claim" />
+                  </Route>
+                  <Route path="/claim">
+                      <TokenClaimHome />
+                    </Route>
+                  <Route>
+                    <Redirect to="/claim" />
+                  </Route>
+                </Switch>}
             <Footer />
           </div>
         </Router>
