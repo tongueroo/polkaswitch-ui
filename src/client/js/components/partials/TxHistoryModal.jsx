@@ -37,6 +37,7 @@ const TxHistoryModal = () => {
 
   const handleClose = (e) => {
     setOpen(false);
+    setRefresh(Date.now());
   };
 
   const handleFinishAction = (

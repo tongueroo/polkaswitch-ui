@@ -281,7 +281,7 @@ const handleFinishActionOfActiveTx = {
     },
   },
   connext: {
-    handleFinishAction: (txId) => Nxtp.transferStepTwo(txId),
+    handleFinishAction: async (txId) => await Nxtp.transferStepTwo(txId),
   },
 };
 
