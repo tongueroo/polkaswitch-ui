@@ -24,6 +24,7 @@ module.exports = {
         '\\.jsx?$': 'babel-jest',
         '\\.(css|less|sass|scss)$': '<rootDir>/jest/__mocks__/styleMock.js',
       },
+      testMatch: ['<rootDir>/src/client/**/*.test.[jt]s?(x)']
     }
   ],
   automock: false,
