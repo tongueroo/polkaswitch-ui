@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import Navbar from '../partials/navbar/Navbar';
 import ConnectWalletModal from '../partials/ConnectWalletModal';
 import TokenClaimResultModal from '../partials/TokenClaimResultModal';
 import ErrorModal from '../partials/ErrorModal';
-import MobileMenu from '../partials/navbar/MobileMenu';
 import TokenClaimDisconnectedWallet from '../partials/wallet/TokenClaimDisconnectedWallet';
 
 import TokenClaim from '../../utils/tokenClaim';
 import Wallet from '../../utils/wallet';
 import EventManager from '../../utils/events';
+import TokenListManager from '../../utils/tokenList';
 
 const TokenClaimHome = () => {
   const [tokenInfo, setTokenInfo] = useState({
@@ -73,7 +73,17 @@ const TokenClaimHome = () => {
   }
 
   const handleConnect = () => {
-    EventManager.emitEvent('promptWalletConnect', 1);
+    const currentNetwork = TokenListManager.getCurrentNetworkConfig();
+    const network = window.NETWORK_CONFIGS[1];
+    console.log("handleConnect", network, currentNetwork)
+
+    if(currentNetwork.name === network.name) {
+      EventManager.emitEvent('promptWalletConnect', 1);
+    }
+    else {
+      const connectStrategy = Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
+      TokenListManager.updateNetwork(network, connectStrategy);
+    }
   };
 
   const claimTokens = async () => {
