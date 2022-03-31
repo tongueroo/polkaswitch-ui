@@ -1,20 +1,31 @@
 module.exports = {
   verbose: true,
-  testURL: 'http://localhost/',
-  moduleNameMapper: {
-    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
-      '<rootDir>/__mocks__/fileMock.js',
-  },
-  transformIgnorePatterns: [
-    // '/node_modules/',
-    '/node_modules/(?!(lightweight-charts|fancy-canvas)/)',
-  ],
-  testEnvironment: 'jsdom',
-  automock: false,
   roots: ['src/'],
-  setupFilesAfterEnv: ['<rootDir>/jest/scripts/setupTests.js'],
-  transform: {
-    '\\.jsx?$': 'babel-jest',
-    '\\.(css|less|sass|scss)$': '<rootDir>/jest/__mocks__/styleMock.js',
-  },
+  projects: [
+    {
+      displayName: "backend",
+      testEnvironment: "node",
+      testMatch: ["<rootDir>/src/server/tests/**/*.test.js"],
+    },
+    {
+      displayName: "frontend",
+      testURL: 'http://localhost/',
+      testEnvironment: 'jsdom',
+      moduleNameMapper: {
+        '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+        '<rootDir>/__mocks__/fileMock.js',
+      },
+      transformIgnorePatterns: [
+        // '/node_modules/',
+        '/node_modules/(?!(lightweight-charts|fancy-canvas)/)',
+      ],
+      setupFilesAfterEnv: ['<rootDir>/jest/scripts/setupTests.js'],
+      transform: {
+        '\\.jsx?$': 'babel-jest',
+        '\\.(css|less|sass|scss)$': '<rootDir>/jest/__mocks__/styleMock.js',
+      },
+      testMatch: ['<rootDir>/src/client/**/*.test.[jt]s?(x)']
+    }
+  ],
+  automock: false,
 };

@@ -54,7 +54,7 @@ const App = () => {
       {myApplicationState && (
         <Router>
           <div className={classnames({ fullscreen: isFullScreen })}>
-            {!IS_CLAIM_DOMAIN 
+            {!IS_CLAIM_DOMAIN
               ? <Switch>
                   <Route exact path="/">
                     <Redirect to="/swap" />
@@ -74,6 +74,9 @@ const App = () => {
                   <Route path="/status">
                     <StatusHome />
                   </Route>
+                  <Route path="/claim">
+                    <TokenClaimHome />
+                  </Route>
                   <Route>
                     <Redirect to="/swap" />
                   </Route>
@@ -83,8 +86,8 @@ const App = () => {
                     <Redirect to="/claim" />
                   </Route>
                   <Route path="/claim">
-                      <TokenClaimHome />
-                    </Route>
+                    <TokenClaimHome />
+                  </Route>
                   <Route>
                     <Redirect to="/claim" />
                   </Route>
