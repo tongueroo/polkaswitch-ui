@@ -23,8 +23,6 @@ require('../../css/index.scss');
 
 const IS_CLAIM_DOMAIN = process.env.IS_CLAIM_DOMAIN === 'true';
 
-console.log("process.env.IS_CLAIM_DOMAIN", process.env.IS_CLAIM_DOMAIN)
-
 const App = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
 
