@@ -15,7 +15,7 @@ export default function TokenClaimDisconnectedWallet(props) {
                 </p>
 
                 <button onClick={props.onClick} className="button is-success connect-wallet-btn">
-                  Connect Wallet to claim tokens
+                  Connect Wallet to {props.network.name}
                 </button>
               </div>
             </div>
