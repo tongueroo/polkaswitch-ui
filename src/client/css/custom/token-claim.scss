@@ -1,3 +1,13 @@
+.theme-light {
+    --boder-line-color: #e7e7e7;
+    --primary-token-claim-text-color: #333333;
+}
+  
+.theme-dark {
+    --boder-line-color: #201923;
+    --primary-token-claim-text-color: #ffffff;
+}
+
 .token-claim-column {
     flex: none;
     width: 100%;
@@ -6,12 +16,16 @@
     .token-claim-card {
         background: var(--secondary-background) !important;
         border-radius: 16px;
+
+        .token-claim-na-container {
+            padding: 2.5rem 0.75rem;
+        }
     
         .token-claim-container {
             display: flex;
             flex-direction: row;
             padding: 20px;
-            color: var(--primary-text-color);
+            color: var(--primary-token-claim-text-color);
     
             @media screen and (max-width: 768px) {
                 flex-direction: column;
@@ -41,6 +55,7 @@
     
                     .token-claim-info-title {
                         font-size: 26px;
+                        font-weight: bold;
                     }
                 }
         
@@ -95,22 +110,22 @@
                 }
         
                 .solid {
-                    border-top: 1px solid #201923;
+                    border-top: 1px solid var(--boder-line-color);
                 }
             }
         
             .token-claim-chart-section {
                 display: flex;
                 flex-direction: column;
-                border-left: 1px solid #201923;
+                border-left: 1px solid var(--boder-line-color);
         
                 @media screen and (max-width: 768px) {
                     border-left: none;
-                    border-top: 1px solid #201923;
+                    border-top: 1px solid var(--boder-line-color);
                 }
         
                 .token-claim-pie-chart {
-                    background-color: #201923;
+                    background-color: var(--boder-line-color);
                     border-radius: 50%;
                     padding: 20px;
                 }
@@ -165,15 +180,17 @@
         }
     
         .data-na-container {
-            color: var(--primary-text-color);
+            color: var(--primary-token-claim-text-color);
             text-align: center;
     
             .token-clam-title {
                 font-size: 30px;
                 margin-top: 10px;
+                font-weight: bold;
             }
             .connect-wallet-btn {
                 margin-top: 20px;
+                font-weight: bold;
             }
         }
     }    
