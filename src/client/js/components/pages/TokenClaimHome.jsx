@@ -4,14 +4,19 @@ import Navbar from '../partials/navbar/Navbar';
 import ConnectWalletModal from '../partials/ConnectWalletModal';
 import TokenClaimResultModal from '../partials/TokenClaimResultModal';
 import ErrorModal from '../partials/ErrorModal';
-import MobileMenu from '../partials/navbar/MobileMenu';
 import TokenClaimDisconnectedWallet from '../partials/wallet/TokenClaimDisconnectedWallet';
+import { balanceContext } from '../../context/balance';
 
 import TokenClaim from '../../utils/tokenClaim';
 import Wallet from '../../utils/wallet';
 import EventManager from '../../utils/events';
+import TokenListManager from '../../utils/tokenList';
 
 const TokenClaimHome = () => {
+  const {
+    setMyApplicationState,
+  } = useContext(balanceContext);
+
   const [tokenInfo, setTokenInfo] = useState({
     claimed: 0,
     locked: 0,
@@ -27,14 +32,19 @@ const TokenClaimHome = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  let subWalletChange;
-
   useEffect(() => {
+    setMyApplicationState((prevState) => ({
+      ...prevState,
+      currentNetwork: TokenListManager.getCurrentNetworkConfig(),
+      refresh: Date.now(),
+      loading: true,
+    }));
+
     loadTokenInfo();
   }, []);
 
   useEffect(() => {
-    subWalletChange = EventManager.listenFor(
+    const subWalletChange = EventManager.listenFor(
       'walletUpdated',
       handleWalletChange,
     );
@@ -43,37 +53,53 @@ const TokenClaimHome = () => {
   }, []);
 
   const handleWalletChange = () => {
+    setMyApplicationState((prevState) => ({
+      ...prevState,
+      refresh: Date.now(),
+      loading: true,
+    }));
+
     loadTokenInfo();
   };
 
   const loadTokenInfo = async () => {
-    setIsLoading(true);
-    try {
-      const claimed = await TokenClaim.claimed();
-      const unlocked = await TokenClaim.unlocked();
-      const locked = await TokenClaim.locked();
-      const total = locked + unlocked + claimed;
-  
-      const claimedPercentage = total !== 0 ? claimed / total * 100 : 0;
-      const unlockedPercentage = total !== 0  ? unlocked / total  * 100 : 0;
-      const lockedPercentage = total !== 0 ? locked / total * 100 : 0;
-  
-      setTokenInfo({
-        claimed,
-        unlocked,
-        locked,
-        claimedPercentage,
-        unlockedPercentage,
-        lockedPercentage
-      })
-    } catch(err) {
-      setHasError(true);
+    if(Wallet.isConnectedToAnyNetwork() && TokenClaim.isConnectedToCorretNetwork()) {
+      setIsLoading(true);
+      try {
+        const claimed = await TokenClaim.claimed();
+        const unlocked = await TokenClaim.unlocked();
+        const locked = await TokenClaim.locked();
+        const total = locked + unlocked + claimed;
+    
+        const claimedPercentage = total !== 0 ? claimed / total * 100 : 0;
+        const unlockedPercentage = total !== 0  ? unlocked / total  * 100 : 0;
+        const lockedPercentage = total !== 0 ? locked / total * 100 : 0;
+    
+        setTokenInfo({
+          claimed,
+          unlocked,
+          locked,
+          claimedPercentage,
+          unlockedPercentage,
+          lockedPercentage
+        })
+      } catch(err) {
+        setHasError(true);
+      }
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }
 
   const handleConnect = () => {
-    EventManager.emitEvent('promptWalletConnect', 1);
+    if(Wallet.isConnectedToAnyNetwork()){
+      if(!TokenClaim.isConnectedToCorretNetwork()) {
+        const connectStrategy = Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
+        TokenListManager.updateNetwork(TokenClaim.network, connectStrategy);
+      }
+    }
+    else {
+      EventManager.emitEvent('promptWalletConnect', 1);
+    }
   };
 
   const claimTokens = async () => {
@@ -103,7 +129,7 @@ const TokenClaimHome = () => {
   }
 
   const renderTokenClaimHome = () => {
-    if (Wallet.isConnectedToAnyNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && TokenClaim.isConnectedToCorretNetwork()) {
       return (
         <div className="columns is-centered">
           <div className='column token-claim-column'>
@@ -190,7 +216,7 @@ const TokenClaimHome = () => {
         </div>
       );
     }
-    return <TokenClaimDisconnectedWallet onClick={handleConnect} />;
+    return <TokenClaimDisconnectedWallet onClick={handleConnect} network={TokenClaim.network} />;
   };
 
   return (

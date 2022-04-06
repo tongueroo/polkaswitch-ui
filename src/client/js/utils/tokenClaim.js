@@ -10,6 +10,7 @@ const Contract = ethers.Contract;
 window.TokenClaim = {
   abi: {},
   addressInfo: {},
+  network: {},
 
   initialize: async function () {
     // // initialize MetaMask if already connected
@@ -22,6 +23,9 @@ window.TokenClaim = {
     // } else if (false) {
     //   // TODO init WalletConnect
     // }
+    
+    // default network as ropsten
+    this.network = window.NETWORK_CONFIGS[1];
 
     this.initializeAddr();
   },
@@ -61,7 +65,7 @@ window.TokenClaim = {
   },
   // release vested tokens
   claimTokens: async function () {
-    if (this.isConnectedToAnyNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
       const contract = this.getContract();
 
       try {
@@ -77,7 +81,7 @@ window.TokenClaim = {
 
   // total unlocked amount
   unlocked: async function () {
-    if (this.isConnectedToAnyNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
       const contract = this.getContract();
       const address = Wallet._cachedCurrentAddress;
 
@@ -89,7 +93,7 @@ window.TokenClaim = {
   },
   // total locked amount
   locked: async function () {
-    if (this.isConnectedToAnyNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
       const contract = this.getContract();
       const address = Wallet._cachedCurrentAddress;
 
@@ -101,7 +105,7 @@ window.TokenClaim = {
   },
   // total claimed amount
   claimed: async function () {
-    if (this.isConnectedToAnyNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
       const contract = this.getContract();
       const address = Wallet._cachedCurrentAddress;
 
@@ -121,12 +125,16 @@ window.TokenClaim = {
       signer
     );
   },
-  isConnectedToAnyNetwork: function () {
-    return Wallet.isConnectedToAnyNetwork();
+  isConnectedToCorretNetwork: function () {
+    const currentNetwork = TokenListManager.getCurrentNetworkConfig();
+    return currentNetwork.chainId === this.network.chainId;
   },
   getProvider: function () {
     return Wallet.getProvider();
   },
+  getNetwork: function() {
+    return this.network;
+  }
 };
 
 export default window.TokenClaim;

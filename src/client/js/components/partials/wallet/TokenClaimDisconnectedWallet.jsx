@@ -7,7 +7,7 @@ export default function TokenClaimDisconnectedWallet(props) {
         <div className="page page-view-order">
           <div className="page-inner">
             <div className="card token-claim-card">
-              <div className="column data-na-container">
+              <div className="column data-na-container token-claim-na-container">
                 <img src="/images/logo_token_claim.svg" alt="Connect Wallet" />
                 <p className='token-clam-title'>Swing Token Claim</p>
                 <p className='token-clam-description'>
@@ -15,7 +15,7 @@ export default function TokenClaimDisconnectedWallet(props) {
                 </p>
 
                 <button onClick={props.onClick} className="button is-success connect-wallet-btn">
-                  Connect Wallet to claim tokens
+                  Connect Wallet to {props.network.name}
                 </button>
               </div>
             </div>

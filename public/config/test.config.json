@@ -42,6 +42,47 @@
   },
   {
     "enabled": true,
+    "name": "Ropsten",
+    "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
+    "bridgeURI": "https://wallet.matic.network/",
+    "tokenList": "/tokens/eth.list.json",
+    "chainId": "3",
+    "nodeProviders": [
+      "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
+    ],
+    "explorerBaseUrl": "https://ropsten.etherscan.io/tx/",
+    "gasApi": "https://ethgasstation.info/json/ethgasAPI.json",
+    "color": "#5C69B5",
+    "desiredParts": 3,
+    "abi": "oneSplitAbi",
+    "chain": {
+      "chainId": "0x3",
+      "chainName": "Ropsten"
+    },
+    "defaultPair": {
+      "to": "USDT",
+      "from": "ETH"
+    },
+    "topTokens": [
+      "ETH",
+      "USDT",
+      "USDC",
+      "DAI"
+    ],
+    "coingecko": {
+      "platform": "ethereum"
+    },
+    "singleChainSupported": false,
+    "crossChainSupported": false,
+    "supportedCrossChainTokens": [
+      "USDT",
+      "USDC",
+      "DAI"
+    ]
+  },
+  {
+    "enabled": true,
     "name": "Arbitrum",
     "aggregatorAddress": "0x689236A0C4A391FdD76dE5c6a759C7984166d166",
     "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/info/logo.png",
