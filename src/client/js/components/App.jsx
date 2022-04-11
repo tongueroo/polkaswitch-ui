@@ -74,6 +74,9 @@ const App = () => {
                   <Route path="/status">
                     <StatusHome />
                   </Route>
+                  <Route path="/claim">
+                    <TokenClaimHome />
+                  </Route>
                   <Route>
                     <Redirect to="/swap" />
                   </Route>

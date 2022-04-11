@@ -11,7 +11,6 @@ import TokenClaim from '../../utils/tokenClaim';
 import Wallet from '../../utils/wallet';
 import EventManager from '../../utils/events';
 import TokenListManager from '../../utils/tokenList';
-import tokenClaim from '../../utils/tokenClaim';
 
 const TokenClaimHome = () => {
   const {
@@ -32,8 +31,17 @@ const TokenClaimHome = () => {
   })
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [currentNetwork, setCurrentNetwork] = useState();
 
   useEffect(() => {
+    EventManager.listenFor('networkUpdated', handleNetworkChange);
+
+    setCurrentNetwork(TokenListManager.getCurrentNetworkConfig());
+
+    if(!Wallet.isConnectedToAnyNetwork() || !isConnectedToCorretNetwork()) {
+      TokenListManager.updateNetwork(TokenClaim.network, false)
+    }
+
     setMyApplicationState((prevState) => ({
       ...prevState,
       currentNetwork: TokenListManager.getCurrentNetworkConfig(),
@@ -41,7 +49,6 @@ const TokenClaimHome = () => {
       loading: true,
     }));
 
-    TokenListManager.updateNetwork(tokenClaim.network, false);
 
     loadTokenInfo();
   }, []);
@@ -65,8 +72,17 @@ const TokenClaimHome = () => {
     loadTokenInfo();
   };
 
+  const isConnectedToCorretNetwork = () => {
+    return currentNetwork && currentNetwork.chainId && currentNetwork.chainId === TokenClaim.network.chainId;
+  }
+
+  const handleNetworkChange = () => {
+    const network = TokenListManager.getCurrentNetworkConfig();
+    setCurrentNetwork(network);
+  }
+
   const loadTokenInfo = async () => {
-    if(Wallet.isConnectedToAnyNetwork() && TokenClaim.isConnectedToCorretNetwork()) {
+    if(Wallet.isConnectedToAnyNetwork() && isConnectedToCorretNetwork()) {
       setIsLoading(true);
       try {
         const claimed = await TokenClaim.claimed();
@@ -95,7 +111,7 @@ const TokenClaimHome = () => {
 
   const handleConnect = () => {
     if(Wallet.isConnectedToAnyNetwork()){
-      if(!TokenClaim.isConnectedToCorretNetwork()) {
+      if(!isConnectedToCorretNetwork()) {
         const connectStrategy = Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
         TokenListManager.updateNetwork(TokenClaim.network, connectStrategy);
       }
@@ -132,7 +148,7 @@ const TokenClaimHome = () => {
   }
 
   const renderTokenClaimHome = () => {
-    if (Wallet.isConnectedToAnyNetwork() && TokenClaim.isConnectedToCorretNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && isConnectedToCorretNetwork()) {
       return (
         <div className="columns is-centered">
           <div className='column token-claim-column'>
