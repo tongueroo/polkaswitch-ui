@@ -11,6 +11,7 @@ import TokenClaim from '../../utils/tokenClaim';
 import Wallet from '../../utils/wallet';
 import EventManager from '../../utils/events';
 import TokenListManager from '../../utils/tokenList';
+import tokenClaim from '../../utils/tokenClaim';
 
 const TokenClaimHome = () => {
   const {
@@ -39,6 +40,8 @@ const TokenClaimHome = () => {
       refresh: Date.now(),
       loading: true,
     }));
+
+    TokenListManager.updateNetwork(tokenClaim.network, false);
 
     loadTokenInfo();
   }, []);
