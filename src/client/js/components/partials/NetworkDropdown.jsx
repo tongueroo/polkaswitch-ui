@@ -30,7 +30,6 @@ export default class NetworkDropdown extends Component {
   }
 
   handleDropdownClick(network) {
-    console.log("handleDropdownClick", network)
     return function handleClick(e) {
       this.handleClose();
       this.props.handleDropdownClick(network);
