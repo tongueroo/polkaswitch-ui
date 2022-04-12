@@ -31,25 +31,20 @@ const TokenClaimHome = () => {
   })
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [currentNetwork, setCurrentNetwork] = useState();
+  const [currentNetwork, setCurrentNetwork] = useState(TokenListManager.getCurrentNetworkConfig());
 
   useEffect(() => {
-    EventManager.listenFor('networkUpdated', handleNetworkChange);
-
-    setCurrentNetwork(TokenListManager.getCurrentNetworkConfig());
-
-    if(!Wallet.isConnectedToAnyNetwork() || !isConnectedToCorretNetwork()) {
-      TokenListManager.updateNetwork(TokenClaim.network, false)
-    }
-
+    
     setMyApplicationState((prevState) => ({
       ...prevState,
       currentNetwork: TokenListManager.getCurrentNetworkConfig(),
       refresh: Date.now(),
       loading: true,
     }));
-
-
+    
+    TokenClaim.changeNetworkForTokenClaim();
+    EventManager.listenFor('networkUpdated', handleNetworkChange);
+    
     loadTokenInfo();
   }, []);
 

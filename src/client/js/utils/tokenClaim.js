@@ -125,6 +125,19 @@ window.TokenClaim = {
       signer
     );
   },
+  changeNetworkForTokenClaim: async function() {
+
+    const currNetwork = TokenListManager.getCurrentNetworkConfig();
+    const shouldChangeNetwork = currNetwork.chainId !== this.network.chainId;
+
+    if (shouldChangeNetwork) {
+      const connectStrategy =
+        Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
+      TokenListManager.updateNetwork(this.network, connectStrategy);
+    }
+
+    await TokenListManager.updateTokenList();
+  },
   isConnectedToCorretNetwork: function () {
     const currentNetwork = TokenListManager.getCurrentNetworkConfig();
     return currentNetwork.chainId === this.network.chainId;
