@@ -12,6 +12,8 @@ window.TokenClaim = {
   addressInfo: {},
   network: {},
 
+  REVERT_MESSAGE: "Vesting: no tokens are due",
+
   initialize: async function () {
     // // initialize MetaMask if already connected
     // if (window.ethereum) {
@@ -72,6 +74,9 @@ window.TokenClaim = {
         await contract.release();
         return Promise.resolve(1);
       } catch(err) {
+        if(JSON.stringify(err).includes(this.REVERT_MESSAGE)) {
+          return Promise.resolve(0);
+        }
         return Promise.resolve(-1);
       }
     } else {

@@ -122,12 +122,12 @@ const TokenClaimHome = () => {
 
       setClaimInfo({
         openTokenClaimResultModal: true,
-        claimSuccess: result === 1
+        claimSuccess: result
       });
     } catch (err) {
       setClaimInfo({
         openTokenClaimResultModal: true,
-        claimSuccess: false
+        claimSuccess: -1
       });
     }
   }
