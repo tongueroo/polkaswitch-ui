@@ -12,6 +12,8 @@ window.TokenClaim = {
   addressInfo: {},
   network: {},
 
+  REVERT_MESSAGE: "Vesting: no tokens are due",
+
   initialize: async function () {
     // // initialize MetaMask if already connected
     // if (window.ethereum) {
@@ -72,6 +74,9 @@ window.TokenClaim = {
         await contract.release();
         return Promise.resolve(1);
       } catch(err) {
+        if(JSON.stringify(err).includes(this.REVERT_MESSAGE)) {
+          return Promise.resolve(0);
+        }
         return Promise.resolve(-1);
       }
     } else {
@@ -124,6 +129,19 @@ window.TokenClaim = {
       this.abi,
       signer
     );
+  },
+  changeNetworkForTokenClaim: async function() {
+
+    const currNetwork = TokenListManager.getCurrentNetworkConfig();
+    const shouldChangeNetwork = currNetwork.chainId !== this.network.chainId;
+
+    if (shouldChangeNetwork) {
+      const connectStrategy =
+        Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
+      TokenListManager.updateNetwork(this.network, connectStrategy);
+    }
+
+    await TokenListManager.updateTokenList();
   },
   isConnectedToCorretNetwork: function () {
     const currentNetwork = TokenListManager.getCurrentNetworkConfig();
