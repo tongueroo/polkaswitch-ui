@@ -30,7 +30,7 @@ Sentry.init({
     new Tracing.Integrations.Express({ app }),
   ],
   release:
-    process.env.HEROKU_APP_NAME + '-' + process.env.HEROKU_RELEASE_VERSION,
+    process.env.APP_NAME + '-' + process.env.APP_VERSION,
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
