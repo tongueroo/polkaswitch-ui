@@ -107,6 +107,11 @@ app.get("/health", function(req, res) {
   res.status(200).send(data);
 });
 
+app.get("/version", function(req, res) {
+  const release = process.env.APP_NAME + "-" + process.env.APP_VERSION;
+  res.status(200).send(release);
+});
+
 if (process.env.HTTP_PASSWORD) {
   app.use(passport.initialize());
   app.use(passport.session());
