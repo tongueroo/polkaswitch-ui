@@ -7,7 +7,7 @@ import HopUtils from './hop';
 import CBridgeUtils from './cbridge';
 import Nxtp from './nxtp';
 import Storage from './storage';
-import { baseUrl } from './requests/utils';
+import { baseUrl, chainNameHandler } from './requests/utils';
 
 const BRIDGES = ['hop', 'cbridge', 'connext'];
 
@@ -43,8 +43,8 @@ export default {
   },
 
   async getQuotes(to, toChainToRequest, from, fromChainToRequest, fromAdress, fromAmountBN, NonEvmAddress) {
-    const toChainName = toChainToRequest.name === 'BNB Chain' ? 'bsc' : toChainToRequest.name.toLowerCase();
-    const fromChainName = fromChainToRequest.name === 'BNB Chain' ? 'bsc' : fromChainToRequest.name.toLowerCase();
+    const toChainName = chainNameHandler(toChainToRequest.name);
+    const fromChainName = chainNameHandler(fromChainToRequest.name);
 
     const getQuote = await fetchWithRetry(
       `${baseUrl}/v0/transfer/quote?tokenSymbol=${
@@ -61,6 +61,70 @@ export default {
     const { routes, fromToken, fromChain, toToken, toChain } = getQuote;
 
     return { routes, fromToken, fromChain, toToken, toChain };
+  },
+
+  async checkAllowance({ bridge, fromAddress, fromChain, from }) {
+    const { chainId, address, symbol, decimals } = from;
+
+    const getAllowance = await fetchWithRetry(
+      `${baseUrl}/v0/transfer/allowance?tokenSymbol=${symbol}&tokenAddress=${address}&bridge=${bridge}&fromChain=${fromChain}&fromChainId=${chainId}&fromAddress=${fromAddress}`,
+      {},
+      3,
+    );
+
+    const { allowance } = getAllowance;
+    let allowanceFormatted = window.ethers.utils.formatUnits(allowance, decimals);
+
+    return { allowanceFormatted };
+  },
+
+  async sendTransfer({ fromAddress, fromChain, from, to, toChain, route, fromAmount }) {
+    const { chainId: fromChainId, address: fromTokenAddress, symbol, decimals } = from;
+    const { chainId: toChainId } = to;
+
+    const toChainName = chainNameHandler(toChain);
+    const fromChainName = chainNameHandler(fromChain);
+
+    const fromAmountBN = window.ethers.utils.parseUnits(fromAmount, decimals);
+
+    const sendTransferResp = await fetchWithRetry(
+      `${baseUrl}/v0/transfer/send`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tokenSymbol: symbol,
+          tokenAmount: fromAmountBN.toString(),
+          fromChain: fromChainName,
+          fromChainId,
+          fromTokenAddress,
+          fromUserAddress: fromAddress,
+          toChain: toChainName,
+          toChainId,
+          route,
+        }),
+      },
+      3,
+    );
+  },
+
+  async approveToken({ bridge, fromAddress, to, toChain, fromChain, fromAmount, from }) {
+    const { chainId: fromChainId, address, symbol, decimals } = from;
+    const { chainId: toChainId } = to;
+
+    const toChainName = chainNameHandler(toChain);
+    const fromChainName = chainNameHandler(fromChain);
+
+    const fromAmountBN = window.ethers.utils.parseUnits(fromAmount, decimals);
+
+    const getApprove = await fetchWithRetry(
+      `${baseUrl}/v0/transfer/approve?tokenSymbol=${symbol}&tokenAddress=${address}&bridge=${bridge}&fromChain=${fromChainName}&fromChainId=${fromChainId}&toChainId=${toChainId}
+      &toChain=${toChainName}&fromAddress=${fromAddress}&tokenAmount=${fromAmountBN.toString()}`,
+      {},
+      3,
+    );
   },
 
   async buildNewAllEstimates({ to, toChain, from, fromChain, fromUserAddress, toUserAddress, fromAmountBN }) {
