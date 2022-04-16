@@ -49,7 +49,6 @@ export default class BridgeOrderSlide extends Component {
     ) {
       if (this.props.fromAmount) {
         this.fetchSwapEstimate(this.props.fromAmount);
-      } else {
         this.setState({
           showRoutes: false,
         });
@@ -144,19 +143,20 @@ export default class BridgeOrderSlide extends Component {
         // temp hard check nxtp or cbridge until integrate the whole process
         // after make available all the bridges use the values from the first index result to format
 
-        const tempPreSelectedBridge = successfullEstimatesNew.find(
-          (item) => item.bridge.route[0].bridge === 'nxtp' || item.bridge.route[0].bridge === 'celer',
+        const tempPreSelectedBridge = successfullEstimatesNew.filter(
+          (item) => item.bridge.route[0].bridge !== 'wormhole',
         );
 
         //delete tempPreSelectedBridge after integration
 
-        const { estimatedReturnAmountDeductedByFees } =
-          Wallet.returnEstimatedReturnAmountDeductedByFees(tempPreSelectedBridge);
+        const { estimatedReturnAmountDeductedByFees } = Wallet.returnEstimatedReturnAmountDeductedByFees(
+          tempPreSelectedBridge[0],
+        );
 
         this.props.onSwapEstimateComplete(
           origFromAmount,
           window.ethers.utils.formatUnits(
-            tempPreSelectedBridge.estimate?.returnAmount ?? constants.Zero,
+            tempPreSelectedBridge[0].estimate?.returnAmount ?? constants.Zero,
             this.props.to.decimals,
           ),
           false,
@@ -164,7 +164,7 @@ export default class BridgeOrderSlide extends Component {
         );
 
         this.props.onCrossChainEstimateComplete(
-          tempPreSelectedBridge.estimate?.id,
+          tempPreSelectedBridge[0].estimate?.id,
           estimatedReturnAmountDeductedByFees.toFixed(6),
         );
 

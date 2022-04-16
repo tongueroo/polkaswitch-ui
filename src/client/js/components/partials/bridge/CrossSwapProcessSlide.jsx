@@ -4,6 +4,7 @@ import BN from 'bignumber.js';
 import { NxtpSdkEvents } from '@connext/nxtp-sdk';
 import TokenIconBalanceGroupView from '../TokenIconBalanceGroupView';
 import TokenIconImg from '../TokenIconImg';
+import Wallet from '../../../utils/wallet';
 import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import TxBridgeManager from '../../../utils/txBridgeManager';
@@ -21,6 +22,7 @@ export default class CrossSwapProcessSlide extends Component {
     this.handleTransfer = this.handleTransfer.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.handleBack = this.handleBack.bind(this);
+    this.checkAllowance = this.checkAllowance.bind(this);
   }
 
   componentDidMount() {
@@ -115,41 +117,102 @@ export default class CrossSwapProcessSlide extends Component {
     }
   }
 
-  handleTransfer() {
+  async checkAllowance({ bridge = 'celer', fromAddress, fromChain, from, to, toChain }) {
+    const { allowanceFormatted } = await TxBridgeManager.checkAllowance({
+      bridge,
+      fromAddress,
+      fromChain,
+      from,
+    });
+
+    const approvedToken = await TxBridgeManager.approveToken({
+      bridge,
+      fromAddress,
+      to,
+      toChain,
+      fromChain,
+      fromAmount: this.props.fromAmount,
+      from,
+    });
+
+    return approvedToken;
+  }
+
+  async sendTransfer({ fromAddress, fromChain, from, to, toChain, route }) {
+    const resp = await TxBridgeManager.sendTransfer({
+      fromAddress,
+      to,
+      toChain,
+      fromChain,
+      fromAmount: this.props.fromAmount,
+      from,
+      route,
+    });
+
+    return resp;
+  }
+
+  async handleTransfer() {
+    const isNativeToken = this.props.from.symbol === this.props.fromChain.chain.nativeCurrency.symbol;
+    const selectedTx = TxBridgeManager.getTx(this.props.crossChainTransactionId);
+    const bridge = selectedTx?.bridge?.route[0].bridge || 'celer';
+    const route = selectedTx?.bridge?.route[0];
+
+    if (isNativeToken) {
+      // go straight to transfer
+    } else {
+      await this.checkAllowance({
+        bridge,
+        fromAddress: Wallet.currentAddress(),
+        fromChain: this.props.fromChain.name,
+        from: this.props.from,
+        toChain: this.props.toChain.name,
+        to: this.props.to,
+      });
+    }
+
     this.setState(
       {
         loading: true,
       },
-      () => {
-        TxBridgeManager.transferStepOne(this.props.crossChainTransactionId)
-          .then((data) => {
-            Metrics.track('bridge-started', {
-              toChain: this.props.toChain,
-              fromChain: this.props.fromChain,
-              from: this.props.from,
-              to: this.props.to,
-              fromAmont: this.props.fromAmount,
-            });
+      async () => {
+        const testTransfer = await this.sendTransfer({
+          route,
+          fromAddress: Wallet.currentAddress(),
+          fromChain: this.props.fromChain.name,
+          from: this.props.from,
+          toChain: this.props.toChain.name,
+          to: this.props.to,
+        });
 
-            if (TxBridgeManager.twoStepTransferRequired(this.props.crossChainTransactionId)) {
-              if (data.cbridge) {
-                this.cbridgePolling = window.setInterval(() => this.handleCbridgeEvent(data.transferId), 60000);
-              }
-              // do nothing.
-              // Waiting for events to indicate ready for Step2
-            } else {
-              this.completeProcess(data.transactionHash);
-            }
-          })
-          .catch((e) => {
-            console.error('#### swap failed from catch ####', e);
+        console.log('testTransfer', testTransfer);
 
-            this.props.handleTransactionComplete(false, undefined);
-
-            this.setState({
-              loading: false,
-            });
-          });
+        // TxBridgeManager.transferStepOne(this.props.crossChainTransactionId)
+        //   .then((data) => {
+        //     Metrics.track('bridge-started', {
+        //       toChain: this.props.toChain,
+        //       fromChain: this.props.fromChain,
+        //       from: this.props.from,
+        //       to: this.props.to,
+        //       fromAmont: this.props.fromAmount,
+        //     });
+        //     if (TxBridgeManager.twoStepTransferRequired(this.props.crossChainTransactionId)) {
+        //       if (data.cbridge) {
+        //         this.cbridgePolling = window.setInterval(() => this.handleCbridgeEvent(data.transferId), 60000);
+        //       }
+        //       // do nothing.
+        //       // Waiting for events to indicate ready for Step2
+        //     } else {
+        //       this.completeProcess(data.transactionHash);
+        //     }
+        //   })
+        //   .catch((e) => {
+        //     console.error('#### swap failed from catch ####', e);
+        //     this.props.handleTransactionComplete(false, undefined);
+        //     this.setState({
+        //       loading: false,
+        //     });
+        //   });
       },
     );
   }
