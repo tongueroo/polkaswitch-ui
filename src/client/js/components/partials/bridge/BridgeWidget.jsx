@@ -15,6 +15,7 @@ import Metrics from '../../../utils/metrics';
 import Wallet from '../../../utils/wallet';
 import EventManager from '../../../utils/events';
 import { approvalState } from '../../../constants';
+import TxBridgeManager from '../../../utils/txBridgeManager';
 
 export default class BridgeWidget extends Component {
   constructor(props) {
@@ -42,6 +43,7 @@ export default class BridgeWidget extends Component {
       swapDistribution: undefined,
       approveStatus: approvalState.UNKNOWN,
       searchTarget: '',
+      allowance: false,
       showSettings: false,
       showConfirm: false,
       showSearch: false,
@@ -72,8 +74,9 @@ export default class BridgeWidget extends Component {
       this.onCrossChainEstimateComplete.bind(this);
     this.onSwapEstimateComplete = this.onSwapEstimateComplete.bind(this);
     this.onApproveComplete = this.onApproveComplete.bind(this);
-
     this.handleCrossChainChange = this.handleCrossChainChange.bind(this);
+    this.handleFinishedAllowance = this.handleFinishedAllowance.bind(this);
+    this.checkAllowance = this.checkAllowance.bind(this);
   }
 
   componentDidMount() {
@@ -139,7 +142,7 @@ export default class BridgeWidget extends Component {
       to: defaultTo,
       from: defaultFrom,
       toChain: network.name,
-      fromChain: network.name
+      fromChain: network.name,
     });
 
     this.setState({
@@ -331,7 +334,35 @@ export default class BridgeWidget extends Component {
     });
   }
 
-  handleConfirm(e) {
+  async checkAllowance({ bridge = 'celer', fromAddress, fromChain, from, to, toChain }) {
+    this.setState({
+      allowance: false,
+    });
+
+    const { allowanceFormatted, allowance } = await TxBridgeManager.checkAllowance({
+      bridge,
+      fromAddress,
+      fromChain,
+      from,
+    });
+
+    const allowanceBN = BN(allowance);
+    const fromBN = BN(this.state.fromAmount, this.state.from.decimals);
+
+    console.log('fromBN bigger than allowance? ', allowanceBN.lte(fromBN));
+
+    if (allowanceBN.lte(fromBN)) {
+      this.setState({
+        allowance: true,
+      });
+
+      // set state to toggle approve token
+    }
+
+    return;
+  }
+
+  async handleConfirm(e) {
     Sentry.addBreadcrumb({
       message: 'Page: Review',
       data: {
@@ -346,6 +377,26 @@ export default class BridgeWidget extends Component {
     this.setState({
       showConfirm: true,
     });
+
+    const isNativeToken = this.state.from.symbol === this.state.fromChain.chain.nativeCurrency.symbol;
+    const selectedTx = TxBridgeManager.getTx(this.state.crossChainTransactionId);
+    const bridge = selectedTx?.bridge?.route[0].bridge || 'celer';
+
+    console.log('inside handleConfirm, checkAllowance');
+
+    if (isNativeToken) {
+      // go straight to transfer
+    } else {
+      await this.checkAllowance({
+        bridge,
+        fromAddress: Wallet.currentAddress(),
+        fromChain: this.state.fromChain.name,
+        fromAmount: this.state.fromAmount,
+        from: this.state.from,
+        toChain: this.state.toChain.name,
+        to: this.state.to,
+      });
+    }
   }
 
   handleResults(success, hash) {
@@ -425,6 +476,12 @@ export default class BridgeWidget extends Component {
     });
   }
 
+  handleFinishedAllowance() {
+    this.setState({
+      allowance: false,
+    });
+  }
+
   render() {
     const animTiming = 300;
     const isStack = !(
@@ -443,12 +500,7 @@ export default class BridgeWidget extends Component {
         >
           <div className="loader is-loading" />
         </div>
-        <CSSTransition
-          in={isStack}
-          timeout={animTiming}
-          onEntering={this.triggerHeightResize}
-          classNames="fade"
-        >
+        <CSSTransition in={isStack} timeout={animTiming} onEntering={this.triggerHeightResize} classNames="fade">
           <BridgeOrderSlide
             ref={this.orderPage}
             toChain={this.state.toChain}
@@ -509,6 +561,8 @@ export default class BridgeWidget extends Component {
             <CrossSwapProcessSlide
               to={this.state.to}
               from={this.state.from}
+              handleFinishedAllowance={this.handleFinishedAllowance}
+              isAllowanceToken={this.state.allowance}
               handleFinishedResult={this.handleFinishedResult}
               fromChain={this.state.fromChain}
               toChain={this.state.toChain}

@@ -6,4 +6,15 @@ const baseUrl = 'https://api.dev.swing.xyz';
 
 const chainNameHandler = (chain) => (chain === 'BNB Chain' ? 'bsc' : chain.toLowerCase());
 
-export { baseUrl, chainNameHandler };
+const STATUS_NAME = {
+  submitted: 'submitted',
+  pendingSource: 'pending source chain',
+  pendingDestination: 'pending destination chain',
+  completed: 'completed',
+  refundRequired: 'refund required',
+  refunded: 'refunded',
+  failedSourceChain: 'failed source chain',
+  failedDestinationChain: 'failed destination chain',
+};
+
+export { baseUrl, chainNameHandler, STATUS_NAME };

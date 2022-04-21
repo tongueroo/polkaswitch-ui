@@ -75,7 +75,8 @@ export default {
     const { allowance } = getAllowance;
     let allowanceFormatted = window.ethers.utils.formatUnits(allowance, decimals);
 
-    return { allowanceFormatted };
+
+    return { allowanceFormatted, allowance };
   },
 
   async sendTransfer({ fromAddress, fromChain, from, to, toChain, route, fromAmount }) {
@@ -103,11 +104,45 @@ export default {
           fromUserAddress: fromAddress,
           toChain: toChainName,
           toChainId,
-          route,
+          route: [route],
         }),
       },
       3,
     );
+
+    console.log('new', { sendTransferResp });
+
+    const {
+      tx: { from: fromNxtpTemp, to: toNxtpTemp, data },
+      tx,
+    } = sendTransferResp;
+
+    try {
+      const txHash = await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [{ data, to: toNxtpTemp, from: fromNxtpTemp }],
+      });
+      return { txHash, tx };
+    } catch (e) {
+      console.error('error to send transfer', e);
+    }
+  },
+
+  async getTransferStatus({ id, userAddress, toChain, fromChain, from, bridge, to }) {
+    const { chainId: fromChainId } = from;
+    const { chainId: toChainId } = to;
+
+    const toChainName = chainNameHandler(toChain);
+    const fromChainName = chainNameHandler(fromChain);
+
+    const getTransferStatusRequest = await fetchWithRetry(
+      `${baseUrl}/v0/transfer/status?userAddress=${userAddress}&txId=${id}&bridge=${bridge}&fromChain=${fromChainName}&fromChainId=${fromChainId}&toChainId=${toChainId}
+      &toChain=${toChainName}`,
+      {},
+      3,
+    );
+
+    return getTransferStatusRequest;
   },
 
   async approveToken({ bridge, fromAddress, to, toChain, fromChain, fromAmount, from }) {
@@ -125,6 +160,19 @@ export default {
       {},
       3,
     );
+
+    const { from: fromApprove, to: toApprove, data } = getApprove;
+
+    try {
+      const txHash = await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [{ data, to: toApprove, from: fromApprove }],
+      });
+
+      return txHash;
+    } catch (e) {
+      console.log('error', e);
+    }
   },
 
   async buildNewAllEstimates({ to, toChain, from, fromChain, fromUserAddress, toUserAddress, fromAmountBN }) {
