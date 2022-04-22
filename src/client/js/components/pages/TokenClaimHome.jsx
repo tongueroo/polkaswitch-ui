@@ -13,9 +13,7 @@ import EventManager from '../../utils/events';
 import TokenListManager from '../../utils/tokenList';
 
 const TokenClaimHome = () => {
-  const {
-    setMyApplicationState,
-  } = useContext(balanceContext);
+  const { setMyApplicationState } = useContext(balanceContext);
 
   const [tokenInfo, setTokenInfo] = useState({
     claimed: 0,
@@ -23,36 +21,32 @@ const TokenClaimHome = () => {
     unlocked: 0,
     claimedPercentage: 0,
     unlockedPercentage: 0,
-    lockedPercentage: 0
+    lockedPercentage: 0,
   });
   const [claimInfo, setClaimInfo] = useState({
     openTokenClaimResultModal: false,
-    claimSuccess: false
-  })
+    claimSuccess: false,
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [currentNetwork, setCurrentNetwork] = useState(TokenListManager.getCurrentNetworkConfig());
 
   useEffect(() => {
-    
     setMyApplicationState((prevState) => ({
       ...prevState,
       currentNetwork: TokenListManager.getCurrentNetworkConfig(),
       refresh: Date.now(),
       loading: true,
     }));
-    
+
     TokenClaim.changeNetworkForTokenClaim();
     EventManager.listenFor('networkUpdated', handleNetworkChange);
-    
+
     loadTokenInfo();
   }, []);
 
   useEffect(() => {
-    const subWalletChange = EventManager.listenFor(
-      'walletUpdated',
-      handleWalletChange,
-    );
+    const subWalletChange = EventManager.listenFor('walletUpdated', handleWalletChange);
 
     return () => subWalletChange.unsubscribe();
   }, []);
@@ -67,51 +61,46 @@ const TokenClaimHome = () => {
     loadTokenInfo();
   };
 
-  const isConnectedToCorretNetwork = () => {
-    return currentNetwork && currentNetwork.chainId && currentNetwork.chainId === TokenClaim.network.chainId;
-  }
-
   const handleNetworkChange = () => {
     const network = TokenListManager.getCurrentNetworkConfig();
     setCurrentNetwork(network);
-  }
+  };
 
   const loadTokenInfo = async () => {
-    if(Wallet.isConnectedToAnyNetwork() && isConnectedToCorretNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && TokenClaim.isConnectedToCorretNetwork()) {
       setIsLoading(true);
       try {
         const claimed = await TokenClaim.claimed();
         const unlocked = await TokenClaim.unlocked();
         const locked = await TokenClaim.locked();
         const total = locked + unlocked + claimed;
-    
-        const claimedPercentage = total !== 0 ? claimed / total * 100 : 0;
-        const unlockedPercentage = total !== 0  ? unlocked / total  * 100 : 0;
-        const lockedPercentage = total !== 0 ? locked / total * 100 : 0;
-    
+
+        const claimedPercentage = total !== 0 ? (claimed / total) * 100 : 0;
+        const unlockedPercentage = total !== 0 ? (unlocked / total) * 100 : 0;
+        const lockedPercentage = total !== 0 ? (locked / total) * 100 : 0;
+
         setTokenInfo({
           claimed,
           unlocked,
           locked,
           claimedPercentage,
           unlockedPercentage,
-          lockedPercentage
-        })
-      } catch(err) {
+          lockedPercentage,
+        });
+      } catch (err) {
         setHasError(true);
       }
       setIsLoading(false);
     }
-  }
+  };
 
   const handleConnect = () => {
-    if(Wallet.isConnectedToAnyNetwork()){
-      if(!isConnectedToCorretNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork()) {
+      if (!TokenClaim.isConnectedToCorretNetwork()) {
         const connectStrategy = Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
         TokenListManager.updateNetwork(TokenClaim.network, connectStrategy);
       }
-    }
-    else {
+    } else {
       EventManager.emitEvent('promptWalletConnect', 1);
     }
   };
@@ -122,31 +111,31 @@ const TokenClaimHome = () => {
 
       setClaimInfo({
         openTokenClaimResultModal: true,
-        claimSuccess: result
+        claimSuccess: result,
       });
     } catch (err) {
       setClaimInfo({
         openTokenClaimResultModal: true,
-        claimSuccess: -1
+        claimSuccess: -1,
       });
     }
-  }
-  
+  };
+
   const closeTokenClaimResultModal = () => {
     setClaimInfo({
-      openTokenClaimResultModal: false
+      openTokenClaimResultModal: false,
     });
-  }
+  };
 
   const closeErrorModal = () => {
     setHasError(false);
-  }
+  };
 
   const renderTokenClaimHome = () => {
-    if (Wallet.isConnectedToAnyNetwork() && isConnectedToCorretNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && TokenClaim.isConnectedToCorretNetwork()) {
       return (
         <div className="columns is-centered">
-          <div className='column token-claim-column'>
+          <div className="column token-claim-column">
             <div className="page page-view-order">
               <div className="page-inner">
                 <div className="card token-claim-card">
@@ -161,34 +150,41 @@ const TokenClaimHome = () => {
                         <div className="token-claim-detail">
                           <div className="token-claim-detail-text">
                             <p className="token-claim-detail-label">Unlocked</p>
-                            {isLoading ? <div className="loader"></div> : <p className="token-claim-detail-amount">{tokenInfo.unlocked}</p>}
+                            {isLoading ? (
+                              <div className="loader"></div>
+                            ) : (
+                              <p className="token-claim-detail-amount">{tokenInfo.unlocked}</p>
+                            )}
                           </div>
                           <div className="token-claim-detail-text">
                             <p className="token-claim-detail-label">Claimed</p>
-                            {isLoading ? <div className="loader"></div> : <p className="token-claim-detail-amount">{tokenInfo.claimed}</p>}
+                            {isLoading ? (
+                              <div className="loader"></div>
+                            ) : (
+                              <p className="token-claim-detail-amount">{tokenInfo.claimed}</p>
+                            )}
                           </div>
                           <div className="token-claim-detail-text">
                             <p className="token-claim-detail-label">Locked</p>
-                            {isLoading ? <div className="loader"></div> : <p className="token-claim-detail-amount">{tokenInfo.locked}</p>}
+                            {isLoading ? (
+                              <div className="loader"></div>
+                            ) : (
+                              <p className="token-claim-detail-amount">{tokenInfo.locked}</p>
+                            )}
                           </div>
                         </div>
                         <div className="solid"></div>
-                        <div className='token-claim-action-container'>
-                          <button
-                            className="button token-claim-btn outlined-btn"
-                          >
-                            View Contract
-                          </button>
-                          <button
-                            className="button is-success token-claim-btn"
-                            onClick={claimTokens}
-                          >
+                        <div className="token-claim-action-container">
+                          <button className="button token-claim-btn outlined-btn">View Contract</button>
+                          <button className="button is-success token-claim-btn" onClick={claimTokens}>
                             Claim Tokens
                           </button>
                         </div>
                         <div className="token-claim-detail-contact">
                           <p>Having issues claiming your Swing Tokens?</p>
-                          <a className="token-claim-contact-us" href="https://discord.gg/jQ9Xhdbb" target="_blank">Contact us on Discord</a>
+                          <a className="token-claim-contact-us" href="https://discord.gg/jQ9Xhdbb" target="_blank">
+                            Contact us on Discord
+                          </a>
                         </div>
                       </div>
 
@@ -196,7 +192,7 @@ const TokenClaimHome = () => {
                         <div className="token-claim-pie-chart">
                           <PieChart
                             data={[
-                              { title: 'Claimed', value: tokenInfo.claimedPercentage , color: '#4064D0' },
+                              { title: 'Claimed', value: tokenInfo.claimedPercentage, color: '#4064D0' },
                               { title: 'Unlocked', value: tokenInfo.unlockedPercentage, color: '#22BA79' },
                               { title: 'Locked', value: tokenInfo.lockedPercentage, color: '#64586A' },
                             ]}
@@ -207,17 +203,29 @@ const TokenClaimHome = () => {
                           <div className="chart-info-section">
                             <img src="/images/token_claimed.svg" alt="Claimed Token" />
                             <p className="chart-label">Claimed</p>
-                            {isLoading ? <div className="loader"></div> : <p className="chart-percentage claimed-percentage">{tokenInfo.claimedPercentage}%</p>}
+                            {isLoading ? (
+                              <div className="loader"></div>
+                            ) : (
+                              <p className="chart-percentage claimed-percentage">{tokenInfo.claimedPercentage}%</p>
+                            )}
                           </div>
                           <div className="chart-info-section">
                             <img src="/images/token_unlocked.svg" alt="Unlocked Token" />
                             <p className="chart-label">Unlocked</p>
-                            {isLoading ? <div className="loader"></div> : <p className="chart-percentage unlocked-percentage">{tokenInfo.unlockedPercentage}%</p>}
+                            {isLoading ? (
+                              <div className="loader"></div>
+                            ) : (
+                              <p className="chart-percentage unlocked-percentage">{tokenInfo.unlockedPercentage}%</p>
+                            )}
                           </div>
                           <div className="chart-info-section">
                             <img src="/images/token_locked.svg" alt="Locked Token" />
                             <p className="chart-label">Locked</p>
-                            {isLoading ? <div className="loader"></div> : <p className="chart-percentage locked-percentage">{tokenInfo.lockedPercentage}%</p>}
+                            {isLoading ? (
+                              <div className="loader"></div>
+                            ) : (
+                              <p className="chart-percentage locked-percentage">{tokenInfo.lockedPercentage}%</p>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -237,7 +245,11 @@ const TokenClaimHome = () => {
     <div className="container">
       <Navbar />
       <ConnectWalletModal />
-      <TokenClaimResultModal open={claimInfo.openTokenClaimResultModal} handleClose={closeTokenClaimResultModal} success={claimInfo.claimSuccess}/>
+      <TokenClaimResultModal
+        open={claimInfo.openTokenClaimResultModal}
+        handleClose={closeTokenClaimResultModal}
+        success={claimInfo.claimSuccess}
+      />
       <ErrorModal open={hasError} handleClose={closeErrorModal} />
 
       {renderTokenClaimHome()}
