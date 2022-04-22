@@ -12,7 +12,7 @@ window.TokenClaim = {
   addressInfo: {},
   network: {},
 
-  REVERT_MESSAGE: "Vesting: no tokens are due",
+  REVERT_MESSAGE: 'Vesting: no tokens are due',
 
   initialize: async function () {
     // // initialize MetaMask if already connected
@@ -25,37 +25,41 @@ window.TokenClaim = {
     // } else if (false) {
     //   // TODO init WalletConnect
     // }
-    
+
     // default network as ropsten
     this.network = window.NETWORK_CONFIGS[1];
 
     this.initializeAddr();
   },
   // init abi
-  initializeAbi: function() {
-    return Promise.all([
-      ['vestingAbi', '/abi/vesting/vestingABI.json']
-    ].map((data) => {
-      fetch(data[1]).then((resp) => {
-        return resp.json();
-      }).then((abiJson) => {
-        this.abi = abiJson;
-      });
-    }));
+  initializeAbi: function () {
+    return Promise.all(
+      [['vestingAbi', '/abi/vesting/vestingABI.json']].map((data) => {
+        fetch(data[1])
+          .then((resp) => {
+            return resp.json();
+          })
+          .then((abiJson) => {
+            this.abi = abiJson;
+          });
+      }),
+    );
   },
   // init contract address
-  initializeAddr: function() {
-    return Promise.all([
-      ['vestingAbi', '/abi/vesting/vestingAddress.json']
-    ].map((data) => {
-      fetch(data[1]).then((resp) => {
-        return resp.json();
-      }).then((json) => {
-        this.addressInfo = json;
-      });
-    }));
+  initializeAddr: function () {
+    return Promise.all(
+      [['vestingAbi', '/abi/vesting/vestingAddress.json']].map((data) => {
+        fetch(data[1])
+          .then((resp) => {
+            return resp.json();
+          })
+          .then((json) => {
+            this.addressInfo = json;
+          });
+      }),
+    );
   },
-  
+
   initListeners: function (provider) {
     provider.on(
       'TokensReleased',
@@ -73,8 +77,8 @@ window.TokenClaim = {
       try {
         await contract.release();
         return Promise.resolve(1);
-      } catch(err) {
-        if(JSON.stringify(err).includes(this.REVERT_MESSAGE)) {
+      } catch (err) {
+        if (JSON.stringify(err).includes(this.REVERT_MESSAGE)) {
           return Promise.resolve(0);
         }
         return Promise.resolve(-1);
@@ -120,39 +124,32 @@ window.TokenClaim = {
       return Promise.resolve(0);
     }
   },
-  getContract: function() {
+  getContract: function () {
     const signer = this.getProvider().getSigner();
     const contractAddress = this.addressInfo['vesting'][Wallet._cachedNetworkId]['address'];
 
-    return new Contract(
-      contractAddress,
-      this.abi,
-      signer
-    );
+    return new Contract(contractAddress, this.abi, signer);
   },
-  changeNetworkForTokenClaim: async function() {
-
+  changeNetworkForTokenClaim: async function () {
     const currNetwork = TokenListManager.getCurrentNetworkConfig();
     const shouldChangeNetwork = currNetwork.chainId !== this.network.chainId;
 
     if (shouldChangeNetwork) {
-      const connectStrategy =
-        Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
+      const connectStrategy = Wallet.isConnectedToAnyNetwork() && Wallet.getConnectionStrategy();
       TokenListManager.updateNetwork(this.network, connectStrategy);
     }
 
     await TokenListManager.updateTokenList();
   },
   isConnectedToCorretNetwork: function () {
-    const currentNetwork = TokenListManager.getCurrentNetworkConfig();
-    return currentNetwork.chainId === this.network.chainId;
+    return window.ethereum && window.ethereum.networkVersion && window.ethereum.networkVersion === this.network.chainId;
   },
   getProvider: function () {
     return Wallet.getProvider();
   },
-  getNetwork: function() {
+  getNetwork: function () {
     return this.network;
-  }
+  },
 };
 
 export default window.TokenClaim;
