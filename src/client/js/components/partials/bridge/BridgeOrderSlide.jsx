@@ -191,7 +191,6 @@ export default class BridgeOrderSlide extends Component {
   handleTokenAmountChange(e) {
     if (!isNaN(+e.target.value)) {
       let targetAmount = e.target.value;
-
       // if input is in exponential format, convert to decimal.
       // we do this because all of our logic does not like the exponential format
       // when converting to BigNumber.
@@ -360,7 +359,7 @@ export default class BridgeOrderSlide extends Component {
                 )}
                 <div
                   className="level is-mobile is-narrow my-0 token-dropdown"
-                  onClick={this.props.handleSearchToggle(target)}
+                  onClick={() => this.props.handleSearchToggle(target)}
                 >
                   <TokenIconBalanceGroupView
                     network={isFrom ? this.props.fromChain : this.props.toChain}

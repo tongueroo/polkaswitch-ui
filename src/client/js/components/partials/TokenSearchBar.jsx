@@ -260,9 +260,7 @@ export default class TokenSearchBar extends Component {
       // wait for animation to complete
       _.delay(
         function () {
-          this.setState({
-            value: '',
-          });
+          this.handleClose();
         }.bind(this),
         400,
       );
