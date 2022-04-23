@@ -75,7 +75,6 @@ export default {
     const { allowance } = getAllowance;
     let allowanceFormatted = window.ethers.utils.formatUnits(allowance, decimals);
 
-
     return { allowanceFormatted, allowance };
   },
 
@@ -122,7 +121,7 @@ export default {
         method: 'eth_sendTransaction',
         params: [{ data, to: toNxtpTemp, from: fromNxtpTemp }],
       });
-      return { txHash, tx };
+      return { txHash, tx, fromNxtpTemp, toNxtpTemp, data };
     } catch (e) {
       console.error('error to send transfer', e);
     }
@@ -173,6 +172,64 @@ export default {
     } catch (e) {
       console.log('error', e);
     }
+  },
+
+  async signTransaction({ bridge, txId, userAddress }) {
+    const signTransactionResp = await fetchWithRetry(
+      `${baseUrl}/v0/transfer/sign`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          bridge,
+          txId,
+          userAddress,
+          useNativeTokenToClaim,
+        }),
+      },
+      3,
+    );
+
+
+    const { hash, relayerFee, useNativeTokenToClaim } = signTransactionResp;
+
+
+    try {
+      const signature = await window.ethereum.request({
+        method: 'personal_sign',
+        params: [hash, userAddress],
+      });
+      return { hash, relayerFee, useNativeTokenToClaim, signature };
+    } catch (e) {
+      console.log('Signing error:', e);
+    }
+  },
+
+  async claimTokens({ fromChain, toChain, userAddress, txId, signature, bridge, relayerFee, useNativeTokenToClaim }) {
+    const claimTokensResp = await fetchWithRetry(
+      `${baseUrl}/v0/transfer/claim`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fromChain,
+          toChain,
+          userAddress,
+          txId,
+          signature,
+          relayerFee,
+          useNativeTokenToClaim,
+          bridge,
+        }),
+      },
+      3,
+    );
+
+    return { claimTokensResp };
   },
 
   async buildNewAllEstimates({ to, toChain, from, fromChain, fromUserAddress, toUserAddress, fromAmountBN }) {

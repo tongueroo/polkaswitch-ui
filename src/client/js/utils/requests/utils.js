@@ -2,7 +2,7 @@
 // nxtp swap https://crosschain-swap-api-web-swap.dev.swing.xyz/
 
 // Temporary baseUrl until merge /transfer and /claim
-const baseUrl = 'https://api.dev.swing.xyz';
+const baseUrl = 'https://swap.prod.swing.xyz';
 
 const chainNameHandler = (chain) => (chain === 'BNB Chain' ? 'bsc' : chain.toLowerCase());
 

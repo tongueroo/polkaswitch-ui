@@ -10,7 +10,7 @@ import Metrics from '../../../utils/metrics';
 import EventManager from '../../../utils/events';
 import TxBridgeManager from '../../../utils/txBridgeManager';
 import Nxtp from '../../../utils/nxtp';
-import { STATUS_NAME } from '../../../utils/requests/utils';
+import { STATUS_NAME, chainNameHandler } from '../../../utils/requests/utils';
 
 export default class CrossSwapProcessSlide extends Component {
   constructor(props) {
@@ -19,6 +19,8 @@ export default class CrossSwapProcessSlide extends Component {
       loading: false,
       finishable: false,
       complete: false,
+      txId: undefined,
+      signed: false,
     };
 
     this.handleTransfer = this.handleTransfer.bind(this);
@@ -112,13 +114,17 @@ export default class CrossSwapProcessSlide extends Component {
 
     // setup for nxtp
     if (STATUS_NAME.pendingDestination === getStatusTransfer?.status.toLowerCase() && getStatusTransfer.needClaim) {
-      this.setState(
-        {
-          finishable: true,
+      this.setState({
+        finishable: true,
+        txId: data,
+      });
+
+      if (!this.state.signed) {
+        this.setState({
+          signed: true,
           loading: false,
-        },
-        () => this.stopPollingStatus(),
-      );
+        });
+      }
     }
 
     if (!getStatusTransfer.needClaim) {
@@ -128,12 +134,10 @@ export default class CrossSwapProcessSlide extends Component {
         });
       }
       if (STATUS_NAME.completed === getStatusTransfer?.status.toLowerCase()) {
-        // missing hash to
-        this.completeProcess('data.transactionHash');
+        this.completeProcess(getStatusTransfer?.toChainTxHash);
+        this.stopPollingStatus();
       }
     }
-
-    //call stopPollingStatus
   }
 
   async stopPollingStatus() {
@@ -165,6 +169,7 @@ export default class CrossSwapProcessSlide extends Component {
     const bridge = selectedTx?.bridge?.route[0].bridge || 'celer';
 
     let txResp;
+    let account;
 
     this.setState(
       {
@@ -172,7 +177,7 @@ export default class CrossSwapProcessSlide extends Component {
       },
       async () => {
         try {
-          const { tx, txHash } = await TxBridgeManager.sendTransfer({
+          const { tx, txHash, fromNxtpTemp, toNxtpTemp, data } = await TxBridgeManager.sendTransfer({
             fromChain: this.props.fromChain.name,
             from: this.props.from,
             toChain: this.props.toChain.name,
@@ -193,70 +198,70 @@ export default class CrossSwapProcessSlide extends Component {
 
         const txIdToStatus = txId ? txId : data;
 
-        console.log('UPDATED RESULT!', { data, txId, txIdToStatus });
-
         this.statusPolling = window.setInterval(() => this.handlePollingEvent(txIdToStatus, bridge), 10000);
-
-        // TxBridgeManager.transferStepOne(this.props.crossChainTransactionId)
-        //   .then((data) => {
-        //     Metrics.track('bridge-started', {
-        //       toChain: this.props.toChain,
-        //       fromChain: this.props.fromChain,
-        //       from: this.props.from,
-        //       to: this.props.to,
-        //       fromAmont: this.props.fromAmount,
-        //     });
-        //     if (TxBridgeManager.twoStepTransferRequired(this.props.crossChainTransactionId)) {
-        //       if (data.cbridge) {
-        //         this.cbridgePolling = window.setInterval(() => this.handleCbridgeEvent(data.transferId), 60000);
-        //       }
-        //       // do nothing.
-        //       // Waiting for events to indicate ready for Step2
-        //     } else {
-        //       this.completeProcess(data.transactionHash);
-        //     }
-        //   })
-        //   .catch((e) => {
-        //     console.error('#### swap failed from catch ####', e);
-        //     this.props.handleTransactionComplete(false, undefined);
-        //     this.setState({
-        //       loading: false,
-        //     });
-        //   });
       },
     );
   }
 
-  handleFinish() {
+  handleFinish({ txId, account }) {
+    const selectedTx = TxBridgeManager.getTx(this.props.crossChainTransactionId);
+    const route = selectedTx?.bridge?.route[0];
+    const bridge = selectedTx?.bridge?.route[0].bridge || 'celer';
+
     this.setState(
       {
         loading: true,
+        finishable: true,
       },
-      () => {
-        TxBridgeManager.transferStepTwo(this.props.crossChainTransactionId)
-          .then(() => {
-            Metrics.track('bridge-complete', {
-              toChain: this.props.toChain,
-              fromChain: this.props.fromChain,
-              from: this.props.from,
-              to: this.props.to,
-              fromAmont: this.props.fromAmount,
-            });
+      async () => {
+        let signTransactionResp = {};
+        try {
+          const { hash, relayerFee, useNativeTokenToClaim, signature } = await TxBridgeManager.signTransaction({
+            txId,
+            userAddress: Wallet.currentAddress(),
+            bridge,
+            account,
+          });
 
+          console.log('signTransctionResp', { hash, relayerFee, useNativeTokenToClaim, signature });
+
+          signTransactionResp = { hash, relayerFee, useNativeTokenToClaim, signature };
+        } catch (e) {
+          this.props.handleTransactionComplete(false, undefined);
+          this.setState({
+            loading: false,
+          });
+        }
+
+        const toChainSlug = chainNameHandler(this.props.toChain.name);
+        const fromChainSlug = chainNameHandler(this.props.fromChain.name);
+
+        try {
+          const { relayerFee, useNativeTokenToClaim, signature } = signTransactionResp;
+
+          const { claimTokensResp } = await TxBridgeManager.claimTokens({
+            fromChain: { slug: fromChainSlug, chainId: this.props.fromChain.chainId },
+            toChain: { slug: toChainSlug, chainId: this.props.toChain.chainId },
+            userAddress: Wallet.currentAddress(),
+            txId,
+            relayerFee,
+            useNativeTokenToClaim,
+            signature: signature,
+            bridge,
+          });
+
+          if (!claimTokensResp) {
             this.setState({
-              loading: false,
+              signed: false,
             });
-          })
-          .catch((e) => {
-            console.error('#### swap failed from catch ####', e);
-
-            this.props.handleTransactionComplete(false, undefined);
-
-            this.setState({
-              loading: false,
-            });
-          })
-          .finally(() => this.props.handleFinishedResult(true));
+          }
+        } catch (e) {
+          console.log('error', e);
+          this.props.handleTransactionComplete(false, undefined);
+          this.setState({
+            loading: false,
+          });
+        }
       },
     );
   }
@@ -403,7 +408,7 @@ export default class CrossSwapProcessSlide extends Component {
       case this.props.isAllowanceToken:
         return await this.approveToken();
       case this.state.finishable:
-        return this.handleFinish();
+        return this.handleFinish({ txId: this.state.txId });
       case !this.state.finishable:
         return this.handleTransfer();
       default:
