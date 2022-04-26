@@ -402,7 +402,7 @@ const BridgeWidget = () => {
       </div>
       <CSSTransition in={isStack} timeout={animTiming} onEntering={triggerHeightResize} classNames="fade">
         <BridgeOrderSlide
-          ref={orderPage}
+          refs={orderPage}
           toChain={toChain}
           fromChain={fromChain}
           to={to}
