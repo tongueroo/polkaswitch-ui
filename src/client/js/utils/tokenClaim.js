@@ -129,8 +129,6 @@ window.TokenClaim = {
     const signer = this.getProvider().getSigner();
     const contractAddress = this.addressInfo['vesting'][Wallet._cachedNetworkId]['address'];
 
-    console.log("contractAddress", contractAddress)
-
     return new Contract(contractAddress, this.abi, signer);
   },
   changeNetworkForTokenClaim: async function () {
