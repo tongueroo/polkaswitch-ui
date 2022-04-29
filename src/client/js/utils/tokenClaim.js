@@ -71,7 +71,7 @@ window.TokenClaim = {
   },
   // release vested tokens
   claimTokens: async function () {
-    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork() && this.addressInfo) {
       const contract = this.getContract();
 
       try {
@@ -91,7 +91,7 @@ window.TokenClaim = {
 
   // total unlocked amount
   unlocked: async function () {
-    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork() && this.addressInfo) {
       const contract = this.getContract();
       const address = Wallet._cachedCurrentAddress;
 
@@ -103,7 +103,7 @@ window.TokenClaim = {
   },
   // total locked amount
   locked: async function () {
-    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork() && this.addressInfo) {
       const contract = this.getContract();
       const address = Wallet._cachedCurrentAddress;
 
@@ -115,7 +115,7 @@ window.TokenClaim = {
   },
   // total claimed amount
   claimed: async function () {
-    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork() && this.addressInfo) {
       const contract = this.getContract();
       const address = Wallet._cachedCurrentAddress;
 
@@ -128,6 +128,8 @@ window.TokenClaim = {
   getContract: function () {
     const signer = this.getProvider().getSigner();
     const contractAddress = this.addressInfo['vesting'][Wallet._cachedNetworkId]['address'];
+
+    console.log("contractAddress", contractAddress)
 
     return new Contract(contractAddress, this.abi, signer);
   },
