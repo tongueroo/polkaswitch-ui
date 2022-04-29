@@ -29,7 +29,7 @@ window.TokenClaim = {
     // default network as ropsten
     this.network = window.NETWORK_CONFIGS[1];
 
-    this.initializeAddr();
+    await this.initializeAddr();
   },
   // init abi
   initializeAbi: function () {
@@ -71,7 +71,7 @@ window.TokenClaim = {
   },
   // release vested tokens
   claimTokens: async function () {
-    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork() && this.addressInfo) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
       const contract = this.getContract();
 
       try {
@@ -91,7 +91,7 @@ window.TokenClaim = {
 
   // total unlocked amount
   unlocked: async function () {
-    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork() && this.addressInfo) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
       const contract = this.getContract();
       const address = Wallet._cachedCurrentAddress;
 
@@ -103,7 +103,7 @@ window.TokenClaim = {
   },
   // total locked amount
   locked: async function () {
-    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork() && this.addressInfo) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
       const contract = this.getContract();
       const address = Wallet._cachedCurrentAddress;
 
@@ -115,7 +115,7 @@ window.TokenClaim = {
   },
   // total claimed amount
   claimed: async function () {
-    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork() && this.addressInfo) {
+    if (Wallet.isConnectedToAnyNetwork() && this.isConnectedToCorretNetwork()) {
       const contract = this.getContract();
       const address = Wallet._cachedCurrentAddress;
 
