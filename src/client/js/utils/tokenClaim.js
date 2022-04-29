@@ -29,7 +29,7 @@ window.TokenClaim = {
     // default network as ropsten
     this.network = window.NETWORK_CONFIGS[1];
 
-    this.initializeAddr();
+    await this.initializeAddr();
   },
   // init abi
   initializeAbi: function () {
