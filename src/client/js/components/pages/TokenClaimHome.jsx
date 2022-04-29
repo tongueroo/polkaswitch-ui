@@ -88,6 +88,7 @@ const TokenClaimHome = () => {
           lockedPercentage,
         });
       } catch (err) {
+        console.error(err);
         setHasError(true);
       }
       setIsLoading(false);
@@ -114,6 +115,7 @@ const TokenClaimHome = () => {
         claimSuccess: result,
       });
     } catch (err) {
+      console.error(err);
       setClaimInfo({
         openTokenClaimResultModal: true,
         claimSuccess: -1,
