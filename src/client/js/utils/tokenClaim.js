@@ -78,6 +78,7 @@ window.TokenClaim = {
         await contract.release();
         return Promise.resolve(1);
       } catch (err) {
+        console.error(err);
         if (JSON.stringify(err).includes(this.REVERT_MESSAGE)) {
           return Promise.resolve(0);
         }
