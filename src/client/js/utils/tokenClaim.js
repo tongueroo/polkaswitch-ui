@@ -30,6 +30,8 @@ window.TokenClaim = {
     this.network = window.NETWORK_CONFIGS[1];
 
     await this.initializeAddr();
+
+    console.log("address", this.addressInfo)
   },
   // init abi
   initializeAbi: function () {
@@ -48,7 +50,7 @@ window.TokenClaim = {
   // init contract address
   initializeAddr: function () {
     return Promise.all(
-      [['vestingAbi', '/abi/vesting/vestingAddress.json']].map((data) => {
+      [['vestingAddress', '/abi/vesting/vestingAddress.json']].map((data) => {
         fetch(data[1])
           .then((resp) => {
             return resp.json();
