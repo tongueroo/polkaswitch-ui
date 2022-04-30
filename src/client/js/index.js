@@ -58,6 +58,7 @@ await Promise.all([
   Wallet.initializeAbis(),
   TokenListManager.initializeTokenLists(),
   TokenClaim.initializeAbi(),
+  TokenClaim.initializeAddr(),
 ]);
 
 await Storage.initialize();
