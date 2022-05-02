@@ -28,14 +28,12 @@ window.TokenClaim = {
 
     // default network as ropsten
     this.network = window.NETWORK_CONFIGS[1];
-
-    await this.initializeAddr();
   },
   // init abi
   initializeAbi: function () {
     return Promise.all(
       [['vestingAbi', '/abi/vesting/vestingABI.json']].map((data) => {
-        fetch(data[1])
+        return fetch(data[1])
           .then((resp) => {
             return resp.json();
           })
@@ -48,8 +46,8 @@ window.TokenClaim = {
   // init contract address
   initializeAddr: function () {
     return Promise.all(
-      [['vestingAbi', '/abi/vesting/vestingAddress.json']].map((data) => {
-        fetch(data[1])
+      [['vestingAddress', '/abi/vesting/vestingAddress.json']].map((data) => {
+        return fetch(data[1])
           .then((resp) => {
             return resp.json();
           })
