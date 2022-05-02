@@ -33,7 +33,7 @@ window.TokenClaim = {
   initializeAbi: function () {
     return Promise.all(
       [['vestingAbi', '/abi/vesting/vestingABI.json']].map((data) => {
-        fetch(data[1])
+        return fetch(data[1])
           .then((resp) => {
             return resp.json();
           })
@@ -47,7 +47,7 @@ window.TokenClaim = {
   initializeAddr: function () {
     return Promise.all(
       [['vestingAddress', '/abi/vesting/vestingAddress.json']].map((data) => {
-        fetch(data[1])
+        return fetch(data[1])
           .then((resp) => {
             return resp.json();
           })
