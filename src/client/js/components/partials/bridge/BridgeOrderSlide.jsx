@@ -78,7 +78,7 @@ const BridgeOrderSlide = (props) => {
         // after make available all the bridges use the values from the first index result to format
 
         const tempPreSelectedBridge = successfullEstimatesNew.filter(
-          (item) => item.bridge.route[0].bridge !== 'wormhole',
+          (item) => item.bridge.route[0].bridge === 'nxtp' || item.bridge.route[0].bridge === 'celer',
         );
 
         //delete tempPreSelectedBridge after integration
