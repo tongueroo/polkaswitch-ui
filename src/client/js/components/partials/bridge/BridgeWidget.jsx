@@ -261,10 +261,8 @@ const BridgeWidget = () => {
       from,
     });
 
-    const allowanceBN = BN(allowance);
-    const fromBN = BN(fromAmount, from.decimals);
 
-    if (allowanceBN.lte(fromBN)) {
+    if (parseInt(fromAmount) > parseInt(allowanceFormatted)) {
       setAllowance(true);
     }
 

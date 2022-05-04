@@ -200,6 +200,7 @@ const BridgeOrderSlide = (props) => {
     } else if (!SwapFn.isValidParseValue(props.from, props.fromAmount)) {
       const correctAmt = SwapFn.validateEthValue(props.from, props.fromAmount);
       fetchSwapEstimate(correctAmt, undefined, undefined, props.handleSubmit);
+      props.handleSubmit();
     } else if (validateOrderForm()) {
       EventManager.emitEvent('networkHoverableUpdated', { hoverable: false });
       props.handleSubmit();
