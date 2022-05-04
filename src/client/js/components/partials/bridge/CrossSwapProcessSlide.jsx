@@ -61,43 +61,6 @@ export default class CrossSwapProcessSlide extends Component {
     }
   }
 
-  //future deprecated
-  // async handleCbridgeEvent(transferId) {
-  //   if (this.state.complete) {
-  //     return;
-  //   }
-
-  //   TxBridgeManager.transferStepTwo(this.props.crossChainTransactionId, transferId).then((resp) => {
-  //     console.log('cBridge getTransferStatus polling', resp);
-
-  //     const { data } = resp;
-
-  //     if (data.src_block_tx_link) {
-  //       this.setState({
-  //         finishable: true,
-  //       });
-  //     }
-
-  //     if (data.dst_block_tx_link) {
-  //       const dstChainTxHash = data.dst_block_tx_link.split('tx/');
-
-  //       this.completeProcess(dstChainTxHash[1]);
-
-  //       this.stopPollingCbridge();
-  //     }
-
-  //     if (data.status === 6 || data.status === 2) {
-  //       this.stopPollingCbridge();
-
-  //       this.props.handleTransactionComplete(false, undefined);
-
-  //       this.setState({
-  //         loading: false,
-  //       });
-  //     }
-  //   });
-  // }
-
   async handlePollingEvent(data, bridge) {
     const getStatusTransfer = await TxBridgeManager.getTransferStatus({
       id: data,
@@ -169,7 +132,6 @@ export default class CrossSwapProcessSlide extends Component {
     const bridge = selectedTx?.bridge?.route[0].bridge || 'celer';
 
     let txResp;
-    let account;
 
     this.setState(
       {
@@ -392,7 +354,7 @@ export default class CrossSwapProcessSlide extends Component {
 
   buttonText() {
     switch (true) {
-      case this.props.isAllowanceToken:
+      case this.props.requiresTokenApproval:
         return 'Approve Token';
       case this.state.finishable:
         return 'Finish Transfer';
@@ -405,7 +367,7 @@ export default class CrossSwapProcessSlide extends Component {
 
   async onClickfn() {
     switch (true) {
-      case this.props.isAllowanceToken:
+      case this.props.requiresTokenApproval:
         return await this.approveToken();
       case this.state.finishable:
         return this.handleFinish({ txId: this.state.txId });

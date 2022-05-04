@@ -89,10 +89,10 @@ const BridgeWidget = () => {
     const fromNetworkChange = TokenListManager.findTokenById(network.supportedCrossChainTokens[0]);
 
     GlobalStateManager.updateBridgeConfig({
-      toChainNetworkChange,
-      fromChainNetworkChange,
-      toNetworkChange,
-      fromNetworkChange,
+      to: toChainNetworkChange,
+      from: fromChainNetworkChange,
+      toChain: toNetworkChange,
+      fromChain: fromNetworkChange,
     });
 
     const defaultTo = TokenListManager.findTokenById(network.defaultPair.to);
@@ -260,7 +260,6 @@ const BridgeWidget = () => {
       fromChain,
       from,
     });
-
 
     if (parseInt(fromAmount) > parseInt(allowanceFormatted)) {
       setAllowance(true);
@@ -439,7 +438,7 @@ const BridgeWidget = () => {
             to={to}
             from={from}
             handleFinishedAllowance={handleFinishedAllowance}
-            isAllowanceToken={allowance}
+            requiresTokenApproval={allowance}
             handleFinishedResult={handleFinishedResult}
             fromChain={fromChain}
             toChain={toChain}

@@ -7,7 +7,7 @@ import HopUtils from './hop';
 import CBridgeUtils from './cbridge';
 import Nxtp from './nxtp';
 import Storage from './storage';
-import { baseUrl, chainNameHandler } from './requests/utils';
+import { baseUrl, chainNameHandler, encodeQueryString } from './requests/utils';
 
 const BRIDGES = ['hop', 'cbridge', 'connext'];
 
@@ -46,17 +46,19 @@ export default {
     const toChainName = chainNameHandler(toChainToRequest.name);
     const fromChainName = chainNameHandler(fromChainToRequest.name);
 
-    const getQuote = await fetchWithRetry(
-      `${baseUrl}/v0/transfer/quote?tokenSymbol=${
-        from.symbol
-      }&tokenAmount=${fromAmountBN.toString()}&fromTokenAddress=${
-        from.address
-      }&fromChain=${fromChainName}&fromChainId=${from.chainId}&toChain=${toChainName}&toChainId=${
-        to.chainId
-      }&fromUserAddress=${fromAdress}&toTokenAddress=${to.address}`,
-      {},
-      3,
-    );
+    const queryStrings = encodeQueryString({
+      tokenSymbol: from.symbol,
+      tokenAmount: fromAmountBN.toString(),
+      fromTokenAddress: from.address,
+      fromChain: fromChainName,
+      fromChainId: from.chainId,
+      toChainId: to.chainId,
+      toTokenAddress: to.address,
+      fromUserAddress: fromAdress,
+      toChain: toChainName,
+    });
+
+    const getQuote = await fetchWithRetry(`${baseUrl}/v0/transfer/quote${queryStrings}`, {}, 3);
 
     const { routes, fromToken, fromChain, toToken, toChain } = getQuote;
 
@@ -66,11 +68,16 @@ export default {
   async checkAllowance({ bridge, fromAddress, fromChain, from }) {
     const { chainId, address, symbol, decimals } = from;
 
-    const getAllowance = await fetchWithRetry(
-      `${baseUrl}/v0/transfer/allowance?tokenSymbol=${symbol}&tokenAddress=${address}&bridge=${bridge}&fromChain=${fromChain}&fromChainId=${chainId}&fromAddress=${fromAddress}`,
-      {},
-      3,
-    );
+    const queryStrings = encodeQueryString({
+      tokenSymbol: symbol,
+      bridge,
+      tokenAddress: address,
+      fromChain,
+      fromChainId: chainId,
+      fromAddress,
+    });
+
+    const getAllowance = await fetchWithRetry(`${baseUrl}/v0/transfer/allowance${queryStrings}`, {}, 3);
 
     const { allowance } = getAllowance;
     let allowanceFormatted = window.ethers.utils.formatUnits(allowance, decimals);
@@ -134,12 +141,17 @@ export default {
     const toChainName = chainNameHandler(toChain);
     const fromChainName = chainNameHandler(fromChain);
 
-    const getTransferStatusRequest = await fetchWithRetry(
-      `${baseUrl}/v0/transfer/status?userAddress=${userAddress}&txId=${id}&bridge=${bridge}&fromChain=${fromChainName}&fromChainId=${fromChainId}&toChainId=${toChainId}
-      &toChain=${toChainName}`,
-      {},
-      3,
-    );
+    const queryStrings = encodeQueryString({
+      userAddress: userAddress,
+      txId: id,
+      bridge,
+      fromChain: fromChainName,
+      fromChainId: fromChainId,
+      toChainId,
+      toChain: toChainName,
+    });
+
+    const getTransferStatusRequest = await fetchWithRetry(`${baseUrl}/v0/transfer/status${queryStrings}`, {}, 3);
 
     return getTransferStatusRequest;
   },
@@ -153,12 +165,19 @@ export default {
 
     const fromAmountBN = window.ethers.utils.parseUnits(fromAmount, decimals);
 
-    const getApprove = await fetchWithRetry(
-      `${baseUrl}/v0/transfer/approve?tokenSymbol=${symbol}&tokenAddress=${address}&bridge=${bridge}&fromChain=${fromChainName}&fromChainId=${fromChainId}&toChainId=${toChainId}
-      &toChain=${toChainName}&fromAddress=${fromAddress}&tokenAmount=${fromAmountBN.toString()}`,
-      {},
-      3,
-    );
+    const queryStrings = encodeQueryString({
+      tokenSymbol: symbol,
+      tokenAddress: address,
+      bridge,
+      fromChain: fromChainName,
+      fromChainId,
+      toChainId,
+      toChain: toChainName,
+      fromAddress,
+      tokenAmount: fromAmountBN.toString(),
+    });
+
+    const getApprove = await fetchWithRetry(`${baseUrl}/v0/transfer/approve${queryStrings}`, {}, 3);
 
     const { from: fromApprove, to: toApprove, data } = getApprove;
 
@@ -192,9 +211,7 @@ export default {
       3,
     );
 
-
     const { hash, relayerFee, useNativeTokenToClaim } = signTransactionResp;
-
 
     try {
       const signature = await window.ethereum.request({
