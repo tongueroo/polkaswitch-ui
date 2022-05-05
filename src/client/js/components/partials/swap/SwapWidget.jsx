@@ -400,7 +400,7 @@ export default class SwapWidget extends Component {
                 : this.state.fromChain
             }
             showSearch={this.state.showSearch}
-            handleSearchToggle={this.handleSearchToggle}
+            handleSearchToggle={() => this.handleSearchToggle}
             handleTokenChange={this.handleTokenChange}
           />
         </CSSTransition>

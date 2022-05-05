@@ -8,8 +8,7 @@ export default class TokenSearchSlide extends Component {
   }
 
   render() {
-    const network =
-      this.props.network || TokenListManager.getCurrentNetworkConfig();
+    const network = this.props.network || TokenListManager.getCurrentNetworkConfig();
     const crossChainTokens = _.map(network?.supportedCrossChainTokens, (v) =>
       TokenListManager.findTokenById(v, network),
     );
@@ -29,7 +28,7 @@ export default class TokenSearchSlide extends Component {
             tokenList={tokenList}
             focused={this.props.showSearch}
             placeholder="Try DAI, USDT or Ethereum ... "
-            handleClose={this.props.handleSearchToggle('to')} // "to" is arbitary
+            handleClose={() => this.props.handleSearchToggle('to')} // "to" is arbitary
             handleTokenChange={this.props.handleTokenChange}
           />
         </div>
