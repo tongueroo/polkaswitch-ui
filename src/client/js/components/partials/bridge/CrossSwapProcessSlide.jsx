@@ -148,7 +148,7 @@ export default class CrossSwapProcessSlide extends Component {
             fromAddress: Wallet.currentAddress(),
             route,
           });
-          txResp = tx;
+          txResp = { ...tx, txHash };
         } catch (e) {
           this.props.handleTransactionComplete(false, undefined);
           this.setState({
@@ -156,9 +156,10 @@ export default class CrossSwapProcessSlide extends Component {
           });
         }
 
-        const { data, txId } = txResp;
 
-        const txIdToStatus = txId ? txId : data;
+        const { data, txId, txHash } = txResp;
+
+        const txIdToStatus = txId ? txId : txHash;
 
         this.statusPolling = window.setInterval(() => this.handlePollingEvent(txIdToStatus, bridge), 10000);
       },

@@ -88,7 +88,7 @@ export default function AvailableRoutes(props) {
         </div>
       </div>
       {routes
-        ?.filter((item) => item.bridgeType === 'celer' || item.bridgeType === 'nxtp')
+        ?.filter((item) => item.bridgeType === 'celer' || item.bridgeType === 'nxtp' || item.bridgeType === 'anyswap')
         .map((item, i) => (
           <RouteItemWrapper handleChange={props.handleChange} key={i} data={item} index={i} />
         ))}
