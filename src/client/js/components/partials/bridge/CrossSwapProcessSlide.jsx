@@ -131,15 +131,13 @@ export default class CrossSwapProcessSlide extends Component {
     const route = selectedTx?.bridge?.route[0];
     const bridge = selectedTx?.bridge?.route[0].bridge || 'celer';
 
-    let txResp;
-
     this.setState(
       {
         loading: true,
       },
       async () => {
         try {
-          const { tx, txHash, fromNxtpTemp, toNxtpTemp, data } = await TxBridgeManager.sendTransfer({
+          const { tx, txHash, fromNxtpTemp, toNxtpTemp } = await TxBridgeManager.sendTransfer({
             fromChain: this.props.fromChain.name,
             from: this.props.from,
             toChain: this.props.toChain.name,
@@ -148,9 +146,8 @@ export default class CrossSwapProcessSlide extends Component {
             fromAddress: Wallet.currentAddress(),
             route,
           });
-          txResp = tx;
 
-          const { data, txId } = txResp;
+          const { data, txId } = tx;
           const txIdToStatus = txId ? txId : data;
           this.statusPolling = window.setInterval(() => this.handlePollingEvent(txIdToStatus, bridge), 10000);
         } catch (e) {
