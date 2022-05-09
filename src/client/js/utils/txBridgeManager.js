@@ -48,6 +48,7 @@ export default {
 
     const queryStrings = encodeQueryString({
       tokenSymbol: from.symbol,
+      toTokenSymbol: to.symbol,
       tokenAmount: fromAmountBN.toString(),
       fromTokenAddress: from.address,
       fromChain: fromChainName,
@@ -103,6 +104,7 @@ export default {
         },
         body: JSON.stringify({
           tokenSymbol: symbol,
+          toTokenSymbol: to.symbol,
           tokenAmount: fromAmountBN.toString(),
           fromChain: fromChainName,
           fromChainId,
