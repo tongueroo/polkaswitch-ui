@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import _ from 'underscore';
 import classnames from 'classnames';
+import BN from 'bignumber.js';
 import * as Sentry from '@sentry/react';
 import BridgeOrderSlide from './BridgeOrderSlide';
 import TokenSearchSlide from '../TokenSearchSlide';
@@ -42,7 +43,7 @@ const BridgeWidget = () => {
   const [approveStatus, setApproveStatus] = useState(approvalState.UNKNOWN);
   const [searchTarget, setSearchTarget] = useState('');
   const [transactionSuccess, setTransactionSuccess] = useState('');
-  const [allowance, setAllowance] = useState(false);
+  const [requiresApproval, setRequiresApproval] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -252,7 +253,7 @@ const BridgeWidget = () => {
   };
 
   const checkAllowance = async ({ bridge = 'celer', fromAddress, fromChain, from, to, toChain }) => {
-    setAllowance(false);
+    setRequiresApproval(false);
 
     const { allowanceFormatted, allowance } = await TxBridgeManager.checkAllowance({
       bridge,
@@ -261,8 +262,8 @@ const BridgeWidget = () => {
       from,
     });
 
-    if (parseInt(fromAmount) > parseInt(allowanceFormatted)) {
-      setAllowance(true);
+    if (BN(fromAmount).gt(BN(allowanceFormatted))) {
+      setRequiresApproval(true);
     }
 
     return;
@@ -278,9 +279,6 @@ const BridgeWidget = () => {
         toAmount,
       },
     });
-
-    Metrics.track('bridge-review-step', { closing: showConfirm });
-    setShowConfirm(true);
 
     const isNativeToken = from.symbol === fromChain.chain.nativeCurrency.symbol;
     const selectedTx = TxBridgeManager.getTx(crossChainTransactionId);
@@ -299,6 +297,9 @@ const BridgeWidget = () => {
         to,
       });
     }
+
+    Metrics.track('bridge-review-step', { closing: showConfirm });
+    setShowConfirm(true);
   };
 
   const handleResults = (success, hash) => {
@@ -382,7 +383,7 @@ const BridgeWidget = () => {
   };
 
   const handleFinishedAllowance = () => {
-    setAllowance(false);
+    setRequiresApproval(false);
   };
 
   const animTiming = 300;
@@ -437,7 +438,7 @@ const BridgeWidget = () => {
             to={to}
             from={from}
             handleFinishedAllowance={handleFinishedAllowance}
-            requiresTokenApproval={allowance}
+            requiresTokenApproval={requiresApproval}
             handleFinishedResult={handleFinishedResult}
             fromChain={fromChain}
             toChain={toChain}

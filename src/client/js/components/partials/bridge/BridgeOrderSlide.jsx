@@ -19,6 +19,7 @@ const BridgeOrderSlide = (props) => {
   const [calculatingSwap, setCalculatingSwap] = useState(false);
   const [callDebounce, setCallDebounce] = useState(false);
   const [errored, setErrored] = useState(false);
+  const [nextStepLoading, setNextStepLoading] = useState(false);
   const [showRoutes, setShowRoutes] = useState(false);
   const [availableRoutes, setAvailableRoutes] = useState([]);
   const [selectedRouteId, setSelectedRouteId] = useState(false);
@@ -112,7 +113,7 @@ const BridgeOrderSlide = (props) => {
       });
   };
 
-  const fetchSwapEstimate = (origFromAmount, timeNow, attempt, cb) => {
+  const fetchSwapEstimate = (origFromAmount, timeNow, attempt) => {
     let fromAmount = origFromAmount;
 
     if (!attempt) {
@@ -194,17 +195,21 @@ const BridgeOrderSlide = (props) => {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    setNextStepLoading(true);
+
     if (!Wallet.isConnected()) {
       EventManager.emitEvent('promptWalletConnect', 1);
     } else if (!SwapFn.isValidParseValue(props.from, props.fromAmount)) {
       const correctAmt = SwapFn.validateEthValue(props.from, props.fromAmount);
-      fetchSwapEstimate(correctAmt, undefined, undefined, props.handleSubmit);
-      props.handleSubmit();
+      fetchSwapEstimate(correctAmt, undefined, undefined);
+      await props.handleSubmit();
     } else if (validateOrderForm()) {
       EventManager.emitEvent('networkHoverableUpdated', { hoverable: false });
-      props.handleSubmit();
+      await props.handleSubmit();
     }
+
+    setNextStepLoading(false);
   };
 
   const handleTokenSwap = (e) => {
@@ -403,8 +408,10 @@ const BridgeOrderSlide = (props) => {
 
         <div className="bridge-order-btn-wrapper">
           <button
-            disabled={Wallet.isConnected() && !validateOrderForm()}
-            className="button is-primary bridge-order-btn"
+            disabled={(Wallet.isConnected() && !validateOrderForm()) || nextStepLoading}
+            className={classnames("button is-primary bridge-order-btn", {
+              'is-loading': nextStepLoading,
+            })}
             onClick={handleSubmit}
           >
             {Wallet.isConnected() ? 'Review Bridge Order' : 'Connect Wallet'}
