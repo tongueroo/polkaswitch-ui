@@ -55,6 +55,13 @@ export default class CrossSwapProcessSlide extends Component {
     this.props.handleTransactionComplete(true, hash);
   }
 
+  handleTransactionFailure() {
+    this.props.handleTransactionComplete(false, undefined);
+    this.setState({
+      loading: false,
+    });
+  }
+
   handleBack(e) {
     if (!this.state.loading) {
       this.props.handleBackOnConfirm();
@@ -74,6 +81,12 @@ export default class CrossSwapProcessSlide extends Component {
     });
 
     console.log('handlePollingEvent', getStatusTransfer);
+
+    if (!getStatusTransfer) {
+      this.stopPollingStatus();
+      this.handleTransactionFailure();
+      return;
+    }
 
     // setup for nxtp
     if (STATUS_NAME.pendingDestination === getStatusTransfer?.status.toLowerCase() && getStatusTransfer.needClaim) {
@@ -151,10 +164,8 @@ export default class CrossSwapProcessSlide extends Component {
           const txIdToStatus = txId ? txId : data;
           this.statusPolling = window.setInterval(() => this.handlePollingEvent(txIdToStatus, bridge), 10000);
         } catch (e) {
-          this.props.handleTransactionComplete(false, undefined);
-          this.setState({
-            loading: false,
-          });
+          console.error(e);
+          this.handleTransactionFailure();
         }
       },
     );
@@ -184,10 +195,7 @@ export default class CrossSwapProcessSlide extends Component {
 
           signTransactionResp = { hash, relayerFee, useNativeTokenToClaim, signature };
         } catch (e) {
-          this.props.handleTransactionComplete(false, undefined);
-          this.setState({
-            loading: false,
-          });
+          this.handleTransactionFailure();
         }
 
         const toChainSlug = chainNameHandler(this.props.toChain.name);
@@ -214,10 +222,7 @@ export default class CrossSwapProcessSlide extends Component {
           }
         } catch (e) {
           console.log('error', e);
-          this.props.handleTransactionComplete(false, undefined);
-          this.setState({
-            loading: false,
-          });
+          this.handleTransactionFailure();
         }
       },
     );
