@@ -421,7 +421,6 @@ const BridgeWidget = () => {
       </CSSTransition>
       <CSSTransition in={showSearch} timeout={animTiming} onEntering={triggerHeightResize} classNames="slidein">
         <TokenSearchSlide
-          isCrossChain
           isFrom={searchTarget === 'from'}
           network={searchTarget === 'to' ? toChain : fromChain}
           showSearch={showSearch}
