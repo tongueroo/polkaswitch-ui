@@ -161,7 +161,7 @@ export default class CrossSwapProcessSlide extends Component {
           });
 
           const { data, txId } = tx;
-          const txIdToStatus = txId ? txId : data;
+          const txIdToStatus = txId ? txId : txHash;
           this.statusPolling = window.setInterval(() => this.handlePollingEvent(txIdToStatus, bridge), 10000);
         } catch (e) {
           console.error(e);
