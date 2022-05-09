@@ -149,18 +149,16 @@ export default class CrossSwapProcessSlide extends Component {
             route,
           });
           txResp = tx;
+
+          const { data, txId } = txResp;
+          const txIdToStatus = txId ? txId : data;
+          this.statusPolling = window.setInterval(() => this.handlePollingEvent(txIdToStatus, bridge), 10000);
         } catch (e) {
           this.props.handleTransactionComplete(false, undefined);
           this.setState({
             loading: false,
           });
         }
-
-        const { data, txId } = txResp;
-
-        const txIdToStatus = txId ? txId : data;
-
-        this.statusPolling = window.setInterval(() => this.handlePollingEvent(txIdToStatus, bridge), 10000);
       },
     );
   }
