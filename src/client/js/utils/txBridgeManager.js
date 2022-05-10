@@ -126,6 +126,7 @@ export default {
     } = sendTransferResp;
 
     try {
+      // TODO should use ethersJS and utils/Wallet.js
       const txHash = await window.ethereum.request({
         method: 'eth_sendTransaction',
         params: [{ data, to: toNxtpTemp, from: fromNxtpTemp }],
@@ -190,6 +191,7 @@ export default {
     const { from: fromApprove, to: toApprove, data } = getApprove;
 
     try {
+      // TODO should use ethersJS and utils/Wallet.js
       const txHash = await window.ethereum.request({
         method: 'eth_sendTransaction',
         params: [{ data, to: toApprove, from: fromApprove }],
@@ -222,6 +224,7 @@ export default {
     const { hash, relayerFee, useNativeTokenToClaim } = signTransactionResp;
 
     try {
+      // TODO should use ethersJS and utils/Wallet.js
       const signature = await window.ethereum.request({
         method: 'personal_sign',
         params: [hash, userAddress],
