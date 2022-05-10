@@ -83,8 +83,7 @@ export default class CrossSwapProcessSlide extends Component {
     console.log('handlePollingEvent', getStatusTransfer);
 
     if (!getStatusTransfer) {
-      this.stopPollingStatus();
-      this.handleTransactionFailure();
+      // keep polling for now, sometimes NXTP takes a moment for the TXID to appear
       return;
     }
 
