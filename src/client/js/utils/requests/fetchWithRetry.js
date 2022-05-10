@@ -4,7 +4,7 @@ const fetchWithRetry = (url, options = {}, retries) =>
       if (res.ok) {
         return res.json();
       }
-      if (retries > 0) {
+      if (res.status >= 500 && retries > 0) {
         return fetchWithRetry(url, options, retries - 1);
       }
       throw new Error(res.status);
