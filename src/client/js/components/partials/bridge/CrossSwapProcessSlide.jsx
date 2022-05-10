@@ -30,10 +30,6 @@ export default class CrossSwapProcessSlide extends Component {
     this.onClickfn = this.onClickfn.bind(this);
   }
 
-  async componentDidMount() {
-    this.subNxtpUpdated = EventManager.listenFor('nxtpEventUpdated', this.handleNxtpEvent.bind(this));
-  }
-
   componentDidUpdate(prevProps) {
     if (prevProps.crossChainTransactionId !== this.props.crossChainTransactionId) {
       this.setState({
@@ -45,7 +41,6 @@ export default class CrossSwapProcessSlide extends Component {
   }
 
   componentWillUnmount() {
-    this.subNxtpUpdated.unsubscribe();
   }
 
   completeProcess(hash) {
@@ -117,25 +112,6 @@ export default class CrossSwapProcessSlide extends Component {
 
   async stopPollingStatus() {
     window.clearInterval(this.statusPolling);
-  }
-
-  handleNxtpEvent(status) {
-    if (this.state.complete) {
-      return;
-    }
-
-    if (status !== NxtpSdkEvents.ReceiverTransactionPrepared && status !== NxtpSdkEvents.ReceiverTransactionFulfilled) {
-      return;
-    }
-
-    if (this.state.finishable && Nxtp.isActiveTxFinished(this.props.crossChainTransactionId)) {
-      this.completeProcess(Nxtp.getHistoricalTx(this.props.crossChainTransactionId).fulfilledTxHash);
-    } else if (!this.state.finishable && Nxtp.isActiveTxFinishable(this.props.crossChainTransactionId)) {
-      this.setState({
-        loading: false,
-        finishable: true,
-      });
-    }
   }
 
   async handleTransfer() {

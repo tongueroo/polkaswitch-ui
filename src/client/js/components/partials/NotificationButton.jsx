@@ -27,10 +27,8 @@ const NotificationButton = () => {
   useEffect(() => {
     let subUpdates = EventManager.listenFor('walletUpdated', handleUpdate);
     let subTxUpdates = EventManager.listenFor('txQueueUpdated', handleUpdate);
-    let nxtpTxEvents = EventManager.listenFor('nxtpEventUpdated', handleUpdate);
 
     return () => {
-      nxtpTxEvents.unsubscribe();
       subTxUpdates.unsubscribe();
       subUpdates.unsubscribe();
     };
