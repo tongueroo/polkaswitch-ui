@@ -383,7 +383,9 @@ const BridgeWidget = () => {
   };
 
   const handleFinishedAllowance = () => {
-    setRequiresApproval(false);
+    setTimeout(() => {
+      setRequiresApproval(false);
+    }, 12000);
   };
 
   const animTiming = 300;

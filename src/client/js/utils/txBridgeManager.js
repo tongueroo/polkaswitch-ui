@@ -156,7 +156,9 @@ export default {
     // this function gets polled, we don't need to fetchWithRetry
     const getTransferStatusRequest = await fetch(`${baseUrl}/v0/transfer/status${queryStrings}`, {});
 
-    return getTransferStatusRequest;
+    let response = await getTransferStatusRequest.json();
+
+    return response;
   },
 
   async approveToken({ bridge, fromAddress, to, toChain, fromChain, fromAmount, from }) {

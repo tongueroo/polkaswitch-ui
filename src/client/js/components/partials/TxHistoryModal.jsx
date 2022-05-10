@@ -117,8 +117,6 @@ const TxHistoryModal = () => {
   useEffect(() => {
     const subUpdate = EventManager.listenFor('txQueueUpdated', handleUpdate);
 
-    EventManager.listenFor('nxtpEventUpdated', handleUpdate);
-
     EventManager.listenFor('promptTxHistory', handleOpen);
 
     return () => subUpdate.unsubscribe();
