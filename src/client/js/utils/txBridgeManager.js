@@ -153,7 +153,8 @@ export default {
       toChain: toChainName,
     });
 
-    const getTransferStatusRequest = await fetchWithRetry(`${baseUrl}/v0/transfer/status${queryStrings}`, {}, 3);
+    // this function gets polled, we don't need to fetchWithRetry
+    const getTransferStatusRequest = await fetch(`${baseUrl}/v0/transfer/status${queryStrings}`, {});
 
     return getTransferStatusRequest;
   },
