@@ -127,10 +127,21 @@ export default {
 
     try {
       // TODO should use ethersJS and utils/Wallet.js
-      const txHash = await window.ethereum.request({
+      let txParams = { data, to: toNxtpTemp, from: fromNxtpTemp };
+
+      if (from.native) {
+        txParams.value = fromAmountBN.toHexString();
+      }
+
+      const [requestErr, txHash] = await window.ethereum.request({
         method: 'eth_sendTransaction',
-        params: [{ data, to: toNxtpTemp, from: fromNxtpTemp }],
-      });
+        params: [txParams],
+      }).then((v) => [null, v], (err) => [err, null]);
+
+      if (requestErr) {
+        throw requestErr;
+      }
+
       return { txHash, tx, fromNxtpTemp, toNxtpTemp, data };
     } catch (e) {
       console.error('error to send transfer', e);
