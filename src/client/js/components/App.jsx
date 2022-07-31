@@ -51,65 +51,68 @@ const App = () => {
 
   var content;
 
-      if (IS_CLAIM_DOMAIN) {
-        content = (
-          <Switch>
-            <Route exact path="/">
-                <Redirect to="/claim" />
-              </Route>
-              <Route path="/claim">
-                <TokenClaimHome />
-              </Route>
-              <Route>
-                <Redirect to="/claim" />
-              </Route>
-            </Switch>
-            );
-        
-      } else if (IS_METRICS_DOMAIN) {
-        content = (
-         <Switch>
-          <Route exact path="/">
-                        <Redirect to="/dashboard" />
-                      </Route>
-                      <Route path="/dashboard">
-                        <MetricsDashboardHome />
-                      </Route>
-                      <Route>
-                        <Redirect to="/dashboard" />
-                      </Route>
-                    </Switch>
-                    );
-      } else {
+  if (IS_CLAIM_DOMAIN) {
     content = (
-          <Switch>
-                      <Route exact path="/">
-                        <Redirect to="/swap" />
-                      </Route>
-                      <Route path="/swap">
-                        <SwapHome />
-                      </Route>
-                      <Route path="/bridge">
-                        <BridgeHome />
-                      </Route>
-                      <Route path="/stake">
-                        <StakeHome />
-                      </Route>
-                      <Route path="/wallet">
-                        <WalletHome />
-                      </Route>
-                      <Route path="/status">
-                        <StatusHome />
-                      </Route>
-                      <Route path="/claim">
-                        <TokenClaimHome />
-                      </Route>
-                      <Route>
-                        <Redirect to="/swap" />
-                      </Route>
-                    </Switch>
-                    );
-      }
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/claim" />
+        </Route>
+        <Route path="/claim">
+          <TokenClaimHome />
+        </Route>
+        <Route>
+          <Redirect to="/claim" />
+        </Route>
+      </Switch>
+    );
+
+  } else if (IS_METRICS_DOMAIN) {
+    content = (
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/dashboard" />
+        </Route>
+        <Route path="/dashboard">
+          <MetricsDashboardHome />
+        </Route>
+        <Route>
+          <Redirect to="/dashboard" />
+        </Route>
+      </Switch>
+    );
+  } else {
+    content = (
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/swap" />
+        </Route>
+        <Route path="/swap">
+          <SwapHome />
+        </Route>
+        <Route path="/bridge">
+          <BridgeHome />
+        </Route>
+        <Route path="/stake">
+          <StakeHome />
+        </Route>
+        <Route path="/wallet">
+          <WalletHome />
+        </Route>
+        <Route path="/status">
+          <StatusHome />
+        </Route>
+        <Route path="/claim">
+          <TokenClaimHome />
+        </Route>
+        <Route path="/dashboard">
+          <MetricsDashboardHome />
+        </Route>
+        <Route>
+          <Redirect to="/swap" />
+        </Route>
+      </Switch>
+    );
+  }
 
   return (
     <BalanceProvider
