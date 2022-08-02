@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import Navbar from '../partials/navbar/Navbar';
+import MetricsLineChart from '../partials/metrics/MetricsLineChart';
 
 const MetricsDashboardHome = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +17,22 @@ const MetricsDashboardHome = () => {
           {value}
         </div>
         {extra}
+      </div>
+    );
+  };
+
+  const renderTopBridgeCard = (title, value, icon) => {
+    return (
+      <div className="metrics-bridge-card">
+        <div className="bridge-title">
+          {title}
+        </div>
+        <div className="bridge-vol">
+          24 HR VOLUME
+        </div>
+        <div className="bridge-value">
+          {value}
+        </div>
       </div>
     );
   };
@@ -41,13 +58,25 @@ const MetricsDashboardHome = () => {
             <div className="metrics-sub-title">
               Top Bridges
             </div>
-            <div className="box">
-              <div class="content">
-                Lorem ipsum leo risus, porta ac consectetur ac,
-                vestibulum at eros. Donec id elit non mi porta gravida at
-                eget metus. Cum sociis natoque penatibus et magnis dis
-                parturient montes, nascetur ridiculus mus. Cras mattis
-                consectetur purus sit amet fermentum.
+            <div className="box metrics-bridge-row">
+              <div className="columns is-gapless">
+                <div className="column">
+                  {renderTopBridgeCard("Hop", "$3,457,349")}
+                </div>
+                <div className="column">
+                  {renderTopBridgeCard("Celer", "$3,457,349")}
+                </div>
+                <div className="column">
+                  {renderTopBridgeCard("connext", "$3,457,349")}
+                </div>
+                <div className="column">
+                  {renderTopBridgeCard("MultiChain", "$3,457,349")}
+                </div>
+                <div className="column is-2 next-arrow">
+                  <span className="icon">
+                    <ion-icon name="arrow-forward-circle"></ion-icon>
+                  </span>
+                </div>
               </div>
             </div>
           </div>

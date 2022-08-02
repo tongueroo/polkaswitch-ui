@@ -19,8 +19,59 @@
     font-weight: bold;
 
     &.small {
+      margin-top: 28px;
       font-size: 21px;
     }
+  }
+
+}
+
+.metrics-bridge-row {
+  padding: 0 10px;
+  overflow: auto;
+
+  .next-arrow {
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    display: flex;
+    width: 8% !important;
+
+    .icon {
+      font-size: 31px;
+      width: 34px;
+      height: 34px;
+      color: #e2eaf2;
+      cursor: pointer;
+
+      &:hover {
+        color: #c4ced8;
+      }
+    }
+  }
+}
+
+.metrics-bridge-card {
+
+  padding: 10px;
+  background: #f5f7f9;
+  border-radius: 12px;
+  margin: 15px 4px;
+
+  .bridge-title {
+    font-size: 19px;
+    font-weight: bold;
+  }
+
+  .bridge-value {
+    font-size: 17px;
+    font-weight: bold;
+  }
+
+  .bridge-vol {
+    margin-top: 3px;
+    color: #a5a5a5;
+    font-size: 10px;
   }
 
 }
