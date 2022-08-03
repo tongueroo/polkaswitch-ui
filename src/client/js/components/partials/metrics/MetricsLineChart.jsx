@@ -1,40 +1,85 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 
-import {
-  ResponsiveContainer, AreaChart, Area, Tooltip, XAxis, YAxis
-} from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-export default class MetricLineChart extends Component {
+const data = [
+  {
+    name: 'Page A',
+    uv: 4000,
+  },
+  {
+    name: 'Page B',
+    uv: 3000,
+  },
+  {
+    name: 'Page C',
+    uv: 2000,
+  },
+  {
+    name: 'Page D',
+    uv: 2780,
+  },
+  {
+    name: 'Page E',
+    uv: 1890,
+  },
+  {
+    name: 'Page F',
+    uv: 2390,
+  },
+  {
+    name: 'Page G',
+    uv: 3490,
+  },
+];
+
+class CustomizedLabel extends PureComponent {
+  render() {
+    const { x, y, stroke, value } = this.props;
+
+    return (
+      <text x={x} y={y} dy={-4} fill={stroke} fontSize={10} textAnchor="middle">
+        {value}
+      </text>
+    );
+  }
+}
+
+class CustomizedAxisTick extends PureComponent {
+  render() {
+    const { x, y, stroke, payload } = this.props;
+
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text x={0} y={0} dy={16} font-size="14px" textAnchor="end" fill="#666">
+          {payload.value}
+        </text>
+      </g>
+    );
+  }
+}
+
+export default class MetricsLineChart extends Component {
   render() {
     return (
-      <nav id="nav" className="level is-mobile">
-        <div className="level-left is-flex-grow-1">
-          <div className="level-item is-narrow">
-            <span className="logo-icon icon is-left is-hidden-mobile">
-              <img src="/images/swing_beta_logo.svg" />
-            </span>
-            <span className="logo-icon icon is-left is-hidden-tablet">
-              <img src="/images/swing_beta_logo.svg" />
-            </span>
-          </div>
-          <div className="level-item is-flex-grow-3 is-justify-content-left is-hidden-touch">
-            {/* <TokenSearchBar width={"75%"} /> */}
-          </div>
-        </div>
-        <NavMenu />
-        <div className="level-right">
-          <div className="level-item is-narrow">
-            <BridgeButton />
-          </div>
-          <div className="level-item is-narrow">
-            <NotificationButton />
-          </div>
-          <div className="level-item is-narrow">
-            <ConnectWalletButton />
-          </div>
-          {/*<div className="level-item"><Settings /></div>*/}
-        </div>
-      </nav>
+      <div className="metrics-line-chart">
+        <ResponsiveContainer width="100%" height={280} debounce={1}>
+          <LineChart
+            width={500}
+            height={280}
+            data={data}
+          >
+            <XAxis
+              dataKey="name"
+              height={40}
+              stroke={"#ccc"}
+              tickLine={false}
+              tick={<CustomizedAxisTick />} />
+            <Tooltip />
+            <Line type="monotone" dataKey="uv" stroke="#22BA79" strokeWidth={3} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     );
   }
 }

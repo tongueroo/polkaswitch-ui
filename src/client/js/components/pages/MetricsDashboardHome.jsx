@@ -72,7 +72,7 @@ const MetricsDashboardHome = () => {
                 <div className="column">
                   {renderTopBridgeCard("MultiChain", "$3,457,349")}
                 </div>
-                <div className="column is-2 next-arrow">
+                <div className="column is-2 next-arrow is-hidden">
                   <span className="icon">
                     <ion-icon name="arrow-forward-circle"></ion-icon>
                   </span>
@@ -110,12 +110,12 @@ const MetricsDashboardHome = () => {
             </div>
             <div className="columns">
               <div className="column">
-                {renderBasicMetricCard("Monthly Volume", "$21,203,283")}
+                {renderBasicMetricCard("Monthly Volume", "$21,203,283", (<MetricsLineChart />))}
               </div>
             </div>
             <div className="columns">
               <div className="column">
-                {renderBasicMetricCard("Monthly Active Users", "103,232")}
+                {renderBasicMetricCard("Monthly Active Users", "103,232", (<MetricsLineChart />))}
               </div>
             </div>
           </div>
