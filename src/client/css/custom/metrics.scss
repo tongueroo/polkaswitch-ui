@@ -18,9 +18,19 @@
     font-size: 29px;
     font-weight: bold;
 
+    .animated-loading-text {
+      height: 43px;
+      width: 70%;
+    }
+
     &.small {
       margin-top: 28px;
       font-size: 21px;
+
+      .animated-loading-text {
+        height: 31px;
+        width: 70%;
+      }
     }
   }
 
@@ -61,21 +71,59 @@
   .bridge-title {
     font-size: 19px;
     font-weight: bold;
+
+    .animated-loading-text {
+      height: 28px;
+      width: 70%;
+    }
   }
 
   .bridge-value {
     font-size: 17px;
     font-weight: bold;
+    margin-top: 2px;
+
+    .animated-loading-text {
+      height: 25px;
+      width: 80%;
+    }
   }
 
   .bridge-vol {
     margin-top: 3px;
     color: #a5a5a5;
     font-size: 10px;
+
+    .animated-loading-text {
+      height: 15px;
+      width: 50%;
+    }
   }
 
 }
 
 .metrics-line-chart {
   margin-top: 15px;
+}
+
+@keyframes placeHolderShimmer{
+  0% {
+    background-position: -468px 0
+  }
+  100% {
+    background-position: 468px 0
+  }
+}
+
+.animated-loading-text {
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #f6f7f8;
+  background: linear-gradient(to right, #ebeeef 8%, #f2f7f9 18%, #ebeeef 33%);
+  background-size: 800px 104px;
+  height: 96px;
+  position: relative;
 }

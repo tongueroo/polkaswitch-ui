@@ -2,10 +2,38 @@ import React, { useState, useEffect, useContext } from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
 import Navbar from '../partials/navbar/Navbar';
 import MetricsLineChart from '../partials/metrics/MetricsLineChart';
+import numeral from 'numeral';
+
+const METRICS_ENDPOINT = "http://pkolocal:3000/v0/metrics/stats";
 
 const MetricsDashboardHome = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [data, setData] = useState({});
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const delay = ms => new Promise(r => setTimeout(r, ms));
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(METRICS_ENDPOINT);
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data) {
+          await delay(2000);
+          setData(data);
+          setIsLoading(false);
+        }
+      }
+    } catch (err) {
+      setHasError(true);
+      console.error('Failed to fetch Metrics data', err);
+    }
+  };
 
   const renderBasicMetricCard = (title, value, extra) => {
     return (
@@ -14,9 +42,10 @@ const MetricsDashboardHome = () => {
           {title}
         </div>
         <div className="metrics-card-value">
-          {value}
+          {!isLoading && (<div>{value}</div>)}
+          {isLoading && (<div className="animated-loading-text"></div>)}
         </div>
-        {extra}
+        {!isLoading && extra}
       </div>
     );
   };
@@ -25,13 +54,16 @@ const MetricsDashboardHome = () => {
     return (
       <div className="metrics-bridge-card">
         <div className="bridge-title">
-          {title}
+          {!isLoading && (<div>{title}</div>)}
+          {isLoading && (<div className="animated-loading-text"></div>)}
         </div>
         <div className="bridge-vol">
-          24 HR VOLUME
+          {!isLoading && (<div>24 HR VOLUME</div>)}
+          {isLoading && (<div className="animated-loading-text"></div>)}
         </div>
         <div className="bridge-value">
-          {value}
+          {!isLoading && (<div>{value}</div>)}
+          {isLoading && (<div className="animated-loading-text"></div>)}
         </div>
       </div>
     );
@@ -50,7 +82,8 @@ const MetricsDashboardHome = () => {
                 Swing Bridge Liquidity
               </div>
               <div className="metrics-card-value small">
-                $4,222,231,293
+                {!isLoading && (<div>{numeral(data.totalBridgeLiquidity).format('$0,0')}</div>)}
+                {isLoading && (<div className="animated-loading-text"></div>)}
               </div>
             </div>
           </div>
@@ -61,16 +94,28 @@ const MetricsDashboardHome = () => {
             <div className="box metrics-bridge-row">
               <div className="columns is-gapless">
                 <div className="column">
-                  {renderTopBridgeCard("Hop", "$3,457,349")}
+                  {renderTopBridgeCard(
+                    data.topBridges && data.topBridges[0]?.name,
+                    data.topBridges && numeral(data.topBridges[0]?.volume).format('$0,0')
+                  )}
                 </div>
                 <div className="column">
-                  {renderTopBridgeCard("Celer", "$3,457,349")}
+                  {renderTopBridgeCard(
+                    data.topBridges && data.topBridges[1]?.name,
+                    data.topBridges && numeral(data.topBridges[1]?.volume).format('$0,0')
+                  )}
                 </div>
                 <div className="column">
-                  {renderTopBridgeCard("connext", "$3,457,349")}
+                  {renderTopBridgeCard(
+                    data.topBridges && data.topBridges[2]?.name,
+                    data.topBridges && numeral(data.topBridges[2]?.volume).format('$0,0')
+                  )}
                 </div>
                 <div className="column">
-                  {renderTopBridgeCard("MultiChain", "$3,457,349")}
+                  {renderTopBridgeCard(
+                    data.topBridges && data.topBridges[3]?.name,
+                    data.topBridges && numeral(data.topBridges[3]?.volume).format('$0,0')
+                  )}
                 </div>
                 <div className="column is-2 next-arrow is-hidden">
                   <span className="icon">
@@ -88,34 +133,60 @@ const MetricsDashboardHome = () => {
             </div>
             <div className="columns">
               <div className="column">
-                {renderBasicMetricCard("24 Hour Volume", "$11,231,293")}
+                {renderBasicMetricCard(
+                  "24 Hour Volume",
+                  numeral(data.volume24Hrs).format('$0,0')
+                )}
               </div>
               <div className="column">
-                {renderBasicMetricCard("7 Day Volume", "$33,231,293")}
+                {renderBasicMetricCard(
+                  "7 Day Volume",
+                  numeral(data.volume7Days).format('$0,0')
+                )}
               </div>
               <div className="column">
-                {renderBasicMetricCard("All Time Volume", "$422,231,293")}
-              </div>
-            </div>
-            <div className="columns">
-              <div className="column">
-                {renderBasicMetricCard("Unique Addresses (Users)", "105,232")}
-              </div>
-              <div className="column">
-                {renderBasicMetricCard("Past 24 Hours Transactions", "5,203")}
-              </div>
-              <div className="column">
-                {renderBasicMetricCard("Total Transactions", "129,984")}
+                {renderBasicMetricCard(
+                  "All Time Volume",
+                  numeral(data.volume7Days).format('$0,0')
+                )}
               </div>
             </div>
             <div className="columns">
               <div className="column">
-                {renderBasicMetricCard("Monthly Volume", "$21,203,283", (<MetricsLineChart />))}
+                {renderBasicMetricCard(
+                  "Unique Addresses (Users)",
+                  numeral(data.volume7Days).format('0,0')
+                )}
+              </div>
+              <div className="column">
+                {renderBasicMetricCard(
+                  "Past 24 Hours Transactions",
+                  numeral(data.volume7Days).format('0,0')
+                )}
+              </div>
+              <div className="column">
+                {renderBasicMetricCard(
+                  "Total Transactions",
+                  numeral(data.volume7Days).format('0,0')
+                )}
               </div>
             </div>
             <div className="columns">
               <div className="column">
-                {renderBasicMetricCard("Monthly Active Users", "103,232", (<MetricsLineChart />))}
+                {renderBasicMetricCard(
+                  "Monthly Volume",
+                  numeral(data.volume7Days).format('$0,0'),
+                  (<MetricsLineChart data={data.historical30DayVolume} />))
+                }
+              </div>
+            </div>
+            <div className="columns">
+              <div className="column">
+                {renderBasicMetricCard(
+                  "Monthly Active Users",
+                  numeral(data.uniqueAddresses).format('0,0'),
+                  (<MetricsLineChart data={data.historical30DayActiveUsers} />))
+                }
               </div>
             </div>
           </div>
