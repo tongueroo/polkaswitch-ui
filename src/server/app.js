@@ -154,7 +154,7 @@ app.use(express.static('dist'));
 app.use(express.static('public'));
 
 app.use('*', function (req, res) {
-  var indexPath = path.join(__dirname, '../../', '/dist/index.html');
+  var indexPath = path.join(__dirname, '../../', '/dist/claim.index.html');
 
   fs.access(indexPath, fs.F_OK, (err) => {
     if (err) {
