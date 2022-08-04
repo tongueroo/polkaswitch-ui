@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
-import Navbar from '../partials/navbar/Navbar';
+import SimpleNavbar from '../partials/navbar/SimpleNavbar';
 import MetricsLineChart from '../partials/metrics/MetricsLineChart';
 import numeral from 'numeral';
 
@@ -197,7 +197,7 @@ const MetricsDashboardHome = () => {
 
   return (
     <div className="container">
-      <Navbar />
+      <SimpleNavbar />
 
       {renderDashboard()}
     </div>
