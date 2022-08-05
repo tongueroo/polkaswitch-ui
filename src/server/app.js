@@ -154,7 +154,18 @@ app.use(express.static('dist'));
 app.use(express.static('public'));
 
 app.use('*', function (req, res) {
-  var indexPath = path.join(__dirname, '../../', '/dist/index.html');
+  const currentHost = req.hostname;
+  var targetIndexFile;
+
+  if (currentHost.includes('claim')) {
+    targetIndexFile = 'claim.index.html';
+  } else if (currentHost.includes('analytics')) {
+    targetIndexFile = 'metrics.index.html';
+  } else {
+    targetIndexFile = 'index.html'
+  }
+
+  var indexPath = path.join(__dirname, '../../', `/dist/${targetIndexFile}`);
 
   fs.access(indexPath, fs.F_OK, (err) => {
     if (err) {
@@ -162,7 +173,7 @@ app.use('*', function (req, res) {
 
       return res.status(404).send({
         status: 404,
-        error: !isProduction ? '/dist/index.html not found. Please make sure to run `npm run watch` for local development' : '/dist/index.html not found'
+        error: !isProduction ? `${targetIndexFile} not found. Please make sure to run "npm run watch" for local development` : `${targetIndexFile} not found`
       });
     }
 

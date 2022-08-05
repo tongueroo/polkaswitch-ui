@@ -17,7 +17,10 @@ module.exports = (env) => {
 
   const isProduction = !!env.production;
   const isMainNetwork = !!process.env.IS_MAIN_NETWORK;
-  const isClaimDomain = process.env.IS_CLAIM_DOMAIN === 'true';
+  const isClaimDomain = !!env.claim || process.env.IS_CLAIM_DOMAIN === 'true';
+  const isMetricDomain = !!env.metrics || process.env.IS_METRIC_DOMAIN === 'true';
+
+
 
   if (isProduction) {
     console.log('Using PRODUCTION config');
@@ -26,18 +29,35 @@ module.exports = (env) => {
   }
 
   let plugins = [
-    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css'
+      filename: () => {
+        if (isClaimDomain) {
+          return 'claim.[name].[contenthash].css';
+        } else if (isMetricDomain) {
+          return 'metrics.[name].[contenthash].css';
+        } else {
+          return '[name].[contenthash].css';
+        }
+      },
     }),
     new HtmlWebpackPlugin({
       template: './src/client/index.html',
+      filename: () => {
+        if (isClaimDomain) {
+          return `claim.index.html`;
+        } else if (isMetricDomain) {
+          return `metrics.index.html`;
+        } else {
+          return "index.html"
+        }
+      },
       hash: false
     }),
     new webpack.EnvironmentPlugin({
       IS_PRODUCTION: !!isProduction,
       IS_MAIN_NETWORK: isMainNetwork,
       IS_CLAIM_DOMAIN: isClaimDomain,
+      IS_METRIC_DOMAIN: isMetricDomain,
       SENTRY_JS_DSN: false,
       HEROKU_RELEASE_VERSION: false,
       HEROKU_APP_NAME: false
@@ -71,7 +91,15 @@ module.exports = (env) => {
     entry: ['babel-polyfill', './src/client/js/index.js'],
     output: {
       path: path.join(__dirname, outputDirectory),
-      filename: 'bundle.[contenthash].js'
+      filename: () => {
+        if (isClaimDomain) {
+          return 'claim.bundle.[contenthash].js';
+        } else if (isMetricDomain) {
+          return 'metrics.bundle.[contenthash].js';
+        } else {
+          return 'bundle.[contenthash].js';
+        }
+      }
     },
     module: {
       rules: [
