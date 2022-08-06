@@ -5,6 +5,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const SentryWebpackPlugin = require("@sentry/webpack-plugin");
+const child_process = require('child_process');
+
 require('dotenv').config()
 
 const outputDirectory = 'dist';
@@ -18,9 +20,11 @@ module.exports = (env) => {
   const isProduction = !!env.production;
   const isMainNetwork = !!process.env.IS_MAIN_NETWORK;
   const isClaimDomain = !!env.claim || process.env.IS_CLAIM_DOMAIN === 'true';
-  const isMetricDomain = !!env.metrics || process.env.IS_METRIC_DOMAIN === 'true';
+  const isMetricDomain = !!env.metrics || process.env.IS_METRICS_DOMAIN === 'true';
 
-
+  const git = function(command) {
+    return child_process.execSync(`git ${command}`, { encoding: 'utf8' }).trim();
+  };
 
   if (isProduction) {
     console.log('Using PRODUCTION config');
@@ -57,10 +61,12 @@ module.exports = (env) => {
       IS_PRODUCTION: !!isProduction,
       IS_MAIN_NETWORK: isMainNetwork,
       IS_CLAIM_DOMAIN: isClaimDomain,
-      IS_METRIC_DOMAIN: isMetricDomain,
+      IS_METRICS_DOMAIN: isMetricDomain,
       SENTRY_JS_DSN: false,
       HEROKU_RELEASE_VERSION: false,
-      HEROKU_APP_NAME: false
+      HEROKU_APP_NAME: false,
+      GIT_VERSION: git('describe --always'),
+      GIT_AUTHOR_DATE: git('log -1 --format=%aI')
     }),
     new NodePolyfillPlugin()
   ];
