@@ -29,9 +29,9 @@ console.log(process.env);
 console.log(process.env.IS_PRODUCTION);
 console.log(process.env.IS_CLAIM_DOMAIN);
 console.log(process.env.IS_METRICS_DOMAIN);
-console.log(GIT_VERSION);
-console.log(GIT_AUTHOR_DATE);
-console.log(HEROKU_RELEASE_VERSION);
+console.log(process.env.GIT_VERSION);
+console.log(process.env.GIT_AUTHOR_DATE);
+console.log(process.env.HEROKU_RELEASE_VERSION);
 
 const App = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
