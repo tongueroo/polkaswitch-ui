@@ -25,7 +25,7 @@ require('../../css/index.scss');
 const IS_CLAIM_DOMAIN = process.env.IS_CLAIM_DOMAIN === 'true';
 const IS_METRICS_DOMAIN = process.env.IS_METRICS_DOMAIN === 'true';
 
-console.log(proces.env);
+console.log(process.env);
 console.log(process.env.IS_PRODUCTION);
 console.log(process.env.IS_CLAIM_DOMAIN);
 console.log(process.env.IS_METRICS_DOMAIN);
