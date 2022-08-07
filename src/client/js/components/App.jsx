@@ -22,14 +22,13 @@ import useLoadBalances from './pages/useLoadBalance';
 
 require('../../css/index.scss');
 
-const IS_CLAIM_DOMAIN = process.env.IS_CLAIM_DOMAIN === 'true';
-const IS_METRICS_DOMAIN = process.env.IS_METRICS_DOMAIN === 'true';
+const IS_CLAIM_DOMAIN = !!process.env.IS_CLAIM_DOMAIN;
+const IS_METRICS_DOMAIN = !!process.env.IS_METRICS_DOMAIN;
 
-console.log(process.env);
-console.log(process.env.IS_PRODUCTION);
-console.log(process.env.IS_CLAIM_DOMAIN);
-console.log(process.env.IS_METRICS_DOMAIN);
-console.log(process.env.HEROKU_RELEASE_VERSION);
+console.log("IS_PRODUCTION: " + process.env.IS_PRODUCTION);
+console.log("IS_CLAIM_DOMAIN: " + process.env.IS_CLAIM_DOMAIN);
+console.log("IS_METRICS_DOMAIN: " + process.env.IS_METRICS_DOMAIN);
+console.log("RELEASE_VERSION: " + process.env.HEROKU_RELEASE_VERSION);
 
 const App = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
