@@ -4,7 +4,7 @@ import SimpleNavbar from '../partials/navbar/SimpleNavbar';
 import MetricsLineChart from '../partials/metrics/MetricsLineChart';
 import numeral from 'numeral';
 
-const METRICS_ENDPOINT = "http://pkolocal:3000/v0/metrics/stats";
+const METRICS_ENDPOINT = "https://api.dev.swing.xyz/v0/metrics/stats";
 
 const MetricsDashboardHome = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +24,6 @@ const MetricsDashboardHome = () => {
       if (response.ok) {
         const data = await response.json();
         if (data) {
-          await delay(2000);
           setData(data);
           setIsLoading(false);
         }
@@ -183,7 +182,7 @@ const MetricsDashboardHome = () => {
             <div className="columns">
               <div className="column">
                 {renderBasicMetricCard(
-                  "Monthly Active Users",
+                  "Monthly Transaction Count",
                   numeral(data.uniqueAddresses).format('0,0'),
                   (<MetricsLineChart data={data.historical30DayActiveUsers} />))
                 }
