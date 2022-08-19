@@ -545,5 +545,9 @@
     "crossChainSupported": false,
     "supportedCrossChainTokens": [
     ]
+  },
+  {
+    "enabled": false,
+    "name": "Dogechain"
   }
 ]
