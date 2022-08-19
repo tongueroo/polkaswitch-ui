@@ -40,9 +40,7 @@ export default class NetworkDropdown extends Component {
     var selected =
       this.props.selected || TokenListManager.getCurrentNetworkConfig();
 
-    var filteredNetworks = _.filter(this.NETWORKS, (v) => {
-      return v.enabled;
-    });
+    var filteredNetworks = _.extend({}, this.NETWORKS);
 
     if (this.props.crossChain) {
       filteredNetworks = _.filter(filteredNetworks, (v) => {
@@ -61,7 +59,7 @@ export default class NetworkDropdown extends Component {
           <a
             href="#"
             key={i}
-            onClick={this.handleDropdownClick(v)}
+            onClick={v.enabled && this.handleDropdownClick(v)}
             className={classnames('dropdown-item level is-mobile option', {
               disabled: !v.enabled,
             })}
