@@ -30,10 +30,12 @@ export default class NetworkDropdown extends Component {
   }
 
   handleDropdownClick(network) {
-    return function handleClick(e) {
-      this.handleClose();
-      this.props.handleDropdownClick(network);
-    }.bind(this);
+    if (network.enabled) {
+      return function handleClick(e) {
+        this.handleClose();
+        this.props.handleDropdownClick(network);
+      }.bind(this);
+    };
   }
 
   render() {
@@ -59,7 +61,7 @@ export default class NetworkDropdown extends Component {
           <a
             href="#"
             key={i}
-            onClick={v.enabled && this.handleDropdownClick(v)}
+            onClick={this.handleDropdownClick(v)}
             className={classnames('dropdown-item level is-mobile option', {
               disabled: !v.enabled,
             })}

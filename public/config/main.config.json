@@ -548,6 +548,9 @@
   },
   {
     "enabled": false,
-    "name": "Dogechain"
+    "name": "Dogechain",
+    "singleChainSupported": true,
+    "crossChainSupported": true,
+    "logoURI": "https://dogechain.dog/images/img_63.png"
   }
 ]
