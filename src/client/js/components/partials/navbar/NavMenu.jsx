@@ -25,28 +25,8 @@ export default function NavMenu(props) {
 
   return (
     <div className="nav-menu">
-      <NavLink
-        exact
-        className="nav-link"
-        activeClassName="active"
-        to="/swap"
-        onClick={(e) => handleClick(true)}
-      >
-        Trade
-      </NavLink>
-      <NavLink
-        className="nav-link"
-        activeClassName="active"
-        to="/bridge"
-        onClick={(e) => handleClick(false)}
-      >
-        Bridge
-      </NavLink>
-      <NavLink exact className="nav-link" activeClassName="active" to="/wallet">
-        Wallet
-      </NavLink>
-      <NavLink exact className="nav-link" activeClassName="active" to="/status">
-        Status
+      <NavLink exact className="nav-link" activeClassName="active" to="/swap" onClick={(e) => handleClick(true)}>
+        Swap
       </NavLink>
       <a
         className="nav-link"
