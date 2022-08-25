@@ -146,7 +146,7 @@ const MetricsDashboardHome = () => {
               <div className="column">
                 {renderBasicMetricCard(
                   "All Time Volume",
-                  numeral(data.volume7Days).format('$0,0')
+                  numeral(data.volumeAllTime).format('$0,0')
                 )}
               </div>
             </div>
@@ -154,19 +154,19 @@ const MetricsDashboardHome = () => {
               <div className="column">
                 {renderBasicMetricCard(
                   "Unique Addresses (Users)",
-                  numeral(data.volume7Days).format('0,0')
+                  numeral(data.activeUsers30Days).format('0,0')
                 )}
               </div>
               <div className="column">
                 {renderBasicMetricCard(
                   "Past 24 Hours Transactions",
-                  numeral(data.volume7Days).format('0,0')
+                  numeral(data.transactions24Hrs).format('0,0')
                 )}
               </div>
               <div className="column">
                 {renderBasicMetricCard(
                   "Total Transactions",
-                  numeral(data.volume7Days).format('0,0')
+                  numeral(data.transactionsAllTime).format('0,0')
                 )}
               </div>
             </div>
