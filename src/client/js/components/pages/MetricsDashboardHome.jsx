@@ -4,7 +4,7 @@ import SimpleNavbar from '../partials/navbar/SimpleNavbar';
 import MetricsLineChart from '../partials/metrics/MetricsLineChart';
 import numeral from 'numeral';
 
-const METRICS_ENDPOINT = "https://api.dev.swing.xyz/v0/metrics/stats";
+const METRICS_ENDPOINT = "https://swap.prod.swing.xyz/v0/metrics/stats";
 
 const MetricsDashboardHome = () => {
   const [isLoading, setIsLoading] = useState(true);
