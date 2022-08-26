@@ -14,7 +14,7 @@ if (process.env.IS_PRODUCTION) {
     dsn: process.env.SENTRY_JS_DSN,
     environment: IS_MAIN_NETWORK ? 'production' : 'development',
     integrations: [new Integrations.BrowserTracing()],
-    release: `${process.env.HEROKU_APP_NAME}-${process.env.HEROKU_RELEASE_VERSION}`,
+    release: `${process.env.APP_NAME}-${process.env.APP_VERSION}`,
     denyUrls: [
       /health/i
     ],

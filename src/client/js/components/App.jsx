@@ -29,7 +29,8 @@ const IS_METRICS_DOMAIN = !!process.env.IS_METRICS_DOMAIN;
 console.log("IS_PRODUCTION: " + process.env.IS_PRODUCTION);
 console.log("IS_CLAIM_DOMAIN: " + process.env.IS_CLAIM_DOMAIN);
 console.log("IS_METRICS_DOMAIN: " + process.env.IS_METRICS_DOMAIN);
-console.log("RELEASE_VERSION: " + process.env.HEROKU_RELEASE_VERSION);
+console.log("APP_VERSION: " + process.env.APP_VERSION);
+console.log("APP_NAME: " + process.env.APP_NAME);
 
 const App = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);

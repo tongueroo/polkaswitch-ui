@@ -14,7 +14,7 @@ module.exports = (env) => {
   console.log(env);
   console.log(`ENV: IS_MAIN_NETWORK: ${process.env.IS_MAIN_NETWORK}`);
   console.log(`ENV: IS_CLAIM_DOMAIN: ${process.env.IS_CLAIM_DOMAIN}`);
-  console.log(`ENV: ${process.env.HEROKU_APP_NAME}-${process.env.HEROKU_RELEASE_VERSION}`);
+  console.log(`ENV: APP-VERSION: ${process.env.APP_NAME}-${process.env.APP_VERSION}`);
   console.log(`ENV: SENTRY: ${process.env.SENTRY_JS_DSN}`);
 
   const isProduction = !!env.production;
@@ -59,21 +59,21 @@ module.exports = (env) => {
       IS_CLAIM_DOMAIN: isClaimDomain,
       IS_METRICS_DOMAIN: isMetricDomain,
       SENTRY_JS_DSN: false,
-      HEROKU_RELEASE_VERSION: false,
-      HEROKU_APP_NAME: false
+      APP_VERSION: false,
+      APP_NAME: false
     }),
     new NodePolyfillPlugin()
   ];
 
   if (isProduction &&
-    process.env.HEROKU_APP_NAME &&
+    process.env.APP_VERSION &&
     process.env.SENTRY_AUTH_TOKEN) {
     plugins.push(
       new SentryWebpackPlugin({
         authToken: process.env.SENTRY_AUTH_TOKEN,
         org: "swing-xyz",
         project: "frontend",
-        release: process.env.HEROKU_APP_NAME + "-" + process.env.HEROKU_RELEASE_VERSION,
+        release: process.env.APP_NAME + "-" + process.env.APP_VERSION,
         deploy: {
           env: isMainNetwork ? 'production' : 'development'
         },
