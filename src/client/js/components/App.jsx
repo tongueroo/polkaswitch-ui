@@ -9,6 +9,7 @@ import {
 
 import classnames from 'classnames';
 import SwapHome from './pages/SwapHome';
+import WidgetHome from './pages/WidgetHome';
 import TokenClaimHome from './pages/TokenClaimHome';
 import MetricsDashboardHome from './pages/MetricsDashboardHome';
 import BridgeHome from './pages/BridgeHome';
@@ -70,7 +71,6 @@ const App = () => {
         </Route>
       </Switch>
     );
-
   } else if (IS_METRICS_DOMAIN) {
     content = (
       <Switch>
@@ -93,6 +93,9 @@ const App = () => {
         </Route>
         <Route path="/swap">
           <SwapHome />
+        </Route>
+        <Route path="/widget">
+          <WidgetHome />
         </Route>
         <Route path="/bridge">
           <BridgeHome />

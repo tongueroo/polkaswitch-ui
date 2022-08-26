@@ -3,10 +3,10 @@ import { render, screen } from '@testing-library/react';
 import App from '../App';
 
 describe('<App />', () => {
-  it('Render you pay from Swap Trade', () => {
+  it('Render swap Text', () => {
     render(<App />);
 
-    const linkElement = screen.getByText(/You Pay/i);
+    const linkElement = screen.getByText(/Connect Your Wallet/i);
 
     expect(linkElement).toBeInTheDocument();
   });
