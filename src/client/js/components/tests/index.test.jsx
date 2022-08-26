@@ -6,7 +6,7 @@ describe('<App />', () => {
   it('Render swap Text', () => {
     render(<App />);
 
-    const linkElement = screen.getByText(/Cross Chain Swap/i);
+    const linkElement = screen.getByText(/Connect Your Wallet/i);
 
     expect(linkElement).toBeInTheDocument();
   });
