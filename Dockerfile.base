@@ -9,6 +9,18 @@ COPY package*.json ./
 RUN npm install # to create Docker cache layer
 ENV PATH="node_modules/.bin:${PATH}"
 
+ARG IS_MAIN_NETWORK
+ENV IS_MAIN_NETWORK=$IS_MAIN_NETWORK
+
+ARG SENTRY_JS_DSN
+ENV SENTRY_JS_DSN=$SENTRY_JS_DSN
+
+ARG APP_NAME
+ENV APP_NAME=$APP_NAME
+
+ARG APP_VERSION
+ENV APP_VERSION=$APP_VERSION
+
 COPY . .
 RUN npm install
 RUN npm run build # for production
