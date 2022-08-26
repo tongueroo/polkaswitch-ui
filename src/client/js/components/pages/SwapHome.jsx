@@ -6,7 +6,6 @@ import TxHistoryModal from '../partials/TxHistoryModal';
 import NotificationSystem from '../partials/NotificationSystem';
 import MobileMenu from '../partials/navbar/MobileMenu';
 import TxnHistory from '../partials/swap/TxnHistory';
-import '@swing.xyz/ui/theme.css';
 import { Swap } from '@swing.xyz/ui';
 
 export default class Home extends Component {
