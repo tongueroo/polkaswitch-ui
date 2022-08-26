@@ -22,15 +22,55 @@ const app = express();
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment:
-    process.env.IS_MAIN_NETWORK === 'true' ? 'production' : 'development',
+  process.env.IS_MAIN_NETWORK === 'true' ? 'production' : 'development',
   integrations: [
     // enable HTTP calls tracing
     new Sentry.Integrations.Http({ tracing: true }),
     // enable Express.js middleware tracing
     new Tracing.Integrations.Express({ app }),
   ],
+  ignoreErrors: [
+    // Random plugins/extensions
+    "top.GLOBALS",
+    // See: http://blog.errorception.com/2012/03/tale-of-unfindable-js-error.html
+    "originalCreateNotification",
+    "canvas.contentDocument",
+    "MyApp_RemoveAllHighlights",
+    "http://tt.epicplay.com",
+    "Can't find variable: ZiteReader",
+    "jigsaw is not defined",
+    "ComboSearch is not defined",
+    "http://loading.retry.widdit.com/",
+    "atomicFindClose",
+    // Facebook borked
+    "fb_xd_fragment",
+    // ISP "optimizing" proxy - `Cache-Control: no-transform` seems to
+    // reduce this. (thanks @acdha)
+    // See http://stackoverflow.com/questions/4113268
+    "bmi_SafeAddOnload",
+    "EBCallBackMessageReceived",
+    // See http://toolbar.conduit.com/Developer/HtmlAndGadget/Methods/JSInjection.aspx
+    "conduitPage",
+  ],
+  denyUrls: [
+    /health/i,
+    // Facebook flakiness
+    /graph\.facebook\.com/i,
+    // Facebook blocked
+    /connect\.facebook\.net\/en_US\/all\.js/i,
+    // Woopra flakiness
+    /eatdifferent\.com\.woopra-ns\.com/i,
+    /static\.woopra\.com\/js\/woopra\.js/i,
+    // Chrome extensions
+    /extensions\//i,
+    /^chrome:\/\//i,
+    // Other plugins
+    /127\.0\.0\.1:4001\/isrunning/i, // Cacaoweb
+    /webappstoolbarba\.texthelp\.com\//i,
+    /metrics\.itunes\.apple\.com\.edgesuite\.net\/V/i,
+  ],
   release:
-    process.env.APP_NAME + '-' + process.env.APP_VERSION,
+  process.env.APP_NAME + '-' + process.env.APP_VERSION,
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
