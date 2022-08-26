@@ -39,7 +39,7 @@ if (process.env.IS_PRODUCTION) {
       "conduitPage",
     ],
     denyUrls: [
-      /
+      /health/i
       // Facebook flakiness
       /graph\.facebook\.com/i,
       // Facebook blocked

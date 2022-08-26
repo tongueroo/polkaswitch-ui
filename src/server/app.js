@@ -53,7 +53,6 @@ Sentry.init({
     "conduitPage",
   ],
   denyUrls: [
-    /health/i,
     // Facebook flakiness
     /graph\.facebook\.com/i,
     // Facebook blocked
