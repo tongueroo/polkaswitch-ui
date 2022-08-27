@@ -35,7 +35,9 @@ export default function MetricsLineChart(props) {
         <LineChart
           width={500}
           height={280}
-          data={props.data}
+          data={props.data.map((v) => {
+            return { date: v.date, value: +v.value };
+          })}
         >
           <XAxis
             dataKey="date"

@@ -174,7 +174,7 @@ const MetricsDashboardHome = () => {
               <div className="column">
                 {renderBasicMetricCard(
                   "Monthly Volume",
-                  numeral(data.volume7Days).format('$0,0'),
+                  numeral(data.volume30Days).format('$0,0'),
                   (<MetricsLineChart data={data.historical30DayVolume} />))
                 }
               </div>
@@ -183,7 +183,7 @@ const MetricsDashboardHome = () => {
               <div className="column">
                 {renderBasicMetricCard(
                   "Monthly Transaction Count",
-                  numeral(data.uniqueAddresses).format('0,0'),
+                  numeral(data.transactionsAllTime).format('0,0'),
                   (<MetricsLineChart data={data.historical30DayActiveUsers} />))
                 }
               </div>
