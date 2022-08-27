@@ -183,7 +183,7 @@ const MetricsDashboardHome = () => {
               <div className="column">
                 {renderBasicMetricCard(
                   "Monthly Transaction Count",
-                  numeral(data.transactionsAllTime).format('0,0'),
+                  numeral(data.transactions30Days).format('0,0'),
                   (<MetricsLineChart data={data.historical30DayActiveUsers} />))
                 }
               </div>
