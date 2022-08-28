@@ -1,7 +1,18 @@
 FROM <%= @base_image %>
+
 COPY . .
+
+<% if File.exist?('build.env') -%>
+ENV <%= IO.readlines("build.env").map(&:strip).join(' ') %>
+<% end -%>
+<% if File.exist?('build.args') -%>
+ARG <%= IO.readlines("build.args").map(&:strip).join(' ') %>
+RUN ./show_build_env.sh
+<% end -%>
+
 RUN npm install
 RUN npm run build # for production
+
 # EXPOSE and CMD set also below for clarity, even though they are defined in Dockerfile.base
 EXPOSE 5000
 CMD ["npm", "run", "start"]
